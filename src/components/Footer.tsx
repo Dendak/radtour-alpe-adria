@@ -8,8 +8,8 @@ export function Footer() {
           {TRIP.title} · {TRIP.subtitle}
         </div>
         <p className="mt-1">
-          Informace pro účastníky · trasa © OpenStreetMap přispěvatelé · počasí Open-Meteo ·
-          výškopis BRouter
+          Informace pro účastníky · mapa CyclOSM &amp; © OpenStreetMap přispěvatelé · počasí
+          Open-Meteo · výškopis BRouter · fotografie Wikimedia Commons (volné licence)
         </p>
         <p className="mt-1">Vytvořeno s ❤️ a Claude</p>
       </div>

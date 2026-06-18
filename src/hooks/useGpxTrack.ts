@@ -131,3 +131,24 @@ export function splitByDay(
 export function useDaySplit(track: TrackPoint[], dayEnd: Record<number, number>) {
   return useMemo(() => splitByDay(track, dayEnd), [track, dayEnd]);
 }
+
+/** Bod na trase v dané kumulativní vzdálenosti (km) — binární hledání + interpolace. */
+export function pointAtDist(track: TrackPoint[], d: number): TrackPoint | null {
+  if (track.length < 2) return null;
+  let lo = 0;
+  let hi = track.length - 1;
+  while (lo < hi - 1) {
+    const mid = (lo + hi) >> 1;
+    if (track[mid].dist < d) lo = mid;
+    else hi = mid;
+  }
+  const a = track[lo];
+  const b = track[hi];
+  const f = (d - a.dist) / Math.max(0.0001, b.dist - a.dist);
+  return {
+    lat: a.lat + (b.lat - a.lat) * f,
+    lon: a.lon + (b.lon - a.lon) * f,
+    ele: a.ele + (b.ele - a.ele) * f,
+    dist: d,
+  };
+}

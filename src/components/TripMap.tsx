@@ -1,8 +1,17 @@
 import { useEffect, useMemo } from 'react';
-import { MapContainer, Marker, Polyline, Popup, TileLayer, useMap } from 'react-leaflet';
+import {
+  CircleMarker,
+  MapContainer,
+  Marker,
+  Polyline,
+  Popup,
+  TileLayer,
+  useMap,
+} from 'react-leaflet';
 import L from 'leaflet';
 import { DAY_COLORS, type Waypoint } from '@/data/trip';
 import { splitByDay, type TrackPoint } from '@/hooks/useGpxTrack';
+import { useHover } from '@/hooks/useHoverStore';
 
 interface Props {
   track: TrackPoint[];
@@ -42,6 +51,19 @@ function FitBounds({ track }: { track: TrackPoint[] }) {
   return null;
 }
 
+/** Tečka „kde právě jsem" — řízená najetím myší nad výškovým profilem. */
+function HoverMarker() {
+  const h = useHover();
+  if (!h) return null;
+  return (
+    <CircleMarker
+      center={[h.lat, h.lon]}
+      radius={8}
+      pathOptions={{ color: '#0f1b2a', weight: 3, fillColor: '#ffffff', fillOpacity: 1 }}
+    />
+  );
+}
+
 export default function TripMap({ track, waypoints, dayEnd }: Props) {
   const segments = useMemo(() => splitByDay(track, dayEnd), [track, dayEnd]);
   // jen významné body (ne každá průjezdní přestávka má vlastní pin barvu)
@@ -51,8 +73,10 @@ export default function TripMap({ track, waypoints, dayEnd }: Props) {
     <div className="h-[420px] md:h-[520px]">
       <MapContainer center={[46.7, 13.3]} zoom={8} scrollWheelZoom className="h-full w-full">
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.cyclosm.org">CyclOSM</a> · &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url="https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png"
+          subdomains={['a', 'b', 'c']}
+          maxZoom={20}
         />
         {segments.map((seg) => (
           <Polyline
@@ -74,6 +98,7 @@ export default function TripMap({ track, waypoints, dayEnd }: Props) {
             </Popup>
           </Marker>
         ))}
+        <HoverMarker />
         <FitBounds track={track} />
       </MapContainer>
     </div>

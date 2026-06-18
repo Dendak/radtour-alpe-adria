@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { DAY_COLORS, DAY_CAPTIONS, RIDE_DAYS, type DayNum } from '@/data/trip';
-import type { TrackPoint } from '@/hooks/useGpxTrack';
+import { pointAtDist, type TrackPoint } from '@/hooks/useGpxTrack';
+import { setHover } from '@/hooks/useHoverStore';
 
 interface Props {
   track: TrackPoint[];
@@ -79,20 +80,51 @@ export default function ElevationProfile({ track, dayEnd }: Props) {
     return { total, minE, maxE, baseY, xFor, yFor, areas, yticks, bounds, plotW };
   }, [track, dayEnd]);
 
+  const [hover, setLocalHover] = useState<{ x: number; y: number; ele: number; dist: number } | null>(
+    null,
+  );
+
   if (!view) {
     return <div className="h-[230px] animate-pulse bg-gradient-to-br from-slate-100 to-slate-200" />;
   }
+
+  const v = view;
+  const onMove = (clientX: number, el: SVGSVGElement) => {
+    const rect = el.getBoundingClientRect();
+    if (rect.width === 0) return;
+    const vbX = ((clientX - rect.left) / rect.width) * W;
+    const dist = Math.max(0, Math.min(v.total, ((vbX - PAD.l) / v.plotW) * v.total));
+    const p = pointAtDist(track, dist);
+    if (!p) return;
+    setLocalHover({ x: v.xFor(dist), y: v.yFor(p.ele), ele: p.ele, dist });
+    setHover({ lat: p.lat, lon: p.lon, ele: p.ele, dist });
+  };
+  const clear = () => {
+    setLocalHover(null);
+    setHover(null);
+  };
 
   return (
     <div className="p-3 md:p-4">
       <div className="flex items-center justify-between mb-2">
         <div className="font-semibold text-sm md:text-base">⛰️ Výškový profil celé trasy</div>
         <div className="text-xs text-slate-500">
-          {Math.round(view.minE)}–{Math.round(view.maxE)} m · {Math.round(view.total)} km
+          {hover
+            ? `${Math.round(hover.ele)} m · ${hover.dist.toFixed(1)} km`
+            : `${Math.round(view.minE)}–${Math.round(view.maxE)} m · ${Math.round(view.total)} km`}
         </div>
       </div>
 
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Výškový profil">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="w-full h-auto cursor-crosshair touch-none"
+        role="img"
+        aria-label="Výškový profil"
+        onMouseMove={(e) => onMove(e.clientX, e.currentTarget)}
+        onMouseLeave={clear}
+        onTouchMove={(e) => e.touches[0] && onMove(e.touches[0].clientX, e.currentTarget)}
+        onTouchEnd={clear}
+      >
         {/* y gridlines */}
         {view.yticks.map((e) => (
           <g key={e}>
@@ -125,6 +157,21 @@ export default function ElevationProfile({ track, dayEnd }: Props) {
         {view.areas.map((a, i) => (
           <path key={`l${i}`} d={a.line} fill="none" stroke={DAY_COLORS[a.day]} strokeWidth={2.2} />
         ))}
+        {/* indikátor najetí myší / prstem */}
+        {hover && (
+          <g pointerEvents="none">
+            <line
+              x1={hover.x}
+              y1={PAD.t}
+              x2={hover.x}
+              y2={view.baseY}
+              stroke="#0f1b2a"
+              strokeWidth={1}
+              strokeDasharray="2 3"
+            />
+            <circle cx={hover.x} cy={hover.y} r={5.5} fill="#ffffff" stroke="#0f1b2a" strokeWidth={2.5} />
+          </g>
+        )}
       </svg>
 
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">

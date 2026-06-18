@@ -140,7 +140,13 @@ export type Highlight = {
   tip?: string;
   mapsQuery?: string;
   website?: string;
+  /** Foto z Wikimedia Commons (volná licence). */
+  photo?: string;
 };
+
+/** Sestaví URL obrázku z Wikimedia Commons (volně licencované, s uvedením zdroje). */
+export const commons = (file: string, w = 1200): string =>
+  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file.replace(/ /g, '_'))}?width=${w}`;
 
 export const HIGHLIGHTS: Highlight[] = [
   // Den 1
@@ -148,21 +154,25 @@ export const HIGHLIGHTS: Highlight[] = [
     day: 1, kind: 'památka', name: 'Salcburské staré město (UNESCO)', where: 'Salzburg · start',
     blurb: 'Rodiště Mozarta, barokní dóm a pevnost Hohensalzburg nad městem. Odtud vyrážíme proti proudu Salzachu.',
     mapsQuery: 'Altstadt Salzburg',
+    photo: commons('SalzburgerAltstadt02b.jpg'),
   },
   {
     day: 1, kind: 'historie', name: 'Hrad Hohenwerfen', where: 'Werfen · ~45 km',
     blurb: 'Mohutný hrad z 11. století na skále nad údolím Salzachu, s každodenní ukázkou letu dravců.',
     mapsQuery: 'Burg Hohenwerfen', website: 'https://www.burg-hohenwerfen.at',
+    photo: commons('Festung Hohenwerfen.jpg'),
   },
   {
     day: 1, kind: 'příroda', name: 'Liechtensteinklamm', where: 'St. Johann · ~72 km',
     blurb: 'Jedna z nejhlubších a nejdelších soutěsek v Alpách — burácející voda mezi až 300 m vysokými stěnami.',
     mapsQuery: 'Liechtensteinklamm', website: 'https://www.liechtensteinklamm.at',
+    photo: commons('Liechtensteinklamm, Bild 1.jpg'),
   },
   {
     day: 1, kind: 'kultura', name: 'Bad Gastein — vodopád a belle époque', where: 'Bad Gastein · cíl dne',
     blurb: 'Lázně 19. století zalepené ve svahu, uprostřed nichž se řítí Gasteinský vodopád. Radonové termály a kouzlo zašlé slávy.',
     mapsQuery: 'Gasteiner Wasserfall',
+    photo: commons('Blick auf Bad Gastein 02.jpg'),
   },
 
   // Den 2
@@ -176,16 +186,19 @@ export const HIGHLIGHTS: Highlight[] = [
     day: 2, kind: 'příroda', name: 'Mallnitz — Národní park Vysoké Taury', where: 'Mallnitz · ~124 km',
     blurb: 'Horská obec a brána do největšího národního parku Alp. Odtud už to jede převážně z kopce do Korutan.',
     mapsQuery: 'Mallnitz',
+    photo: commons('Mallnitz Stappitz Ankogel-Panorama 01.jpg'),
   },
   {
     day: 2, kind: 'voda', name: 'Drávská cyklostezka', where: 'Spittal → Villach',
     blurb: 'Pohodová stezka podél tyrkysové Drávy. V létě láká k vykoupání, terén téměř bez stoupání.',
     mapsQuery: 'Drauradweg Spittal',
+    photo: commons('Weissenstein Lansach Drau Fluss-Landschaft 08112015 8810.jpg'),
   },
   {
     day: 2, kind: 'historie', name: 'Zámek Porcia', where: 'Spittal an der Drau · ~180 km',
     blurb: 'Jeden z nejvýznamnějších renesančních zámků severně od Alp s arkádovým nádvořím.',
     mapsQuery: 'Schloss Porcia Spittal',
+    photo: commons('Spittal Schloss Porcia Arkadenhof 20042015 2422.jpg'),
   },
 
   // Den 3
@@ -193,21 +206,25 @@ export const HIGHLIGHTS: Highlight[] = [
     day: 3, kind: 'kultura', name: 'Tarvisio a hranice', where: 'Tarvisio · ~252 km',
     blurb: 'Pohraniční trojmezí. Odtud běží Ciclovia Alpe Adria po staré železniční trati pozvolna z kopce.',
     mapsQuery: 'Tarvisio',
+    photo: commons('Tarvisio, view of Via Roma.jpg'),
   },
   {
     day: 3, kind: 'voda', name: 'Jezera Fusine (odbočka)', where: 'za Tarvisiem',
     blurb: 'Dvě tyrkysová horská jezera pod Mangartem — krásná odbočka kousek za hranicí (kus do kopce).',
     mapsQuery: 'Laghi di Fusine',
+    photo: commons('Fusine in Valromana, Ratece-Tarvisio cycling trail 02.jpg'),
   },
   {
     day: 3, kind: 'historie', name: 'Venzone', where: 'Venzone · ~310 km',
     blurb: 'Středověké hradbami obehnané město, po zemětřesení 1976 kámen po kameni věrně obnovené — „nejkrásnější vesnice Itálie".',
     mapsQuery: 'Venzone',
+    photo: commons('Venzone veduta 09.jpg'),
   },
   {
     day: 3, kind: 'gastro', name: 'Furlanská kuchyně', where: 'Gemona · cíl dne',
     blurb: 'Frico (sýrový placek), uzeniny, bílá vína Friuli. První večer v Itálii — čas na espresso a gelato.',
     mapsQuery: 'Gemona del Friuli centro',
+    photo: commons('Gemona del Friuli veduta 03.jpg'),
   },
 
   // Den 4
@@ -215,32 +232,38 @@ export const HIGHLIGHTS: Highlight[] = [
     day: 4, kind: 'kultura', name: 'Udine — Piazza Libertà', where: 'Udine · ~350 km',
     blurb: '„Nejkrásnější benátské náměstí na pevnině" a zámecký kopec s rozhledem. Tiepolovy fresky ve městě.',
     mapsQuery: 'Piazza della Libertà Udine',
+    photo: commons('Piazza Libertà (Udine).jpg'),
   },
   {
     day: 4, kind: 'památka', name: 'Palmanova (UNESCO)', where: 'Palmanova · ~372 km',
     blurb: 'Benátská hvězdicová pevnost z roku 1593 — ideální renesanční město. Tvar hvězdy je nejlépe vidět ze vzduchu.',
     mapsQuery: 'Palmanova',
+    photo: commons('Aerial image of Palmanova (view from the northwest).jpg'),
   },
   {
     day: 4, kind: 'historie', name: 'Aquileia (UNESCO)', where: 'Aquileia · ~395 km',
     blurb: 'Kdysi jedno z největších měst římské říše. Bazilika s obří raně křesťanskou mozaikovou podlahou ze 4. století.',
     mapsQuery: 'Basilica di Aquileia', website: 'https://www.fondazioneaquileia.it',
+    photo: commons('Basilica Patriarcale (Aquileia) - Exterior.jpg'),
   },
   {
     day: 4, kind: 'voda', name: 'Grado — cíl u moře', where: 'Grado · cíl',
     blurb: 'Laguna, staré město s raně křesťanskými bazilikami a dlouhá písečná pláž. Dojezd k Jadranu!',
     mapsQuery: 'Grado centro storico',
+    photo: commons('Aerial image of Grado (view from the west).jpg'),
   },
 
   {
     day: 4, kind: 'voda', name: 'Pláž Grado', where: 'Grado · po dojezdu',
     blurb: 'Na jih obrácená písečná pláž („Ostrov slunce"), pozvolný vstup do moře — odměna po dojezdu k moři.',
     mapsQuery: 'Spiaggia Grado',
+    photo: commons('Spiaggia-Grado-Pineta.jpg'),
   },
   {
     day: 4, kind: 'kultura', name: 'Poutní ostrov Barbana', where: 'laguna Grado',
     blurb: 'Klášterní ostrov v laguně, lodí z Grada — mariánské poutní místo už od 6. století.',
     mapsQuery: 'Santuario di Barbana',
+    photo: commons('Isola di Barbana - Grado.jpg'),
   },
 ];
 

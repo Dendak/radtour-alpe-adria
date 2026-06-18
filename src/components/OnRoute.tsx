@@ -41,7 +41,19 @@ export function OnRoute() {
                 {items.map((h) => {
                   const meta = KIND_META[h.kind];
                   return (
-                    <article key={h.name} className="card card-pad p-4 flex flex-col animate-fade-up">
+                    <article key={h.name} className="card overflow-hidden flex flex-col animate-fade-up">
+                      {h.photo && (
+                        <img
+                          src={h.photo}
+                          alt={h.name}
+                          loading="lazy"
+                          className="h-44 w-full object-cover bg-slate-100"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      )}
+                      <div className="p-4 flex flex-col flex-1">
                       <div className="flex items-center gap-2">
                         <span
                           className="chip text-white"
@@ -69,6 +81,7 @@ export function OnRoute() {
                             Web →
                           </a>
                         )}
+                      </div>
                       </div>
                     </article>
                   );
