@@ -3,7 +3,7 @@
 // Datový model — vše v češtině. 4 jízdní dny + den odpočinku.
 // =============================================================
 
-export type DayNum = 1 | 2 | 3 | 4 | 5;
+export type DayNum = 1 | 2 | 3 | 4;
 
 export type Waypoint = {
   day: DayNum;
@@ -18,20 +18,29 @@ export type Waypoint = {
 export const TRIP = {
   title: 'Alpe Adria 2026',
   subtitle: 'Salzburg → Grado',
-  dateLabel: 'Út 21. – So 25. července 2026',
+  dateLabel: 'Út 21. – Pá 24. července 2026',
   totalKm: 412,
   rideDays: 4,
-  days: 5,
+  days: 4,
 };
 
 export const RIDE_DAYS: DayNum[] = [1, 2, 3, 4];
+
+export type TeamMember = { name: string; optional?: boolean };
+
+export const TEAM: TeamMember[] = [
+  { name: 'Denis Holub' },
+  { name: 'Karolína Masařová' },
+  { name: 'Petra Masařová' },
+  { name: 'Kevin Holub', optional: true },
+  { name: 'Dáša Medů', optional: true },
+];
 
 export const DAY_COLORS: Record<DayNum, string> = {
   1: '#1d4ed8',
   2: '#0891b2',
   3: '#16a34a',
   4: '#ea580c',
-  5: '#e11d48',
 };
 
 export const DAY_NAMES: Record<DayNum, string> = {
@@ -39,7 +48,6 @@ export const DAY_NAMES: Record<DayNum, string> = {
   2: 'Den 2 — St 22. 7.',
   3: 'Den 3 — Čt 23. 7.',
   4: 'Den 4 — Pá 24. 7.',
-  5: 'Den 5 — So 25. 7.',
 };
 
 export const DAY_DATES: Record<DayNum, string> = {
@@ -47,7 +55,6 @@ export const DAY_DATES: Record<DayNum, string> = {
   2: '2026-07-22',
   3: '2026-07-23',
   4: '2026-07-24',
-  5: '2026-07-25',
 };
 
 export const DAY_CAPTIONS: Record<DayNum, string> = {
@@ -55,7 +62,6 @@ export const DAY_CAPTIONS: Record<DayNum, string> = {
   2: 'Bad Gastein → Villach · Tauernschleuse a Drávská cyklostezka',
   3: 'Villach → Gemona · přes hranici Kanaltalem',
   4: 'Gemona → Grado · furlanskou nížinou k moři',
-  5: 'Grado · den odpočinku u Jadranu',
 };
 
 // Hrubé kumulativní km (přesné konce etap z GPX: 107 / 222 / 322 / 412)
@@ -92,9 +98,6 @@ export const WAYPOINTS: Waypoint[] = [
   { day: 4, dist: 372, lat: 45.9047, lon: 13.3097, name: 'Palmanova', time: '2026-07-24T12:30', tag: 'Zajímavost' },
   { day: 4, dist: 395, lat: 45.7700, lon: 13.3697, name: 'Aquileia', time: '2026-07-24T14:00', tag: 'Zajímavost' },
   { day: 4, dist: 412, lat: 45.6772, lon: 13.3939, name: 'Grado', time: '2026-07-24T15:30', tag: 'Cíl' },
-
-  // Den 5 — odpočinek
-  { day: 5, dist: 412, lat: 45.6772, lon: 13.3939, name: 'Grado', time: '2026-07-25T10:00', tag: 'Odpočinek' },
 ];
 
 export const WMO: Record<number, string> = {
@@ -229,14 +232,13 @@ export const HIGHLIGHTS: Highlight[] = [
     mapsQuery: 'Grado centro storico',
   },
 
-  // Den 5
   {
-    day: 5, kind: 'voda', name: 'Pláž Grado', where: 'Grado',
-    blurb: 'Na jih obrácená písečná pláž („Ostrov slunce"), pozvolný vstup do moře — ideální na den odpočinku.',
+    day: 4, kind: 'voda', name: 'Pláž Grado', where: 'Grado · po dojezdu',
+    blurb: 'Na jih obrácená písečná pláž („Ostrov slunce"), pozvolný vstup do moře — odměna po dojezdu k moři.',
     mapsQuery: 'Spiaggia Grado',
   },
   {
-    day: 5, kind: 'kultura', name: 'Poutní ostrov Barbana', where: 'laguna Grado',
+    day: 4, kind: 'kultura', name: 'Poutní ostrov Barbana', where: 'laguna Grado',
     blurb: 'Klášterní ostrov v laguně, lodí z Grada — mariánské poutní místo už od 6. století.',
     mapsQuery: 'Santuario di Barbana',
   },
@@ -275,9 +277,9 @@ export const STAYS: Stay[] = [
     amenities: ['Kolárna', 'Snídaně'],
   },
   {
-    night: 'Nocleh 4–5 · Pá 24. – So 25. 7.', town: 'Grado', nights: 2, tentative: true,
+    night: 'Nocleh 4 · Pá 24. 7.', town: 'Grado', nights: 1, tentative: true,
     mapsQuery: 'Hotel Grado spiaggia',
-    description: 'Hotel na 2 noci v Gradu (dojezd + den odpočinku). Ideálně blízko pláže. Hlavní sezóna — rezervovat brzy!',
+    description: 'Hotel na 1 noc v Gradu (dojezd k moři). Ideálně blízko pláže. Hlavní sezóna — rezervovat brzy!',
     amenities: ['Kolárna', 'Snídaně', 'U pláže'],
   },
 ];

@@ -19,7 +19,7 @@ const KIND_META: Record<HighlightKind, { emoji: string; label: string }> = {
   doprava: { emoji: '🚆', label: 'Doprava' },
 };
 
-const DAYS: DayNum[] = [1, 2, 3, 4, 5];
+const DAYS: DayNum[] = [1, 2, 3, 4];
 
 export function OnRoute() {
   return (

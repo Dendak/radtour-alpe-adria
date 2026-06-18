@@ -15,7 +15,7 @@ import { DAY_DATES, DAY_NAMES, WAYPOINTS, type DayNum } from './data/trip';
 const TripMap = lazy(() => import('./components/TripMap'));
 const ElevationProfile = lazy(() => import('./components/ElevationProfile'));
 
-const DAYS: DayNum[] = [1, 2, 3, 4, 5];
+const DAYS: DayNum[] = [1, 2, 3, 4];
 
 function dayDestination(day: DayNum) {
   const ws = WAYPOINTS.filter((w) => w.day === day);

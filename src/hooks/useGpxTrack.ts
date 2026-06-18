@@ -80,7 +80,6 @@ function snap(track: TrackPoint[]): { waypoints: Waypoint[]; dayEnd: Record<numb
   // Start dalšího dne = konec předchozího
   waypoints.forEach((w) => {
     if (w.tag === 'Start' && w.day > 1) w.dist = dayEnd[w.day - 1] ?? w.dist;
-    if (w.day === 5) w.dist = dayEnd[4] ?? w.dist;
   });
   return { waypoints, dayEnd };
 }

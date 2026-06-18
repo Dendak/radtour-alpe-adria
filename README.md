@@ -1,8 +1,9 @@
 # 🚴 Alpe Adria 2026 — Salzburg → Grado
 
 Informační web pro účastníky cyklovýletu po Alpsko-jadranské cyklostezce
-(**21.–25. července 2026**). Mapa s reálnou trasou, výškový profil, počasí po dnech,
-ubytování, zajímavosti na trase a praktické info — vše v češtině.
+(**21.–24. července 2026**, 4 dny na kole, 1 noc v Gradu). Mapa s reálnou trasou,
+výškový profil, počasí po dnech, ubytování, zajímavosti na trase a praktické info —
+vše v češtině.
 
 ## Trasa
 
@@ -11,8 +12,7 @@ ubytování, zajímavosti na trase a praktické info — vše v češtině.
 | 1 | Út 21. 7. | Salzburg → Bad Gastein | 107 | Bad Gastein |
 | 2 | St 22. 7. | Bad Gastein → Villach *(Tauernschleuse)* | 115 | Villach |
 | 3 | Čt 23. 7. | Villach → Gemona del Friuli | 100 | Gemona |
-| 4 | Pá 24. 7. | Gemona → Grado | 90 | Grado |
-| 5 | So 25. 7. | Den odpočinku v Gradu | – | Grado |
+| 4 | Pá 24. 7. | Gemona → Grado | 90 | Grado (1 noc) |
 
 Celkem ≈ **412 km**. Trasa je reálná, vygenerovaná routovacím enginem **BRouter**
 (profil trekking) a uložená v `public/alpe-adria.gpx`. Úsek Böckstein → Mallnitz

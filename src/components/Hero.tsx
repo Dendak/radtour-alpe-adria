@@ -1,4 +1,4 @@
-import { TRIP } from '@/data/trip';
+import { TEAM, TRIP } from '@/data/trip';
 import { TopoPattern } from './TopoPattern';
 
 const STATS = [
@@ -34,6 +34,19 @@ export function Hero() {
               <div className="text-2xl font-extrabold leading-none">{s.value}</div>
               <div className="text-xs text-white/85 mt-1">{s.label}</div>
             </div>
+          ))}
+        </div>
+
+        <div className="mt-6 flex flex-wrap items-center gap-2">
+          <span className="text-sm font-semibold text-white/80">🚲 Posádka:</span>
+          {TEAM.map((m) => (
+            <span
+              key={m.name}
+              className="chip bg-white/12 border border-white/20 backdrop-blur text-white"
+            >
+              {m.name}
+              {m.optional && <span className="text-white/60"> · možná</span>}
+            </span>
           ))}
         </div>
       </div>

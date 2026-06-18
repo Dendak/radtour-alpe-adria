@@ -17,7 +17,7 @@ export function WeatherDays({ days, byDay }: Props) {
         title="Předpověď po dnech"
         hint="Předpověď z Open-Meteo se zobrazí zhruba 16 dní před výjezdem (pro každý den cílové místo)."
       />
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {days.map((d) => {
           const w = byDay[d.day];
           return (
