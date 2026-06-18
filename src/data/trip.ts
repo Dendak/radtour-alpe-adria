@@ -1,0 +1,379 @@
+// =============================================================
+// Alpe-Adria-Radweg 2026 · Salzburg → Grado
+// Datový model — vše v češtině. 4 jízdní dny + den odpočinku.
+// =============================================================
+
+export type DayNum = 1 | 2 | 3 | 4 | 5;
+
+export type Waypoint = {
+  day: DayNum;
+  dist: number; // hrubý odhad kumulativních km (přesnost dopočítá GPX snap)
+  lat: number;
+  lon: number;
+  name: string;
+  time: string;
+  tag: string;
+};
+
+export const TRIP = {
+  title: 'Alpe Adria 2026',
+  subtitle: 'Salzburg → Grado',
+  dateLabel: 'Út 21. – So 25. července 2026',
+  totalKm: 412,
+  rideDays: 4,
+  days: 5,
+};
+
+export const RIDE_DAYS: DayNum[] = [1, 2, 3, 4];
+
+export const DAY_COLORS: Record<DayNum, string> = {
+  1: '#1d4ed8',
+  2: '#0891b2',
+  3: '#16a34a',
+  4: '#ea580c',
+  5: '#e11d48',
+};
+
+export const DAY_NAMES: Record<DayNum, string> = {
+  1: 'Den 1 — Út 21. 7.',
+  2: 'Den 2 — St 22. 7.',
+  3: 'Den 3 — Čt 23. 7.',
+  4: 'Den 4 — Pá 24. 7.',
+  5: 'Den 5 — So 25. 7.',
+};
+
+export const DAY_DATES: Record<DayNum, string> = {
+  1: '2026-07-21',
+  2: '2026-07-22',
+  3: '2026-07-23',
+  4: '2026-07-24',
+  5: '2026-07-25',
+};
+
+export const DAY_CAPTIONS: Record<DayNum, string> = {
+  1: 'Salzburg → Bad Gastein · údolím Salzachu vzhůru do Taur',
+  2: 'Bad Gastein → Villach · Tauernschleuse a Drávská cyklostezka',
+  3: 'Villach → Gemona · přes hranici Kanaltalem',
+  4: 'Gemona → Grado · furlanskou nížinou k moři',
+  5: 'Grado · den odpočinku u Jadranu',
+};
+
+// Hrubé kumulativní km (přesné konce etap z GPX: 107 / 222 / 322 / 412)
+export const WAYPOINTS: Waypoint[] = [
+  // Den 1 — Salzburg → Bad Gastein
+  { day: 1, dist: 0,   lat: 47.8009, lon: 13.0450, name: 'Salzburg', time: '2026-07-21T09:00', tag: 'Start' },
+  { day: 1, dist: 18,  lat: 47.6833, lon: 13.0972, name: 'Hallein', time: '2026-07-21T10:00', tag: 'Přestávka' },
+  { day: 1, dist: 33,  lat: 47.5969, lon: 13.1644, name: 'Golling', time: '2026-07-21T11:00', tag: 'Přestávka' },
+  { day: 1, dist: 45,  lat: 47.4794, lon: 13.1900, name: 'Werfen', time: '2026-07-21T12:00', tag: 'Zajímavost' },
+  { day: 1, dist: 60,  lat: 47.4167, lon: 13.2206, name: 'Bischofshofen', time: '2026-07-21T13:00', tag: 'Oběd' },
+  { day: 1, dist: 72,  lat: 47.3500, lon: 13.2017, name: 'St. Johann im Pongau', time: '2026-07-21T14:00', tag: 'Přestávka' },
+  { day: 1, dist: 90,  lat: 47.1700, lon: 13.1019, name: 'Bad Hofgastein', time: '2026-07-21T16:00', tag: 'Přestávka' },
+  { day: 1, dist: 107, lat: 47.1147, lon: 13.1342, name: 'Bad Gastein', time: '2026-07-21T17:30', tag: 'Nocleh 1' },
+
+  // Den 2 — Bad Gastein → Villach (vlak Tauernschleuse)
+  { day: 2, dist: 107, lat: 47.1147, lon: 13.1342, name: 'Bad Gastein', time: '2026-07-22T09:00', tag: 'Start' },
+  { day: 2, dist: 111, lat: 47.1083, lon: 13.1183, name: 'Böckstein', time: '2026-07-22T09:30', tag: 'Vlak' },
+  { day: 2, dist: 124, lat: 46.9897, lon: 13.1689, name: 'Mallnitz', time: '2026-07-22T10:15', tag: 'Zajímavost' },
+  { day: 2, dist: 140, lat: 46.9381, lon: 13.2017, name: 'Obervellach', time: '2026-07-22T11:15', tag: 'Přestávka' },
+  { day: 2, dist: 180, lat: 46.7950, lon: 13.4969, name: 'Spittal an der Drau', time: '2026-07-22T13:30', tag: 'Oběd' },
+  { day: 2, dist: 222, lat: 46.6111, lon: 13.8558, name: 'Villach', time: '2026-07-22T17:00', tag: 'Nocleh 2' },
+
+  // Den 3 — Villach → Gemona
+  { day: 3, dist: 222, lat: 46.6111, lon: 13.8558, name: 'Villach', time: '2026-07-23T09:00', tag: 'Start' },
+  { day: 3, dist: 235, lat: 46.5489, lon: 13.7100, name: 'Arnoldstein', time: '2026-07-23T09:45', tag: 'Přestávka' },
+  { day: 3, dist: 252, lat: 46.5050, lon: 13.5800, name: 'Tarvisio', time: '2026-07-23T11:00', tag: 'Hranice' },
+  { day: 3, dist: 278, lat: 46.5050, lon: 13.3060, name: 'Pontebba', time: '2026-07-23T12:30', tag: 'Oběd' },
+  { day: 3, dist: 310, lat: 46.3344, lon: 13.1389, name: 'Venzone', time: '2026-07-23T15:00', tag: 'Zajímavost' },
+  { day: 3, dist: 322, lat: 46.2767, lon: 13.1378, name: 'Gemona del Friuli', time: '2026-07-23T16:30', tag: 'Nocleh 3' },
+
+  // Den 4 — Gemona → Grado
+  { day: 4, dist: 322, lat: 46.2767, lon: 13.1378, name: 'Gemona del Friuli', time: '2026-07-24T09:00', tag: 'Start' },
+  { day: 4, dist: 350, lat: 46.0711, lon: 13.2347, name: 'Udine', time: '2026-07-24T11:00', tag: 'Oběd' },
+  { day: 4, dist: 372, lat: 45.9047, lon: 13.3097, name: 'Palmanova', time: '2026-07-24T12:30', tag: 'Zajímavost' },
+  { day: 4, dist: 395, lat: 45.7700, lon: 13.3697, name: 'Aquileia', time: '2026-07-24T14:00', tag: 'Zajímavost' },
+  { day: 4, dist: 412, lat: 45.6772, lon: 13.3939, name: 'Grado', time: '2026-07-24T15:30', tag: 'Cíl' },
+
+  // Den 5 — odpočinek
+  { day: 5, dist: 412, lat: 45.6772, lon: 13.3939, name: 'Grado', time: '2026-07-25T10:00', tag: 'Odpočinek' },
+];
+
+export const WMO: Record<number, string> = {
+  0: 'Jasno', 1: 'Převážně jasno', 2: 'Polojasno', 3: 'Zataženo',
+  45: 'Mlha', 48: 'Namrzající mlha',
+  51: 'Slabé mrholení', 53: 'Mrholení', 55: 'Silné mrholení',
+  61: 'Slabý déšť', 63: 'Déšť', 65: 'Silný déšť',
+  71: 'Slabé sněžení', 73: 'Sněžení', 75: 'Silné sněžení',
+  80: 'Přeháňky', 81: 'Silné přeháňky', 82: 'Prudké přeháňky',
+  95: 'Bouřka', 96: 'Bouřka s kroupami', 99: 'Bouřka s kroupami',
+};
+
+export const wmoText = (code: number | undefined) =>
+  code === undefined ? 'neznámo' : (WMO[code] ?? 'neznámo');
+
+export const wmoEmoji = (code: number | undefined): string => {
+  if (code === undefined) return '❓';
+  if (code === 0) return '☀️';
+  if (code <= 2) return '🌤️';
+  if (code === 3) return '☁️';
+  if (code <= 48) return '🌫️';
+  if (code <= 57) return '🌦️';
+  if (code <= 67) return '🌧️';
+  if (code <= 77) return '🌨️';
+  if (code <= 82) return '🌧️';
+  if (code <= 86) return '🌨️';
+  return '⛈️';
+};
+
+// ─── Zajímavosti na trase ───────────────────────────────────
+export type HighlightKind =
+  | 'historie' | 'příroda' | 'kultura' | 'gastro' | 'památka' | 'voda' | 'doprava';
+
+export type Highlight = {
+  day: DayNum;
+  kind: HighlightKind;
+  name: string;
+  where: string;
+  blurb: string;
+  tip?: string;
+  mapsQuery?: string;
+  website?: string;
+};
+
+export const HIGHLIGHTS: Highlight[] = [
+  // Den 1
+  {
+    day: 1, kind: 'památka', name: 'Salcburské staré město (UNESCO)', where: 'Salzburg · start',
+    blurb: 'Rodiště Mozarta, barokní dóm a pevnost Hohensalzburg nad městem. Odtud vyrážíme proti proudu Salzachu.',
+    mapsQuery: 'Altstadt Salzburg',
+  },
+  {
+    day: 1, kind: 'historie', name: 'Hrad Hohenwerfen', where: 'Werfen · ~45 km',
+    blurb: 'Mohutný hrad z 11. století na skále nad údolím Salzachu, s každodenní ukázkou letu dravců.',
+    mapsQuery: 'Burg Hohenwerfen', website: 'https://www.burg-hohenwerfen.at',
+  },
+  {
+    day: 1, kind: 'příroda', name: 'Liechtensteinklamm', where: 'St. Johann · ~72 km',
+    blurb: 'Jedna z nejhlubších a nejdelších soutěsek v Alpách — burácející voda mezi až 300 m vysokými stěnami.',
+    mapsQuery: 'Liechtensteinklamm', website: 'https://www.liechtensteinklamm.at',
+  },
+  {
+    day: 1, kind: 'kultura', name: 'Bad Gastein — vodopád a belle époque', where: 'Bad Gastein · cíl dne',
+    blurb: 'Lázně 19. století zalepené ve svahu, uprostřed nichž se řítí Gasteinský vodopád. Radonové termály a kouzlo zašlé slávy.',
+    mapsQuery: 'Gasteiner Wasserfall',
+  },
+
+  // Den 2
+  {
+    day: 2, kind: 'doprava', name: 'Autoschleuse Tauernbahn', where: 'Böckstein → Mallnitz',
+    blurb: 'Naložení na autovlak skrz 8,4 km dlouhý Tauerntunel. Kola jedou s námi — ušetří přejezd Vysokých Taur. Jízda trvá ~11 minut.',
+    tip: 'Předem ověřit jízdní řády a podmínky přepravy kol.',
+    website: 'https://www.oebb.at/de/services/autoreisezug/tauernschleuse',
+  },
+  {
+    day: 2, kind: 'příroda', name: 'Mallnitz — Národní park Vysoké Taury', where: 'Mallnitz · ~124 km',
+    blurb: 'Horská obec a brána do největšího národního parku Alp. Odtud už to jede převážně z kopce do Korutan.',
+    mapsQuery: 'Mallnitz',
+  },
+  {
+    day: 2, kind: 'voda', name: 'Drávská cyklostezka', where: 'Spittal → Villach',
+    blurb: 'Pohodová stezka podél tyrkysové Drávy. V létě láká k vykoupání, terén téměř bez stoupání.',
+    mapsQuery: 'Drauradweg Spittal',
+  },
+  {
+    day: 2, kind: 'historie', name: 'Zámek Porcia', where: 'Spittal an der Drau · ~180 km',
+    blurb: 'Jeden z nejvýznamnějších renesančních zámků severně od Alp s arkádovým nádvořím.',
+    mapsQuery: 'Schloss Porcia Spittal',
+  },
+
+  // Den 3
+  {
+    day: 3, kind: 'kultura', name: 'Tarvisio a hranice', where: 'Tarvisio · ~252 km',
+    blurb: 'Pohraniční trojmezí. Odtud běží Ciclovia Alpe Adria po staré železniční trati pozvolna z kopce.',
+    mapsQuery: 'Tarvisio',
+  },
+  {
+    day: 3, kind: 'voda', name: 'Jezera Fusine (odbočka)', where: 'za Tarvisiem',
+    blurb: 'Dvě tyrkysová horská jezera pod Mangartem — krásná odbočka kousek za hranicí (kus do kopce).',
+    mapsQuery: 'Laghi di Fusine',
+  },
+  {
+    day: 3, kind: 'historie', name: 'Venzone', where: 'Venzone · ~310 km',
+    blurb: 'Středověké hradbami obehnané město, po zemětřesení 1976 kámen po kameni věrně obnovené — „nejkrásnější vesnice Itálie".',
+    mapsQuery: 'Venzone',
+  },
+  {
+    day: 3, kind: 'gastro', name: 'Furlanská kuchyně', where: 'Gemona · cíl dne',
+    blurb: 'Frico (sýrový placek), uzeniny, bílá vína Friuli. První večer v Itálii — čas na espresso a gelato.',
+    mapsQuery: 'Gemona del Friuli centro',
+  },
+
+  // Den 4
+  {
+    day: 4, kind: 'kultura', name: 'Udine — Piazza Libertà', where: 'Udine · ~350 km',
+    blurb: '„Nejkrásnější benátské náměstí na pevnině" a zámecký kopec s rozhledem. Tiepolovy fresky ve městě.',
+    mapsQuery: 'Piazza della Libertà Udine',
+  },
+  {
+    day: 4, kind: 'památka', name: 'Palmanova (UNESCO)', where: 'Palmanova · ~372 km',
+    blurb: 'Benátská hvězdicová pevnost z roku 1593 — ideální renesanční město. Tvar hvězdy je nejlépe vidět ze vzduchu.',
+    mapsQuery: 'Palmanova',
+  },
+  {
+    day: 4, kind: 'historie', name: 'Aquileia (UNESCO)', where: 'Aquileia · ~395 km',
+    blurb: 'Kdysi jedno z největších měst římské říše. Bazilika s obří raně křesťanskou mozaikovou podlahou ze 4. století.',
+    mapsQuery: 'Basilica di Aquileia', website: 'https://www.fondazioneaquileia.it',
+  },
+  {
+    day: 4, kind: 'voda', name: 'Grado — cíl u moře', where: 'Grado · cíl',
+    blurb: 'Laguna, staré město s raně křesťanskými bazilikami a dlouhá písečná pláž. Dojezd k Jadranu!',
+    mapsQuery: 'Grado centro storico',
+  },
+
+  // Den 5
+  {
+    day: 5, kind: 'voda', name: 'Pláž Grado', where: 'Grado',
+    blurb: 'Na jih obrácená písečná pláž („Ostrov slunce"), pozvolný vstup do moře — ideální na den odpočinku.',
+    mapsQuery: 'Spiaggia Grado',
+  },
+  {
+    day: 5, kind: 'kultura', name: 'Poutní ostrov Barbana', where: 'laguna Grado',
+    blurb: 'Klášterní ostrov v laguně, lodí z Grada — mariánské poutní místo už od 6. století.',
+    mapsQuery: 'Santuario di Barbana',
+  },
+];
+
+// ─── Ubytování ──────────────────────────────────────────────
+export type Stay = {
+  night: string;
+  town: string;
+  nights: number;
+  tentative: boolean;
+  mapsQuery: string;
+  description: string;
+  amenities: string[];
+  website?: string;
+  name?: string;
+};
+
+export const STAYS: Stay[] = [
+  {
+    night: 'Nocleh 1 · Út 21. 7.', town: 'Bad Gastein', nights: 1, tentative: true,
+    mapsQuery: 'Hotel Bad Gastein Zentrum',
+    description: 'Hotel či penzion v centru lázní, ideálně poblíž vodopádu. Hlídat uzamykatelnou kolárnu.',
+    amenities: ['Kolárna', 'Snídaně', 'Centrum'],
+  },
+  {
+    night: 'Nocleh 2 · St 22. 7.', town: 'Villach', nights: 1, tentative: true,
+    mapsQuery: 'Hotel Villach Innenstadt',
+    description: 'Městský hotel ve Villachu, dobrá nabídka restaurací na náměstí. Drávská stezka vede přímo městem.',
+    amenities: ['Kolárna', 'Snídaně', 'Centrum'],
+  },
+  {
+    night: 'Nocleh 3 · Čt 23. 7.', town: 'Gemona del Friuli', nights: 1, tentative: true,
+    mapsQuery: 'B&B Gemona del Friuli',
+    description: 'B&B nebo albergo v Gemoně/Venzone. Region je podél cyklostezky dobře vybavený pro cyklisty.',
+    amenities: ['Kolárna', 'Snídaně'],
+  },
+  {
+    night: 'Nocleh 4–5 · Pá 24. – So 25. 7.', town: 'Grado', nights: 2, tentative: true,
+    mapsQuery: 'Hotel Grado spiaggia',
+    description: 'Hotel na 2 noci v Gradu (dojezd + den odpočinku). Ideálně blízko pláže. Hlavní sezóna — rezervovat brzy!',
+    amenities: ['Kolárna', 'Snídaně', 'U pláže'],
+  },
+];
+
+// ─── O trase (fakta) ────────────────────────────────────────
+export type Fact = {
+  title: string;
+  text: string;
+  source?: { label: string; url: string };
+};
+
+export const FACTS: Fact[] = [
+  {
+    title: 'Ciclovia Alpe Adria — z Alp k moři',
+    text: 'Alpsko-jadranská cyklostezka spojuje na zhruba 410 km Salzburg s Gradem na severním Jadranu. Překonává Alpy přes Gasteinské a Möllské údolí a v italské části vede převážně po zrušených železničních tratích — odtud příjemně mírné stoupání. Od Karavanek k moři je to hlavně z kopce, proto je jižní směr ten příjemnější.',
+    source: { label: 'alpe-adria-radweg.com', url: 'https://www.alpe-adria-radweg.com' },
+  },
+  {
+    title: 'Tauernschleuse — vlakem skrz horu',
+    text: '„Autoschleuse Tauernbahn" veze vozidla (a kola) autovlakem 8,4 km dlouhým Tauerntunelem mezi Böcksteinem a Mallnitzem. Jízda trvá jen ~11 minut a ušetří přejezd hřebene Vysokých Taur.',
+    source: { label: 'ÖBB Tauernschleuse', url: 'https://www.oebb.at/de/services/autoreisezug/tauernschleuse' },
+  },
+  {
+    title: 'Aquileia — velkoměsto římské říše',
+    text: 'Aquileia byla založena roku 181 př. n. l. a vyrostla v jedno z největších měst impéria. Po zničení Attilou roku 452 upadla; její obyvatelé prchli mimo jiné do Grada. Bazilika ukrývá přes 700 m² velkou raně křesťanskou mozaikovou podlahu ze 4. století — od roku 1998 památka UNESCO.',
+    source: { label: 'Wikipedie: Aquileia', url: 'https://cs.wikipedia.org/wiki/Aquileia' },
+  },
+  {
+    title: 'Venzone — kámen po kameni zpět',
+    text: 'Při ničivém zemětřesení ve Furlandsku v roce 1976 byla Venzone téměř srovnána se zemí. Obyvatelé sutiny očíslovali a středověké město i s katedrálou věrně znovu postavili — evropsky uznávaný příklad obnovy.',
+    source: { label: 'Wikipedie: Venzone', url: 'https://cs.wikipedia.org/wiki/Venzone' },
+  },
+  {
+    title: 'Palmanova — dokonalá hvězda',
+    text: 'Pevnostní město Palmanova založili Benátčané roku 1593 jako geometricky dokonalé ideální město: devíticípá hvězda s valy a šestiúhelníkovým náměstím uprostřed. Od roku 2017 je součástí památky UNESCO.',
+    source: { label: 'Wikipedie: Palmanova', url: 'https://cs.wikipedia.org/wiki/Palmanova' },
+  },
+  {
+    title: 'Národní park Vysoké Taury',
+    text: 'S rozlohou ~1 860 km² je největším chráněným územím Alp. Leží zde Grossglockner (3 798 m), nejvyšší hora Rakouska, a největší rakouský ledovec Pasterze. U Mallnitzu se do těchto hor druhý den krátce nořáme.',
+    source: { label: 'Wikipedie: Vysoké Taury', url: 'https://cs.wikipedia.org/wiki/Vysok%C3%A9_Taury' },
+  },
+];
+
+// ─── Praktické info ─────────────────────────────────────────
+export type PackingSection = { title: string; items: string[] };
+
+export const PACKING: PackingSection[] = [
+  {
+    title: 'Kolo & nářadí',
+    items: [
+      'Kolo se servisem před výjezdem (brzdy, převody)',
+      'Helma',
+      'Náhradní duše (2×) + lepení, pumpa, multitool',
+      'Spojka řetězu, imbusy',
+      'Přední a zadní světlo (tunely v Kanaltalu!)',
+      'Dvě lahve na pití',
+      'Powerbanka na telefon/navigaci',
+    ],
+  },
+  {
+    title: 'Oblečení (hory i moře)',
+    items: [
+      'Cyklo kraťasy s vložkou (2×)',
+      'Funkční trička, větrovka',
+      'Pláštěnka — v horách hrozí odpolední bouřky',
+      'Teplá vrstva (Gastein ~1 000 m, ráno chladno)',
+      'Lehké letní oblečení do nížiny (30 °C+)',
+      'Plavky a ručník na Grado',
+    ],
+  },
+  {
+    title: 'Doklady & peníze',
+    items: [
+      'Občanka nebo pas',
+      'Evropský průkaz pojištěnce (EHIC)',
+      'Cestovní/úrazové pojištění',
+      'Euro v hotovosti + karta (platí v AT i IT)',
+    ],
+  },
+  {
+    title: 'Doprava & navigace',
+    items: [
+      'Tauernschleuse Böckstein→Mallnitz — předem ověřit',
+      'Vlak MICOTRA Udine ↔ Villach veze kola (záloha/zkrácení)',
+      'Návrat z Grada: bus do Cervignana, pak vlak',
+      'Offline mapy v telefonu (Mapy.cz / komoot)',
+    ],
+  },
+];
+
+export type Emergency = { label: string; number: string };
+
+export const EMERGENCY: Emergency[] = [
+  { label: 'Jednotné evropské číslo tísně (AT i IT)', number: '112' },
+  { label: 'Záchranná služba Rakousko', number: '144' },
+  { label: 'Záchranná služba Itálie', number: '118' },
+  { label: 'Odtah/asistence ÖAMTC (AT)', number: '120' },
+];

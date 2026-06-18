@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  body {
+    @apply font-sans text-ink bg-paper antialiased;
+    background-image:
+      radial-gradient(1000px 600px at 100% 0%, rgba(14, 116, 144, 0.06), transparent 60%),
+      radial-gradient(820px 520px at 0% 35%, rgba(234, 88, 12, 0.05), transparent 55%);
+    background-attachment: fixed;
+  }
+  ::selection {
+    background: rgba(14, 116, 144, 0.22);
+  }
+  :focus-visible {
+    outline: 2px solid #0e7490;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white/85 backdrop-blur border border-slate-200/70 rounded-2xl shadow-soft;
+  }
+  .section-title {
+    @apply font-display text-2xl md:text-3xl font-bold tracking-tight text-ink;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+  }
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* Leaflet */
+.leaflet-container {
+  @apply rounded-2xl;
+  font: inherit;
+}
+.leaflet-popup-content-wrapper { @apply rounded-xl; }
+.leaflet-popup-content { @apply text-sm; margin: 10px 14px; }
+.map-pin-wrap { background: transparent !important; border: none !important; }
+.map-pin {
+  width: 100%; height: 100%;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.35);
+  border: 2px solid #fff;
+}
+.map-pin span { transform: rotate(45deg); font-size: 0.9rem; line-height: 1; }
