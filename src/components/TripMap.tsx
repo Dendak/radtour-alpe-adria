@@ -19,6 +19,8 @@ interface Props {
   dayEnd: Record<number, number>;
   /** Úsek jetý vlakem [odKm, doKm] — vykreslí se přerušovaně. */
   trainRange?: [number, number] | null;
+  /** Požadavek na přiblížení na den (n = pořadí kliknutí, aby šlo zoomovat opakovaně). */
+  focusDay?: { day: number; n: number } | null;
 }
 
 /** Rozdělí body úseku na jízdní a vlakový (podle km rozsahu). */
@@ -80,6 +82,26 @@ function FitBounds({ track }: { track: TrackPoint[] }) {
   return null;
 }
 
+/** Jednorázové přiblížení na vybraný den (po kliknutí). Pak lze s mapou volně hýbat. */
+function FocusController({
+  segments,
+  focusDay,
+}: {
+  segments: { day: number; points: TrackPoint[] }[];
+  focusDay?: { day: number; n: number } | null;
+}) {
+  const map = useMap();
+  useEffect(() => {
+    if (!focusDay) return;
+    const seg = segments.find((s) => s.day === focusDay.day);
+    if (!seg || seg.points.length < 2) return;
+    const bounds = L.latLngBounds(seg.points.map((p) => [p.lat, p.lon] as [number, number]));
+    map.flyToBounds(bounds, { padding: [36, 36], duration: 0.7 });
+    // záměrně bez zámku — uživatel pak může mapu volně posouvat a zoomovat
+  }, [focusDay, segments, map]);
+  return null;
+}
+
 /** Tečka „kde právě jsem" — řízená najetím myší nad výškovým profilem. */
 function HoverMarker() {
   const h = useHover();
@@ -93,7 +115,7 @@ function HoverMarker() {
   );
 }
 
-export default function TripMap({ track, waypoints, dayEnd, trainRange }: Props) {
+export default function TripMap({ track, waypoints, dayEnd, trainRange, focusDay }: Props) {
   const segments = useMemo(() => splitByDay(track, dayEnd), [track, dayEnd]);
   // jen významné body (ne každá průjezdní přestávka má vlastní pin barvu)
   const markers = waypoints;
@@ -135,6 +157,7 @@ export default function TripMap({ track, waypoints, dayEnd, trainRange }: Props)
         ))}
         <HoverMarker />
         <FitBounds track={track} />
+        <FocusController segments={segments} focusDay={focusDay} />
       </MapContainer>
     </div>
   );

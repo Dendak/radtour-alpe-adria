@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { StickyNav } from './components/StickyNav';
 import { Hero } from './components/Hero';
 import { SectionTitle } from './components/SectionTitle';
@@ -42,6 +42,13 @@ export default function App() {
     () => computeDayStats(track, dayEnd, trainRange),
     [track, dayEnd, trainRange],
   );
+
+  // klik na den → jednorázové přiblížení mapy na danou etapu + sjezd na mapu
+  const [focusDay, setFocusDay] = useState<{ day: DayNum; n: number } | null>(null);
+  const handleFocusDay = useCallback((day: DayNum) => {
+    setFocusDay((f) => ({ day, n: (f?.n ?? 0) + 1 }));
+    document.getElementById('mapa')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
 
   // jemné odhalení sekcí při scrollu (fail-safe: bez JS zůstávají viditelné)
   useEffect(() => {
@@ -91,7 +98,7 @@ export default function App() {
       <main className="max-w-6xl mx-auto px-5 md:px-8">
         {loaded && (
           <div id="prehled" className="scroll-mt-16" data-reveal>
-            <DayOverview stats={dayStats} />
+            <DayOverview stats={dayStats} activeDay={focusDay?.day ?? null} onFocusDay={handleFocusDay} />
           </div>
         )}
 
@@ -104,7 +111,7 @@ export default function App() {
           <div className="card overflow-hidden">
             {loaded ? (
               <>
-                <TripMap track={track} waypoints={waypoints} dayEnd={dayEnd} trainRange={trainRange} />
+                <TripMap track={track} waypoints={waypoints} dayEnd={dayEnd} trainRange={trainRange} focusDay={focusDay} />
                 <div className="border-t border-slate-200/70">
                   <Suspense fallback={<div className="h-[230px] animate-pulse bg-slate-100" />}>
                     <ElevationProfile track={track} dayEnd={dayEnd} trainRange={trainRange} />
