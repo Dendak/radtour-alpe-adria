@@ -1,4 +1,5 @@
 const LINKS = [
+  { href: '#prehled', label: 'Etapy' },
   { href: '#mapa', label: 'Mapa' },
   { href: '#pocasi', label: 'Počasí' },
   { href: '#na-trase', label: 'Na trase' },

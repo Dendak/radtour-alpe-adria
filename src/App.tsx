@@ -8,7 +8,8 @@ import { Stays } from './components/Stays';
 import { AboutRoute } from './components/AboutRoute';
 import { PracticalInfo } from './components/PracticalInfo';
 import { Footer } from './components/Footer';
-import { useGpxTrack } from './hooks/useGpxTrack';
+import { DayOverview } from './components/DayOverview';
+import { useGpxTrack, computeDayStats } from './hooks/useGpxTrack';
 import { useWeather, type WeatherDay } from './hooks/useWeather';
 import { DAY_DATES, DAY_NAMES, WAYPOINTS, type DayNum } from './data/trip';
 
@@ -32,6 +33,11 @@ export default function App() {
     if (i < 0 || i + 1 >= waypoints.length) return null;
     return [waypoints[i].dist, waypoints[i + 1].dist];
   }, [waypoints]);
+
+  const dayStats = useMemo(
+    () => computeDayStats(track, dayEnd, trainRange),
+    [track, dayEnd, trainRange],
+  );
 
   const weatherInput = useMemo<WeatherDay[]>(
     () =>
@@ -60,6 +66,12 @@ export default function App() {
       <Hero />
 
       <main className="max-w-6xl mx-auto px-5 md:px-8">
+        {loaded && (
+          <div id="prehled" className="scroll-mt-16">
+            <DayOverview stats={dayStats} />
+          </div>
+        )}
+
         <section id="mapa" className="mt-8 md:mt-10 scroll-mt-16">
           <SectionTitle
             eyebrow="Trasa"

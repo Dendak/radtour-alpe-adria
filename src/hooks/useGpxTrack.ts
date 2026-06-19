@@ -132,6 +132,50 @@ export function useDaySplit(track: TrackPoint[], dayEnd: Record<number, number>)
   return useMemo(() => splitByDay(track, dayEnd), [track, dayEnd]);
 }
 
+export type DayStat = { day: DayNum; km: number; gain: number; maxEle: number };
+
+/**
+ * Statistika po dnech: délka, převýšení (vyhlazené, vlakový úsek vyřazen) a max výška.
+ */
+export function computeDayStats(
+  track: TrackPoint[],
+  dayEnd: Record<number, number>,
+  trainRange?: [number, number] | null,
+): DayStat[] {
+  if (track.length < 2) return [];
+  const out: DayStat[] = [];
+  let start = 0;
+  for (const d of RIDE_DAYS) {
+    const end = dayEnd[d] ?? track[track.length - 1].dist;
+    const seg = track.filter((p) => p.dist >= start - 0.01 && p.dist <= end + 0.01);
+    let gain = 0;
+    let maxEle = -Infinity;
+    let prev: TrackPoint | null = null;
+    let nextD = seg.length ? seg[0].dist : 0;
+    for (const p of seg) {
+      if (p.ele > maxEle) maxEle = p.ele;
+      if (p.dist >= nextD) {
+        if (prev) {
+          const inTrain =
+            !!trainRange && p.dist > trainRange[0] - 0.5 && p.dist < trainRange[1] + 0.5;
+          const de = p.ele - prev.ele;
+          if (!inTrain && de > 0) gain += de;
+        }
+        prev = p;
+        nextD = p.dist + 0.25; // vyhlazení po 250 m
+      }
+    }
+    out.push({
+      day: d,
+      km: Math.round(end - start),
+      gain: Math.round(gain / 10) * 10,
+      maxEle: maxEle === -Infinity ? 0 : Math.round(maxEle),
+    });
+    start = end;
+  }
+  return out;
+}
+
 /** Bod na trase v dané kumulativní vzdálenosti (km) — binární hledání + interpolace. */
 export function pointAtDist(track: TrackPoint[], d: number): TrackPoint | null {
   if (track.length < 2) return null;

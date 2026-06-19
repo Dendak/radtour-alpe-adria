@@ -10,13 +10,23 @@ const DAY1 = [ // Salzburg -> Bad Gastein
   [13.2206,47.4167],[13.2017,47.3500],[13.1481,47.3206],[13.0469,47.2950],
   [13.1019,47.1700],[13.1342,47.1147],
 ];
-const DAY2A = [ // Bad Gastein -> Böckstein (jízda)
-  [13.1342,47.1147],[13.1183,47.1083],
+// Bad Gastein -> Böckstein: krátké údolní stoupání. V OSM tu pro kola není
+// průjezdná silnice (tunely B167) → router lezl na 1600 m. Vedeme rovně údolím.
+const RIDE_2A = [
+  { lon:13.1342, lat:47.1147, ele:1002 }, // Bad Gastein
+  { lon:13.1186, lat:47.1133, ele:1131 }, // Böckstein
 ];
 // Böckstein -> Mallnitz: vlak (Tauernschleuse) — rovná spojnice, neroutuje se
-const TRAIN = [ { lon:13.1183, lat:47.1083, ele:1131 }, { lon:13.1689, lat:46.9897, ele:1191 } ];
-const DAY2C = [ // Mallnitz -> Villach (Mölltal + Drauradweg)
-  [13.1689,46.9897],[13.2017,46.9381],[13.3094,46.8419],[13.4969,46.7950],[13.8558,46.6111],
+const TRAIN = [ { lon:13.1186, lat:47.1133, ele:1131 }, { lon:13.1689, lat:46.9897, ele:1191 } ];
+const DAY2C = [ // Mallnitz -> Villach (Mölltal + Drauradweg, údolní cyklostezka)
+  // Pozn.: body Mühldorf/Möllbrücke se v OSM "přichytávaly" na horskou cestu
+  // (router pak lezl až na 1504 m). Vynechány — údolní trasa drží max ~680 m.
+  [13.1689,46.9897], // Mallnitz
+  [13.2017,46.9381], // Obervellach
+  [13.2700,46.8860], // Kolbnitz
+  [13.4969,46.7950], // Spittal an der Drau
+  [13.6350,46.7150], // Paternion (podél Drávy)
+  [13.8558,46.6111], // Villach
 ];
 const DAY3 = [ // Villach -> Gemona (Ciclovia Alpe Adria)
   [13.8558,46.6111],[13.7100,46.5489],[13.5800,46.5050],[13.3060,46.5050],
@@ -75,14 +85,13 @@ function append(track, seg) {
 const run = async () => {
   console.log('Generuji trasu přes BRouter...');
   const d1 = await brouter(DAY1, 'Etapa 1 Salzburg→Bad Gastein');
-  const d2a = await brouter(DAY2A, 'Etapa 2a Bad Gastein→Böckstein');
   const d2c = await brouter(DAY2C, 'Etapa 2c Mallnitz→Villach');
   const d3 = await brouter(DAY3, 'Etapa 3 Villach→Gemona');
   const d4 = await brouter(DAY4, 'Etapa 4 Gemona→Grado');
 
   const track = [];
   append(track, d1);            const end1 = track.length;
-  append(track, d2a);
+  append(track, RIDE_2A);
   append(track, TRAIN);
   append(track, d2c);           const end2 = track.length;
   append(track, d3);            const end3 = track.length;
