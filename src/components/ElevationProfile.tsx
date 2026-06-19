@@ -85,10 +85,10 @@ export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
     }
     flush();
 
-    // značka vlaku (střed vlakového úseku)
-    const trainPts = pts.filter((p) => p.train);
-    const trainMark = trainPts.length
-      ? { x: trainPts[Math.floor(trainPts.length / 2)].x, y: trainPts[Math.floor(trainPts.length / 2)].y }
+    // pás vlakového úseku (Tauernschleuse) — profil se tu „přeruší"
+    const clampKm = (k: number) => Math.max(0, Math.min(total, k));
+    const trainBand = trainRange
+      ? { x0: xFor(clampKm(trainRange[0])), x1: xFor(clampKm(trainRange[1])) }
       : null;
 
     // y gridlines
@@ -99,7 +99,7 @@ export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
     // day boundary x positions
     const bounds = RIDE_DAYS.map((d) => ({ d, x: xFor(dayEnd[d] ?? total), km: dayEnd[d] ?? total }));
 
-    return { total, minE, maxE, baseY, xFor, yFor, areas, yticks, bounds, plotW, trainMark };
+    return { total, minE, maxE, baseY, xFor, yFor, areas, yticks, bounds, plotW, trainBand };
   }, [track, dayEnd, trainRange]);
 
   const [hover, setLocalHover] = useState<{ x: number; y: number; ele: number; dist: number } | null>(
@@ -172,39 +172,46 @@ export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
             </text>
           </g>
         ))}
-        {/* plochy (jen jízdní úseky, ne vlak) */}
+        {/* vlakový úsek (Tauernschleuse) — pás místo čáry, aby bylo jasné,
+            že se tudy NEJEDE na kole, ale vlakem */}
+        {view.trainBand && (
+          <g pointerEvents="none">
+            <rect
+              x={view.trainBand.x0}
+              y={PAD.t}
+              width={view.trainBand.x1 - view.trainBand.x0}
+              height={view.baseY - PAD.t}
+              fill="#94a3b8"
+              opacity={0.16}
+            />
+            <line x1={view.trainBand.x0} y1={PAD.t} x2={view.trainBand.x0} y2={view.baseY} stroke="#94a3b8" strokeWidth={1} strokeDasharray="3 3" />
+            <line x1={view.trainBand.x1} y1={PAD.t} x2={view.trainBand.x1} y2={view.baseY} stroke="#94a3b8" strokeWidth={1} strokeDasharray="3 3" />
+            <text x={(view.trainBand.x0 + view.trainBand.x1) / 2} y={PAD.t + 16} textAnchor="middle" fontSize="14">
+              🚆
+            </text>
+            <text
+              x={(view.trainBand.x0 + view.trainBand.x1) / 2}
+              y={PAD.t + 30}
+              textAnchor="middle"
+              fontSize="9"
+              fill="#475569"
+              fontWeight="700"
+            >
+              vlak
+            </text>
+          </g>
+        )}
+        {/* plochy + čáry jen pro jízdní úseky (vlak se nekreslí → vznikne přerušení) */}
         {view.areas
           .filter((a) => !a.train)
           .map((a, i) => (
             <path key={`a${i}`} d={a.area} fill={DAY_COLORS[a.day]} opacity={0.22} />
           ))}
-        {/* čáry: jízda = barva dne, vlak (Tauernschleuse) = přerušovaně šedě */}
-        {view.areas.map((a, i) =>
-          a.train ? (
-            <path
-              key={`l${i}`}
-              d={a.line}
-              fill="none"
-              stroke="#94a3b8"
-              strokeWidth={2.2}
-              strokeDasharray="5 4"
-            />
-          ) : (
+        {view.areas
+          .filter((a) => !a.train)
+          .map((a, i) => (
             <path key={`l${i}`} d={a.line} fill="none" stroke={DAY_COLORS[a.day]} strokeWidth={2.2} />
-          ),
-        )}
-        {/* značka vlaku */}
-        {view.trainMark && (
-          <text
-            x={view.trainMark.x}
-            y={view.trainMark.y - 8}
-            textAnchor="middle"
-            fontSize="13"
-            pointerEvents="none"
-          >
-            🚆
-          </text>
-        )}
+          ))}
         {/* indikátor najetí myší / prstem */}
         {hover && (
           <g pointerEvents="none">
@@ -231,8 +238,8 @@ export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
         ))}
         {trainRange && (
           <div className="flex items-center gap-1.5 text-xs text-slate-500">
-            <span className="inline-block w-5 border-t-2 border-dashed border-slate-400" />
-            🚆 vlak (Tauernschleuse)
+            <span className="inline-block w-5 h-3 rounded-sm bg-slate-400/30 border border-dashed border-slate-400" />
+            🚆 vlak (Tauernschleuse) — nejede se na kole
           </div>
         )}
       </div>
