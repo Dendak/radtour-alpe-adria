@@ -91,17 +91,22 @@ export default function App() {
 
   // města + hranice AT/IT pro výškový profil (ze snapnutých waypointů)
   const profileCities = useMemo(() => {
-    const want = ['Salzburg', 'Bad Gastein', 'Villach', 'Tarvisio', 'Gemona del Friuli', 'Grado'];
+    const want = [
+      'Salzburg', 'Bischofshofen', 'Bad Gastein', 'Spittal an der Drau',
+      'Villach', 'Tarvisio', 'Gemona del Friuli', 'Grado',
+    ];
     const seen = new Set<string>();
     const out: { name: string; dist: number; border?: boolean }[] = [];
     for (const w of waypoints) {
       if (want.includes(w.name) && !seen.has(w.name)) {
         seen.add(w.name);
-        out.push({
-          name: w.name === 'Gemona del Friuli' ? 'Gemona' : w.name,
-          dist: w.dist,
-          border: w.tag === 'Hranice',
-        });
+        const short =
+          w.name === 'Gemona del Friuli'
+            ? 'Gemona'
+            : w.name === 'Spittal an der Drau'
+              ? 'Spittal'
+              : w.name;
+        out.push({ name: short, dist: w.dist, border: w.tag === 'Hranice' });
       }
     }
     return out;

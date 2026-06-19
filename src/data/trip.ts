@@ -157,16 +157,34 @@ export const HIGHLIGHTS: Highlight[] = [
     photo: commons('Salzburg Altstadt Panorama 20170409 02.jpg'),
   },
   {
+    day: 1, kind: 'historie', name: 'Hallein — keltské město', where: 'Hallein · ~18 km',
+    blurb: 'Druhé největší město Salcburska na Salzachu. Proslulé keltskou minulostí — nedaleký solný důl Dürrnberg a Keltské muzeum. Půvabné staré město s úzkými uličkami.',
+    mapsQuery: 'Hallein Altstadt',
+    photo: commons('Hallein - Altstadt - Kornsteinplatz Ansicht - 2016 06 10.jpg'),
+  },
+  {
     day: 1, kind: 'historie', name: 'Hrad Hohenwerfen', where: 'Werfen · ~45 km',
     blurb: 'Mohutný hrad z 11. století na skále nad údolím Salzachu, s každodenní ukázkou letu dravců.',
     mapsQuery: 'Burg Hohenwerfen', website: 'https://www.burg-hohenwerfen.at',
     photo: commons('Castillo de Hohenwerfen, Werfen, Austria, 2019-05-17, DD 143-149 PAN.jpg'),
   },
   {
+    day: 1, kind: 'kultura', name: 'Bischofshofen', where: 'Bischofshofen · ~60 km',
+    blurb: 'Městečko v Pongau na soutoku — věhlasné skoky na lyžích (Turné čtyř můstků, novoroční závod) a dochovaná Kastenova věž s kostelem sv. Maxmiliána.',
+    mapsQuery: 'Bischofshofen',
+    photo: commons('Bischofshofen Salzburg.jpg'),
+  },
+  {
     day: 1, kind: 'příroda', name: 'Liechtensteinklamm', where: 'St. Johann · ~72 km',
     blurb: 'Jedna z nejhlubších a nejdelších soutěsek v Alpách — burácející voda mezi až 300 m vysokými stěnami.',
     mapsQuery: 'Liechtensteinklamm', website: 'https://www.liechtensteinklamm.at',
     photo: commons('Liechtensteinklamm, Bild 1.jpg'),
+  },
+  {
+    day: 1, kind: 'kultura', name: 'Bad Hofgastein', where: 'Bad Hofgastein · ~90 km',
+    blurb: 'Lázeňské městečko v Gasteinském údolí těsně před cílem dne — termály, sluneční promenáda a první velké výhledy na hřebeny Vysokých Taur.',
+    mapsQuery: 'Bad Hofgastein',
+    photo: commons('Panorama Bad Hofgastein 01.jpg'),
   },
   {
     day: 1, kind: 'kultura', name: 'Bad Gastein — vodopád a belle époque', where: 'Bad Gastein · cíl dne',
@@ -207,6 +225,18 @@ export const HIGHLIGHTS: Highlight[] = [
     blurb: 'Pohraniční trojmezí. Odtud běží Ciclovia Alpe Adria po staré železniční trati pozvolna z kopce.',
     mapsQuery: 'Tarvisio',
     photo: commons('Val Canale Camporosso Monte Lussari 31052008 51.jpg'),
+  },
+  {
+    day: 3, kind: 'kultura', name: 'Pontebba', where: 'Pontebba · ~250 km',
+    blurb: 'Pohraniční městečko v Kanaltalu, které prvních ~30 let dělila řeka na rakouskou a italskou půlku. Dnes příjemná zastávka přímo na cyklostezce FVG1.',
+    mapsQuery: 'Pontebba',
+    photo: commons('Pontebba veduta 05.jpg'),
+  },
+  {
+    day: 3, kind: 'historie', name: 'Most u Chiusaforte', where: 'Chiusaforte · ~270 km',
+    blurb: 'Jeden z nejhezčích úseků staré Pontebbany — cyklostezka přechází po kamenných obloucích a tunely nad soutěskou řeky Fella. Přesně ta atmosféra „jízdy po železnici".',
+    mapsQuery: 'Ponte di Chiusaforte ciclovia',
+    photo: commons('Ponte di Chiusaforte.jpg'),
   },
   {
     day: 3, kind: 'historie', name: 'Venzone', where: 'Venzone · ~310 km',
