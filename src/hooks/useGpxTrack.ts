@@ -15,8 +15,8 @@ export type TrackData = {
 const DEFAULT: TrackData = {
   track: [],
   waypoints: WAYPOINTS,
-  dayEnd: { 1: 107, 2: 222, 3: 322, 4: 412 },
-  totalKm: 412,
+  dayEnd: { 1: 106, 2: 204, 3: 304, 4: 396 },
+  totalKm: 396,
   loaded: false,
 };
 

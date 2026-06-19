@@ -19,7 +19,7 @@ export const TRIP = {
   title: 'Alpe Adria 2026',
   subtitle: 'Salzburg → Grado',
   dateLabel: 'Út 21. – Pá 24. července 2026',
-  totalKm: 399,
+  totalKm: 396,
   rideDays: 4,
   days: 4,
 };
@@ -398,12 +398,14 @@ export const EMERGENCY: Emergency[] = [
 ];
 
 // ─── Gastronomie ────────────────────────────────────────────
+export type GastroItem = { name: string; desc: string };
 export type GastroRegion = {
   area: string;
   note: string;
   accent: DayNum;
   emoji: string;
-  items: { name: string; desc: string }[];
+  food: GastroItem[];
+  drinks: GastroItem[];
 };
 
 export const GASTRO: GastroRegion[] = [
@@ -412,11 +414,16 @@ export const GASTRO: GastroRegion[] = [
     note: 'Den 1 · Rakousko',
     accent: 1,
     emoji: '🥨',
-    items: [
+    food: [
       { name: 'Kasnocken', desc: 'Sýrové nočky zapečené s cibulkou — vydatná alpská klasika do kopců.' },
       { name: 'Bauernkrapfen', desc: 'Selské smažené koblihy, sladké i slané; ideální svačina u cesty.' },
       { name: 'Salzburger Nockerl', desc: 'Nadýchaný pečený dezert ve tvaru tří „vršků" salcburských kopců.' },
-      { name: 'Stiegl & Almdudler', desc: 'Salcburské pivo a bylinková limonáda na žízeň.' },
+    ],
+    drinks: [
+      { name: 'Stiegl', desc: 'Salcburské pivo z nejstaršího soukromého pivovaru v Rakousku (1492).' },
+      { name: 'Radler', desc: 'Pivo s citronovou limonádou — osvěžení po stoupání, méně alkoholu.' },
+      { name: 'Almdudler', desc: 'Bylinková limonáda, rakouská „národní" limonáda.' },
+      { name: 'Pongauer Most', desc: 'Domácí jablečný/hruškový mošt ze statků v údolí.' },
     ],
   },
   {
@@ -424,11 +431,16 @@ export const GASTRO: GastroRegion[] = [
     note: 'Den 2 · Rakousko',
     accent: 2,
     emoji: '🥟',
-    items: [
+    food: [
       { name: 'Kärntner Kasnudeln', desc: 'Ikonické korutanské taštičky plněné tvarohem a mátou — must-try.' },
       { name: 'Frigga', desc: 'Smažený horský sýr, často s polentou; rychlá energie po sjezdu.' },
       { name: 'Reindling', desc: 'Sladký kynutý věnec se skořicí a rozinkami.' },
-      { name: 'Gailtaler Almkäse', desc: 'Chráněný horský sýr z korutanských salaší.' },
+    ],
+    drinks: [
+      { name: 'Hirter / Villacher', desc: 'Korutanská piva — čepovaná na náměstí ve Villachu.' },
+      { name: 'Gösser', desc: 'Štýrský ležák, v Korutanech všudypřítomný.' },
+      { name: 'Holundersaft', desc: 'Bezový sirup s vodou — klasické rakouské nealko osvěžení.' },
+      { name: 'Bauernlimo / mošt', desc: 'Selské limonády a jablečný mošt z korutanských sadů.' },
     ],
   },
   {
@@ -436,23 +448,33 @@ export const GASTRO: GastroRegion[] = [
     note: 'Den 3–4 · Itálie',
     accent: 3,
     emoji: '🧀',
-    items: [
+    food: [
       { name: 'Frico', desc: 'Křupavý placek z Montasia a brambor — vlajková loď furlanské kuchyně.' },
       { name: 'Prosciutto di San Daniele', desc: 'Proslulá sladká šunka; San Daniele leží kousek od trasy.' },
-      { name: 'Cjarsons', desc: 'Sladko-slané plněné nočky z Karnie, posypané uzenou ricottou.' },
-      { name: 'Friulano & gubana', desc: 'Suché bílé víno Friuli a ořechový závin gubana (k tomu kapka grappy).' },
+      { name: 'Cjarsons & gubana', desc: 'Plněné nočky z Karnie a ořechový závin gubana na zub.' },
+    ],
+    drinks: [
+      { name: 'Friulano', desc: 'Vlajkové suché bílé víno Friuli — k friku i šunce ideální.' },
+      { name: 'Ribolla Gialla', desc: 'Svěží furlanská odrůda, často i jako šumivé.' },
+      { name: 'Caffè', desc: 'Pravé italské espresso — Friuli je domovem značky illy (Terst).' },
+      { name: 'Grappa & tajut', desc: '„Tajut" je furlanský zvyk dát si sklenku vína u baru cestou.' },
     ],
   },
   {
     area: 'Grado & Jadran',
-    note: 'Den 4–5 · u moře',
+    note: 'Den 4 · u moře',
     accent: 4,
     emoji: '🦑',
-    items: [
+    food: [
       { name: 'Boreto alla gradese', desc: 'Gradeský rybí guláš na octě a pepři, podávaný s bílou polentou.' },
       { name: 'Sardoni & frutti di mare', desc: 'Marinované sardelky a čerstvé mořské plody přímo z laguny.' },
-      { name: 'Spritz', desc: 'Aperol/Select s proseccem — povinný aperitiv u moře.' },
       { name: 'Gelato', desc: 'Italská zmrzlina jako zasloužená odměna po dojezdu k Jadranu.' },
+    ],
+    drinks: [
+      { name: 'Spritz', desc: 'Aperol nebo hořčejší Select s proseccem — povinný aperitiv u moře.' },
+      { name: 'Prosecco', desc: 'Šumivé z nedalekého Veneta/Friuli — na přípitek u dojezdu.' },
+      { name: 'Hugo', desc: 'Prosecco s bezovým sirupem a mátou — lehké a osvěžující.' },
+      { name: 'Acqua frizzante', desc: 'Perlivá voda s plátkem citronu — k vínu i jen tak na žízeň.' },
     ],
   },
 ];

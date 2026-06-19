@@ -7,8 +7,8 @@ export function Gastronomy() {
     <section className="mt-10 md:mt-12">
       <SectionTitle
         eyebrow="Gastronomie"
-        title="Co cestou ochutnat"
-        hint="Chuťová mapa trasy — od alpských sýrových nočků přes furlanský frico až po jadranské ryby."
+        title="Co cestou ochutnat a vypít"
+        hint="Chuťová mapa trasy — jídlo i pití po regionech: od salcburského piva přes korutanské nudle a furlanské víno až po spritz u Jadranu."
       />
       <div className="grid sm:grid-cols-2 gap-3">
         {GASTRO.map((r) => {
@@ -28,8 +28,22 @@ export function Gastronomy() {
                   </div>
                 </div>
               </div>
-              <ul className="mt-3 space-y-2.5">
-                {r.items.map((it) => (
+              <div className="mt-3 text-[0.7rem] font-bold uppercase tracking-wide text-slate-400">
+                🍽️ K jídlu
+              </div>
+              <ul className="mt-1.5 space-y-2">
+                {r.food.map((it) => (
+                  <li key={it.name} className="text-sm">
+                    <span className="font-semibold text-ink">{it.name}</span>
+                    <span className="text-slate-600"> — {it.desc}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-3 text-[0.7rem] font-bold uppercase tracking-wide text-slate-400">
+                🥂 K pití
+              </div>
+              <ul className="mt-1.5 space-y-2">
+                {r.drinks.map((it) => (
                   <li key={it.name} className="text-sm">
                     <span className="font-semibold text-ink">{it.name}</span>
                     <span className="text-slate-600"> — {it.desc}</span>
