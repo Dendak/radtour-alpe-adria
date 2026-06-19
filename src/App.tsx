@@ -26,6 +26,13 @@ export default function App() {
   const gpxUrl = `${import.meta.env.BASE_URL}alpe-adria.gpx`;
   const { track, waypoints, dayEnd, totalKm, loaded } = useGpxTrack(gpxUrl);
 
+  // Úsek jetý vlakem (Tauernschleuse: Böckstein → Mallnitz) — pro profil i mapu.
+  const trainRange = useMemo<[number, number] | null>(() => {
+    const i = waypoints.findIndex((w) => w.tag === 'Vlak');
+    if (i < 0 || i + 1 >= waypoints.length) return null;
+    return [waypoints[i].dist, waypoints[i + 1].dist];
+  }, [waypoints]);
+
   const weatherInput = useMemo<WeatherDay[]>(
     () =>
       DAYS.map((d) => {
@@ -62,10 +69,10 @@ export default function App() {
           <div className="card overflow-hidden">
             {loaded ? (
               <>
-                <TripMap track={track} waypoints={waypoints} dayEnd={dayEnd} />
+                <TripMap track={track} waypoints={waypoints} dayEnd={dayEnd} trainRange={trainRange} />
                 <div className="border-t border-slate-200/70">
                   <Suspense fallback={<div className="h-[230px] animate-pulse bg-slate-100" />}>
-                    <ElevationProfile track={track} dayEnd={dayEnd} />
+                    <ElevationProfile track={track} dayEnd={dayEnd} trainRange={trainRange} />
                   </Suspense>
                 </div>
               </>

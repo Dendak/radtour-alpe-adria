@@ -6,6 +6,8 @@ import { setHover } from '@/hooks/useHoverStore';
 interface Props {
   track: TrackPoint[];
   dayEnd: Record<number, number>;
+  /** Úsek jetý vlakem [odKm, doKm] — kreslí se přerušovaně, ne jako stoupání. */
+  trainRange?: [number, number] | null;
 }
 
 const W = 1000;
@@ -17,7 +19,7 @@ function dayForDist(dist: number, dayEnd: Record<number, number>): DayNum {
   return 4;
 }
 
-export default function ElevationProfile({ track, dayEnd }: Props) {
+export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
   const view = useMemo(() => {
     if (track.length < 2) return null;
     const total = track[track.length - 1].dist;
@@ -37,30 +39,44 @@ export default function ElevationProfile({ track, dayEnd }: Props) {
     const xFor = (d: number) => PAD.l + (total > 0 ? d / total : 0) * plotW;
     const yFor = (e: number) => PAD.t + (1 - (e - minE) / (maxE - minE || 1)) * plotH;
 
+    const inTrain = (d: number) =>
+      !!trainRange && d >= trainRange[0] - 0.01 && d <= trainRange[1] + 0.01;
+
     // downsample
     const step = Math.max(1, Math.floor(track.length / 500));
-    const pts: { x: number; y: number; day: DayNum; dist: number; ele: number }[] = [];
+    type P = { x: number; y: number; day: DayNum; dist: number; ele: number; train: boolean };
+    const pts: P[] = [];
     for (let i = 0; i < track.length; i += step) {
       const p = track[i];
-      pts.push({ x: xFor(p.dist), y: yFor(p.ele), day: dayForDist(p.dist, dayEnd), dist: p.dist, ele: p.ele });
+      pts.push({
+        x: xFor(p.dist), y: yFor(p.ele), day: dayForDist(p.dist, dayEnd),
+        dist: p.dist, ele: p.ele, train: inTrain(p.dist),
+      });
     }
     const last = track[track.length - 1];
-    pts.push({ x: xFor(last.dist), y: yFor(last.ele), day: 4, dist: last.dist, ele: last.ele });
+    pts.push({
+      x: xFor(last.dist), y: yFor(last.ele), day: 4,
+      dist: last.dist, ele: last.ele, train: inTrain(last.dist),
+    });
 
-    // areas per day (contiguous runs)
-    const areas: { day: DayNum; line: string; area: string }[] = [];
-    let run: typeof pts = [];
+    // souvislé úseky stejného dne a typu (jízda / vlak)
+    const areas: { day: DayNum; line: string; area: string; train: boolean }[] = [];
+    let run: P[] = [];
     const flush = () => {
       if (run.length < 2) return;
       const line = run.map((p, i) => `${i ? 'L' : 'M'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
-      const area = `M${run[0].x.toFixed(1)},${baseY} ` +
-        run.map((p) => `L${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ') +
-        ` L${run[run.length - 1].x.toFixed(1)},${baseY} Z`;
-      areas.push({ day: run[0].day, line, area });
+      const isTrain = run[0].train;
+      const area = isTrain
+        ? ''
+        : `M${run[0].x.toFixed(1)},${baseY} ` +
+          run.map((p) => `L${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ') +
+          ` L${run[run.length - 1].x.toFixed(1)},${baseY} Z`;
+      areas.push({ day: run[0].day, line, area, train: isTrain });
     };
     for (const p of pts) {
-      if (run.length && p.day !== run[run.length - 1].day) {
-        run.push(p); // most přes hranici
+      const prev = run[run.length - 1];
+      if (run.length && (p.day !== prev.day || p.train !== prev.train)) {
+        run.push(p); // sdílený hraniční bod
         flush();
         run = [p];
       } else {
@@ -68,6 +84,12 @@ export default function ElevationProfile({ track, dayEnd }: Props) {
       }
     }
     flush();
+
+    // značka vlaku (střed vlakového úseku)
+    const trainPts = pts.filter((p) => p.train);
+    const trainMark = trainPts.length
+      ? { x: trainPts[Math.floor(trainPts.length / 2)].x, y: trainPts[Math.floor(trainPts.length / 2)].y }
+      : null;
 
     // y gridlines
     const yticks: number[] = [];
@@ -77,8 +99,8 @@ export default function ElevationProfile({ track, dayEnd }: Props) {
     // day boundary x positions
     const bounds = RIDE_DAYS.map((d) => ({ d, x: xFor(dayEnd[d] ?? total), km: dayEnd[d] ?? total }));
 
-    return { total, minE, maxE, baseY, xFor, yFor, areas, yticks, bounds, plotW };
-  }, [track, dayEnd]);
+    return { total, minE, maxE, baseY, xFor, yFor, areas, yticks, bounds, plotW, trainMark };
+  }, [track, dayEnd, trainRange]);
 
   const [hover, setLocalHover] = useState<{ x: number; y: number; ele: number; dist: number } | null>(
     null,
@@ -150,13 +172,39 @@ export default function ElevationProfile({ track, dayEnd }: Props) {
             </text>
           </g>
         ))}
-        {/* areas + lines */}
-        {view.areas.map((a, i) => (
-          <path key={`a${i}`} d={a.area} fill={DAY_COLORS[a.day]} opacity={0.22} />
-        ))}
-        {view.areas.map((a, i) => (
-          <path key={`l${i}`} d={a.line} fill="none" stroke={DAY_COLORS[a.day]} strokeWidth={2.2} />
-        ))}
+        {/* plochy (jen jízdní úseky, ne vlak) */}
+        {view.areas
+          .filter((a) => !a.train)
+          .map((a, i) => (
+            <path key={`a${i}`} d={a.area} fill={DAY_COLORS[a.day]} opacity={0.22} />
+          ))}
+        {/* čáry: jízda = barva dne, vlak (Tauernschleuse) = přerušovaně šedě */}
+        {view.areas.map((a, i) =>
+          a.train ? (
+            <path
+              key={`l${i}`}
+              d={a.line}
+              fill="none"
+              stroke="#94a3b8"
+              strokeWidth={2.2}
+              strokeDasharray="5 4"
+            />
+          ) : (
+            <path key={`l${i}`} d={a.line} fill="none" stroke={DAY_COLORS[a.day]} strokeWidth={2.2} />
+          ),
+        )}
+        {/* značka vlaku */}
+        {view.trainMark && (
+          <text
+            x={view.trainMark.x}
+            y={view.trainMark.y - 8}
+            textAnchor="middle"
+            fontSize="13"
+            pointerEvents="none"
+          >
+            🚆
+          </text>
+        )}
         {/* indikátor najetí myší / prstem */}
         {hover && (
           <g pointerEvents="none">
@@ -181,6 +229,12 @@ export default function ElevationProfile({ track, dayEnd }: Props) {
             {DAY_CAPTIONS[d].split('·')[0].trim()}
           </div>
         ))}
+        {trainRange && (
+          <div className="flex items-center gap-1.5 text-xs text-slate-500">
+            <span className="inline-block w-5 border-t-2 border-dashed border-slate-400" />
+            🚆 vlak (Tauernschleuse)
+          </div>
+        )}
       </div>
     </div>
   );

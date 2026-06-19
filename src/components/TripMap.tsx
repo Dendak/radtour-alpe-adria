@@ -17,6 +17,35 @@ interface Props {
   track: TrackPoint[];
   waypoints: Waypoint[];
   dayEnd: Record<number, number>;
+  /** Úsek jetý vlakem [odKm, doKm] — vykreslí se přerušovaně. */
+  trainRange?: [number, number] | null;
+}
+
+/** Rozdělí body úseku na jízdní a vlakový (podle km rozsahu). */
+function splitTrain(
+  points: TrackPoint[],
+  trainRange?: [number, number] | null,
+): { train: boolean; points: TrackPoint[] }[] {
+  if (!trainRange) return [{ train: false, points }];
+  const runs: { train: boolean; points: TrackPoint[] }[] = [];
+  let cur: TrackPoint[] = [];
+  let curTrain: boolean | null = null;
+  for (const p of points) {
+    const t = p.dist >= trainRange[0] - 0.01 && p.dist <= trainRange[1] + 0.01;
+    if (curTrain === null) {
+      curTrain = t;
+      cur = [p];
+    } else if (t !== curTrain) {
+      cur.push(p);
+      runs.push({ train: curTrain, points: cur });
+      cur = [p];
+      curTrain = t;
+    } else {
+      cur.push(p);
+    }
+  }
+  if (cur.length >= 2) runs.push({ train: curTrain ?? false, points: cur });
+  return runs;
 }
 
 function tagEmoji(tag: string): string {
@@ -64,7 +93,7 @@ function HoverMarker() {
   );
 }
 
-export default function TripMap({ track, waypoints, dayEnd }: Props) {
+export default function TripMap({ track, waypoints, dayEnd, trainRange }: Props) {
   const segments = useMemo(() => splitByDay(track, dayEnd), [track, dayEnd]);
   // jen významné body (ne každá průjezdní přestávka má vlastní pin barvu)
   const markers = waypoints;
@@ -78,13 +107,19 @@ export default function TripMap({ track, waypoints, dayEnd }: Props) {
           subdomains={['a', 'b', 'c']}
           maxZoom={20}
         />
-        {segments.map((seg) => (
-          <Polyline
-            key={seg.day}
-            positions={seg.points.map((p) => [p.lat, p.lon] as [number, number])}
-            pathOptions={{ color: DAY_COLORS[seg.day], weight: 5, opacity: 0.9 }}
-          />
-        ))}
+        {segments.flatMap((seg) =>
+          splitTrain(seg.points, trainRange).map((run, ri) => (
+            <Polyline
+              key={`${seg.day}-${ri}`}
+              positions={run.points.map((p) => [p.lat, p.lon] as [number, number])}
+              pathOptions={
+                run.train
+                  ? { color: '#64748b', weight: 4, opacity: 0.9, dashArray: '6 9' }
+                  : { color: DAY_COLORS[seg.day], weight: 5, opacity: 0.9 }
+              }
+            />
+          )),
+        )}
         {markers.map((w, i) => (
           <Marker
             key={`${w.name}-${i}`}
