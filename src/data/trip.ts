@@ -154,13 +154,13 @@ export const HIGHLIGHTS: Highlight[] = [
     day: 1, kind: 'památka', name: 'Salcburské staré město (UNESCO)', where: 'Salzburg · start',
     blurb: 'Rodiště Mozarta, barokní dóm a pevnost Hohensalzburg nad městem. Odtud vyrážíme proti proudu Salzachu.',
     mapsQuery: 'Altstadt Salzburg',
-    photo: commons('SalzburgerAltstadt02b.jpg'),
+    photo: commons('Salzburg Altstadt Panorama 20170409 02.jpg'),
   },
   {
     day: 1, kind: 'historie', name: 'Hrad Hohenwerfen', where: 'Werfen · ~45 km',
     blurb: 'Mohutný hrad z 11. století na skále nad údolím Salzachu, s každodenní ukázkou letu dravců.',
     mapsQuery: 'Burg Hohenwerfen', website: 'https://www.burg-hohenwerfen.at',
-    photo: commons('Festung Hohenwerfen.jpg'),
+    photo: commons('Castillo de Hohenwerfen, Werfen, Austria, 2019-05-17, DD 143-149 PAN.jpg'),
   },
   {
     day: 1, kind: 'příroda', name: 'Liechtensteinklamm', where: 'St. Johann · ~72 km',
@@ -172,7 +172,7 @@ export const HIGHLIGHTS: Highlight[] = [
     day: 1, kind: 'kultura', name: 'Bad Gastein — vodopád a belle époque', where: 'Bad Gastein · cíl dne',
     blurb: 'Lázně 19. století zalepené ve svahu, uprostřed nichž se řítí Gasteinský vodopád. Radonové termály a kouzlo zašlé slávy.',
     mapsQuery: 'Gasteiner Wasserfall',
-    photo: commons('Blick auf Bad Gastein 02.jpg'),
+    photo: commons('Gasteiner Wasserfall, Bad Gastein 01.jpg'),
   },
 
   // Den 2
@@ -189,10 +189,10 @@ export const HIGHLIGHTS: Highlight[] = [
     photo: commons('Mallnitz Stappitz Ankogel-Panorama 01.jpg'),
   },
   {
-    day: 2, kind: 'voda', name: 'Drávská cyklostezka', where: 'Spittal → Villach',
-    blurb: 'Pohodová stezka podél tyrkysové Drávy. V létě láká k vykoupání, terén téměř bez stoupání.',
-    mapsQuery: 'Drauradweg Spittal',
-    photo: commons('Weissenstein Lansach Drau Fluss-Landschaft 08112015 8810.jpg'),
+    day: 2, kind: 'kultura', name: 'Villach — cíl 2. dne', where: 'Villach · ~208 km',
+    blurb: 'Po pohodové Drávské cyklostezce (podél tyrkysové řeky, téměř bez stoupání) dojíždíme do Villachu — živé korutanské město s historickým náměstím a spoustou lokálů.',
+    mapsQuery: 'Villach Hauptplatz',
+    photo: commons('Villach Innenstadt Hauptplatz SW-Ansicht 03082015 6487.jpg'),
   },
   {
     day: 2, kind: 'historie', name: 'Zámek Porcia', where: 'Spittal an der Drau · ~180 km',
@@ -206,7 +206,7 @@ export const HIGHLIGHTS: Highlight[] = [
     day: 3, kind: 'kultura', name: 'Tarvisio a hranice', where: 'Tarvisio · ~252 km',
     blurb: 'Pohraniční trojmezí. Odtud běží Ciclovia Alpe Adria po staré železniční trati pozvolna z kopce.',
     mapsQuery: 'Tarvisio',
-    photo: commons('Tarvisio, view of Via Roma.jpg'),
+    photo: commons('Val Canale Camporosso Monte Lussari 31052008 51.jpg'),
   },
   {
     day: 3, kind: 'historie', name: 'Venzone', where: 'Venzone · ~310 km',
@@ -218,7 +218,7 @@ export const HIGHLIGHTS: Highlight[] = [
     day: 3, kind: 'historie', name: 'Gemona del Friuli', where: 'Gemona · cíl dne',
     blurb: 'Cíl dne přímo v srdci oblasti, kterou v květnu 1976 zničilo ničivé zemětřesení (epicentrum bylo právě zde). Pečlivě obnovené historické jádro a dóm Santa Maria Assunta.',
     mapsQuery: 'Gemona del Friuli Duomo',
-    photo: commons('Gemona del Friuli veduta 03.jpg'),
+    photo: commons('Gemona, città.jpg'),
   },
 
   // Den 4
@@ -238,7 +238,7 @@ export const HIGHLIGHTS: Highlight[] = [
     day: 4, kind: 'historie', name: 'Aquileia (UNESCO)', where: 'Aquileia · ~395 km',
     blurb: 'Kdysi jedno z největších měst římské říše. Bazilika s obří raně křesťanskou mozaikovou podlahou ze 4. století.',
     mapsQuery: 'Basilica di Aquileia', website: 'https://www.fondazioneaquileia.it',
-    photo: commons('Basilica Patriarcale (Aquileia) - Exterior.jpg'),
+    photo: commons('Mosaico pavimentale della basilica di aquileia, 313-350 dc. ca. 01 meduse.jpg'),
   },
   {
     day: 4, kind: 'voda', name: 'Grado — cíl u moře', where: 'Grado · cíl',

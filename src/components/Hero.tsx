@@ -7,7 +7,7 @@ const STATS = [
   { value: '🇦🇹 🇮🇹', label: '2 země' },
 ];
 
-const HERO_IMG = commons('Mallnitz Stappitz Ankogel-Panorama 01.jpg', 2400);
+const HERO_IMG = commons('Hohe Tauern von Nordwest.jpg', 2400);
 
 export function Hero() {
   return (
