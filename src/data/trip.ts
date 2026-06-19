@@ -19,7 +19,7 @@ export const TRIP = {
   title: 'Alpe Adria 2026',
   subtitle: 'Salzburg → Grado',
   dateLabel: 'Út 21. – Pá 24. července 2026',
-  totalKm: 412,
+  totalKm: 399,
   rideDays: 4,
   days: 4,
 };

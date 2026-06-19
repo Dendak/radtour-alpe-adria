@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo } from 'react';
+import { lazy, Suspense, useEffect, useMemo } from 'react';
 import { StickyNav } from './components/StickyNav';
 import { Hero } from './components/Hero';
 import { SectionTitle } from './components/SectionTitle';
@@ -8,6 +8,7 @@ import { Stays } from './components/Stays';
 import { AboutRoute } from './components/AboutRoute';
 import { PracticalInfo } from './components/PracticalInfo';
 import { Footer } from './components/Footer';
+import { ScrollTop } from './components/ScrollTop';
 import { DayOverview } from './components/DayOverview';
 import { useGpxTrack, computeDayStats } from './hooks/useGpxTrack';
 import { useWeather, type WeatherDay } from './hooks/useWeather';
@@ -39,6 +40,25 @@ export default function App() {
     [track, dayEnd, trainRange],
   );
 
+  // jemné odhalení sekcí při scrollu (fail-safe: bez JS zůstávají viditelné)
+  useEffect(() => {
+    if (!('IntersectionObserver' in window)) return;
+    const els = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('reveal-in');
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { rootMargin: '0px 0px -10% 0px', threshold: 0 },
+    );
+    for (const el of els) io.observe(el);
+    return () => io.disconnect();
+  }, [loaded]);
+
   const weatherInput = useMemo<WeatherDay[]>(
     () =>
       DAYS.map((d) => {
@@ -67,12 +87,12 @@ export default function App() {
 
       <main className="max-w-6xl mx-auto px-5 md:px-8">
         {loaded && (
-          <div id="prehled" className="scroll-mt-16">
+          <div id="prehled" className="scroll-mt-16" data-reveal>
             <DayOverview stats={dayStats} />
           </div>
         )}
 
-        <section id="mapa" className="mt-8 md:mt-10 scroll-mt-16">
+        <section id="mapa" className="mt-8 md:mt-10 scroll-mt-16" data-reveal>
           <SectionTitle
             eyebrow="Trasa"
             title="Mapa a výškový profil"
@@ -96,24 +116,25 @@ export default function App() {
           </div>
         </section>
 
-        <div id="pocasi" className="scroll-mt-16">
+        <div id="pocasi" className="scroll-mt-16" data-reveal>
           <WeatherDays days={weatherMeta} byDay={byDay} />
         </div>
-        <div id="na-trase" className="scroll-mt-16">
+        <div id="na-trase" className="scroll-mt-16" data-reveal>
           <OnRoute />
         </div>
-        <div id="ubytovani" className="scroll-mt-16">
+        <div id="ubytovani" className="scroll-mt-16" data-reveal>
           <Stays />
         </div>
-        <div id="o-trase" className="scroll-mt-16">
+        <div id="o-trase" className="scroll-mt-16" data-reveal>
           <AboutRoute />
         </div>
-        <div id="info" className="scroll-mt-16">
+        <div id="info" className="scroll-mt-16" data-reveal>
           <PracticalInfo />
         </div>
       </main>
 
       <Footer />
+      <ScrollTop />
     </>
   );
 }

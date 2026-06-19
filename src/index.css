@@ -5,6 +5,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -18,46 +19,76 @@
   body {
     @apply font-sans text-ink bg-paper antialiased;
     background-image:
-      radial-gradient(1000px 600px at 100% 0%, rgba(14, 116, 144, 0.06), transparent 60%),
-      radial-gradient(820px 520px at 0% 35%, rgba(234, 88, 12, 0.05), transparent 55%);
+      radial-gradient(1100px 640px at 100% -5%, rgba(14, 116, 144, 0.07), transparent 60%),
+      radial-gradient(900px 560px at -5% 30%, rgba(234, 88, 12, 0.05), transparent 55%);
     background-attachment: fixed;
+    text-rendering: optimizeLegibility;
   }
-  ::selection {
-    background: rgba(14, 116, 144, 0.22);
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+    text-wrap: balance;
   }
+  p { text-wrap: pretty; }
+  ::selection { background: rgba(14, 116, 144, 0.22); }
   :focus-visible {
     outline: 2px solid #0e7490;
     outline-offset: 3px;
-    border-radius: 4px;
+    border-radius: 6px;
   }
 }
 
 @layer components {
   .card {
-    @apply bg-white/85 backdrop-blur border border-slate-200/70 rounded-2xl shadow-soft;
+    @apply bg-white/90 backdrop-blur-sm border border-slate-200/70 rounded-2xl shadow-card;
   }
   .section-title {
-    @apply font-display text-2xl md:text-3xl font-bold tracking-tight text-ink;
+    @apply font-display text-[1.7rem] leading-tight md:text-4xl font-extrabold tracking-tightest text-ink;
   }
   .chip {
     @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
   }
-  .btn {
-    @apply inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors;
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[0.72rem] font-extrabold uppercase tracking-[0.18em] text-sea;
   }
 }
 
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* karta se zvedne při najetí */
+  .lift {
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+  .lift:hover {
+    transform: translateY(-5px);
+    @apply shadow-lift;
+  }
+
+  /* gradientový text (Alpy → moře) */
+  .text-gradient {
+    background: linear-gradient(95deg, #93c5fd 0%, #67e8f9 45%, #fdba74 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* odhalení při scrollu — neprůstřelné: obsah je VŽDY viditelný,
+     .reveal-in jen přehraje vstupní animaci. Když se JS/IO nespustí,
+     obsah zůstává normálně vidět. */
+  [data-reveal].reveal-in {
+    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
 }
 
 /* Leaflet */
 .leaflet-container {
   @apply rounded-2xl;
   font: inherit;
+  background: #e8eef4;
 }
-.leaflet-popup-content-wrapper { @apply rounded-xl; }
+.leaflet-popup-content-wrapper { @apply rounded-xl shadow-lift; }
 .leaflet-popup-content { @apply text-sm; margin: 10px 14px; }
 .map-pin-wrap { background: transparent !important; border: none !important; }
 .map-pin {
@@ -65,7 +96,7 @@
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.35);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
   border: 2px solid #fff;
 }
 .map-pin span { transform: rotate(45deg); font-size: 0.9rem; line-height: 1; }

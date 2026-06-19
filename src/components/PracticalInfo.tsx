@@ -8,7 +8,7 @@ export function PracticalInfo() {
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {PACKING.map((sec) => (
-          <article key={sec.title} className="card card-pad p-4">
+          <article key={sec.title} className="card p-5 lift">
             <h3 className="font-bold">{sec.title}</h3>
             <ul className="mt-2 space-y-1.5 text-sm text-slate-700">
               {sec.items.map((it) => (
@@ -22,7 +22,7 @@ export function PracticalInfo() {
         ))}
       </div>
 
-      <article className="card card-pad p-4 mt-3">
+      <article className="card p-5 mt-3">
         <h3 className="font-bold">🆘 Tísňová čísla</h3>
         <div className="mt-2 flex flex-wrap gap-2">
           {EMERGENCY.map((e) => (

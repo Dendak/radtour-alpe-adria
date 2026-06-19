@@ -28,7 +28,7 @@ export function DayOverview({ stats }: Props) {
         {stats.map((d) => (
           <div
             key={d.day}
-            className="card p-4 border-t-4"
+            className="card p-4 border-t-4 lift"
             style={{ borderTopColor: DAY_COLORS[d.day], '--accent': DAY_COLORS[d.day] } as CSSProperties}
           >
             <div className="text-xs font-bold uppercase tracking-wide" style={{ color: DAY_COLORS[d.day] }}>

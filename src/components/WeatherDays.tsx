@@ -21,7 +21,7 @@ export function WeatherDays({ days, byDay }: Props) {
         {days.map((d) => {
           const w = byDay[d.day];
           return (
-            <div key={d.day} className="card card-pad p-4">
+            <div key={d.day} className="card p-4 lift">
               <div className="text-xs font-bold uppercase tracking-wide text-slate-500">{d.label}</div>
               <div className="text-sm font-semibold mt-0.5">{d.town}</div>
               {w?.status === 'ok' ? (

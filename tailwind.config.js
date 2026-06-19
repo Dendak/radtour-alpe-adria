@@ -23,16 +23,32 @@ export default {
           'radial-gradient(1000px 520px at 18% 0%, rgba(29,78,216,0.42), transparent 60%), radial-gradient(900px 520px at 88% 8%, rgba(234,88,12,0.34), transparent 55%), linear-gradient(180deg, #0b1220 0%, #0f1b2a 100%)',
       },
       boxShadow: {
-        soft: '0 1px 3px rgba(15,23,42,0.06), 0 8px 24px -8px rgba(15,23,42,0.10)',
+        soft: '0 1px 2px rgba(15,23,42,0.04), 0 6px 16px -8px rgba(15,23,42,0.10)',
+        card: '0 1px 3px rgba(15,23,42,0.05), 0 12px 28px -14px rgba(15,23,42,0.18)',
+        lift: '0 8px 20px -6px rgba(15,23,42,0.14), 0 24px 48px -18px rgba(15,23,42,0.22)',
+        nav: '0 1px 0 rgba(15,23,42,0.06), 0 8px 30px -16px rgba(15,23,42,0.25)',
+      },
+      letterSpacing: {
+        tightest: '-0.03em',
       },
       keyframes: {
         fadeUp: {
-          '0%': { opacity: 0, transform: 'translateY(8px)' },
+          '0%': { opacity: 0, transform: 'translateY(10px)' },
           '100%': { opacity: 1, transform: 'translateY(0)' },
+        },
+        kenburns: {
+          '0%': { transform: 'scale(1.06)' },
+          '100%': { transform: 'scale(1.14)' },
+        },
+        floaty: {
+          '0%,100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(6px)' },
         },
       },
       animation: {
         'fade-up': 'fadeUp .6s ease-out both',
+        kenburns: 'kenburns 22s ease-out forwards',
+        floaty: 'floaty 2.4s ease-in-out infinite',
       },
     },
   },

@@ -12,7 +12,7 @@ export function Stays() {
       />
       <div className="grid sm:grid-cols-2 gap-3">
         {STAYS.map((s) => (
-          <article key={s.night} className="card card-pad p-4">
+          <article key={s.night} className="card p-5 lift">
             <div className="flex items-center justify-between gap-2">
               <div className="text-xs font-bold uppercase tracking-wide text-slate-500">{s.night}</div>
               <span

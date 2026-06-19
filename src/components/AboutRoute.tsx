@@ -7,7 +7,7 @@ export function AboutRoute() {
       <SectionTitle eyebrow="O trase" title="Co je dobré vědět" hint="Pozadí k trase, místům a historii." />
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {FACTS.map((f) => (
-          <article key={f.title} className="card card-pad p-4">
+          <article key={f.title} className="card p-5 lift">
             <h3 className="font-bold leading-snug">{f.title}</h3>
             <p className="text-sm mt-1.5 text-slate-700">{f.text}</p>
             {f.source && (
