@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StickyNav } from './components/StickyNav';
 import { Hero } from './components/Hero';
 import { SectionTitle } from './components/SectionTitle';
@@ -12,7 +12,7 @@ import { PracticalInfo } from './components/PracticalInfo';
 import { Footer } from './components/Footer';
 import { ScrollTop } from './components/ScrollTop';
 import { DayOverview } from './components/DayOverview';
-import { useGpxTrack, computeDayStats } from './hooks/useGpxTrack';
+import { useGpxTrack, computeDayStats, nearestOnTrack } from './hooks/useGpxTrack';
 import { useWeather, type WeatherDay } from './hooks/useWeather';
 import { DAY_DATES, DAY_NAMES, WAYPOINTS, type DayNum } from './data/trip';
 
@@ -49,6 +49,69 @@ export default function App() {
     setFocusDay((f) => ({ day, n: (f?.n ?? 0) + 1 }));
     document.getElementById('mapa')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
+
+  // vlastní poloha (geolokace) — sledování, dokud uživatel nevypne
+  const [userPos, setUserPos] = useState<{ lat: number; lon: number; acc?: number } | null>(null);
+  const [geoActive, setGeoActive] = useState(false);
+  const [geoErr, setGeoErr] = useState(false);
+  const watchId = useRef<number | null>(null);
+  const toggleGeo = useCallback(() => {
+    if (watchId.current != null) {
+      navigator.geolocation.clearWatch(watchId.current);
+      watchId.current = null;
+      setGeoActive(false);
+      setUserPos(null);
+      return;
+    }
+    if (!('geolocation' in navigator)) {
+      setGeoErr(true);
+      return;
+    }
+    setGeoErr(false);
+    setGeoActive(true);
+    watchId.current = navigator.geolocation.watchPosition(
+      (p) => setUserPos({ lat: p.coords.latitude, lon: p.coords.longitude, acc: p.coords.accuracy }),
+      () => {
+        setGeoErr(true);
+        setGeoActive(false);
+        if (watchId.current != null) {
+          navigator.geolocation.clearWatch(watchId.current);
+          watchId.current = null;
+        }
+      },
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 },
+    );
+  }, []);
+  useEffect(
+    () => () => {
+      if (watchId.current != null) navigator.geolocation.clearWatch(watchId.current);
+    },
+    [],
+  );
+
+  // města + hranice AT/IT pro výškový profil (ze snapnutých waypointů)
+  const profileCities = useMemo(() => {
+    const want = ['Salzburg', 'Bad Gastein', 'Villach', 'Tarvisio', 'Gemona del Friuli', 'Grado'];
+    const seen = new Set<string>();
+    const out: { name: string; dist: number; border?: boolean }[] = [];
+    for (const w of waypoints) {
+      if (want.includes(w.name) && !seen.has(w.name)) {
+        seen.add(w.name);
+        out.push({
+          name: w.name === 'Gemona del Friuli' ? 'Gemona' : w.name,
+          dist: w.dist,
+          border: w.tag === 'Hranice',
+        });
+      }
+    }
+    return out;
+  }, [waypoints]);
+
+  // kumulativní km vlastní polohy podél trasy
+  const userDist = useMemo(() => {
+    if (!userPos || track.length < 2) return null;
+    return nearestOnTrack(track, userPos.lat, userPos.lon)?.dist ?? null;
+  }, [userPos, track]);
 
   // jemné odhalení sekcí při scrollu (fail-safe: bez JS zůstávají viditelné)
   useEffect(() => {
@@ -103,18 +166,37 @@ export default function App() {
         )}
 
         <section id="mapa" className="mt-8 md:mt-10 scroll-mt-16" data-reveal>
-          <SectionTitle
-            eyebrow="Trasa"
-            title="Mapa a výškový profil"
-            hint={`${Math.round(totalKm)} km · Salzburg → Grado · 4 jízdní dny + den u moře`}
-          />
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <SectionTitle
+              eyebrow="Trasa"
+              title="Mapa a výškový profil"
+              hint={`${Math.round(totalKm)} km · Salzburg → Grado · 4 jízdní dny + den u moře`}
+            />
+            <button
+              type="button"
+              onClick={toggleGeo}
+              className={
+                'btn shrink-0 border ' +
+                (geoActive
+                  ? 'bg-day1 text-white border-day1'
+                  : 'bg-white text-ink border-slate-300 hover:border-sea')
+              }
+            >
+              {geoActive ? '⏹ Vypnout polohu' : '📍 Moje poloha'}
+            </button>
+          </div>
+          {geoErr && (
+            <p className="text-xs text-rose-600 mb-2">
+              Polohu se nepodařilo získat (povol přístup k poloze v prohlížeči).
+            </p>
+          )}
           <div className="card overflow-hidden">
             {loaded ? (
               <>
-                <TripMap track={track} waypoints={waypoints} dayEnd={dayEnd} trainRange={trainRange} focusDay={focusDay} />
+                <TripMap track={track} waypoints={waypoints} dayEnd={dayEnd} trainRange={trainRange} focusDay={focusDay} userPos={userPos} />
                 <div className="border-t border-slate-200/70">
                   <Suspense fallback={<div className="h-[230px] animate-pulse bg-slate-100" />}>
-                    <ElevationProfile track={track} dayEnd={dayEnd} trainRange={trainRange} />
+                    <ElevationProfile track={track} dayEnd={dayEnd} trainRange={trainRange} cities={profileCities} userDist={userDist} />
                   </Suspense>
                 </div>
               </>

@@ -176,6 +176,28 @@ export function computeDayStats(
   return out;
 }
 
+/** Najde na trase nejbližší bod k dané poloze a vrátí jeho kumulativní km (a vzdušnou vzdálenost). */
+export function nearestOnTrack(
+  track: TrackPoint[],
+  lat: number,
+  lon: number,
+): { dist: number; awayKm: number } | null {
+  if (!track.length) return null;
+  let best: TrackPoint | null = null;
+  let bestSq = Infinity;
+  for (const p of track) {
+    const dLat = p.lat - lat;
+    const dLon = p.lon - lon;
+    const sq = dLat * dLat + dLon * dLon;
+    if (sq < bestSq) {
+      bestSq = sq;
+      best = p;
+    }
+  }
+  if (!best) return null;
+  return { dist: best.dist, awayKm: haversineKm({ lat, lon }, { lat: best.lat, lon: best.lon }) };
+}
+
 /** Bod na trase v dané kumulativní vzdálenosti (km) — binární hledání + interpolace. */
 export function pointAtDist(track: TrackPoint[], d: number): TrackPoint | null {
   if (track.length < 2) return null;

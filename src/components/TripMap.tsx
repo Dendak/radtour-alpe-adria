@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import {
+  Circle,
   CircleMarker,
   MapContainer,
   Marker,
@@ -21,6 +22,8 @@ interface Props {
   trainRange?: [number, number] | null;
   /** Požadavek na přiblížení na den (n = pořadí kliknutí, aby šlo zoomovat opakovaně). */
   focusDay?: { day: number; n: number } | null;
+  /** Vlastní poloha z geolokace. */
+  userPos?: { lat: number; lon: number; acc?: number } | null;
 }
 
 /** Rozdělí body úseku na jízdní a vlakový (podle km rozsahu). */
@@ -115,7 +118,7 @@ function HoverMarker() {
   );
 }
 
-export default function TripMap({ track, waypoints, dayEnd, trainRange, focusDay }: Props) {
+export default function TripMap({ track, waypoints, dayEnd, trainRange, focusDay, userPos }: Props) {
   const segments = useMemo(() => splitByDay(track, dayEnd), [track, dayEnd]);
   // jen významné body (ne každá průjezdní přestávka má vlastní pin barvu)
   const markers = waypoints;
@@ -155,6 +158,22 @@ export default function TripMap({ track, waypoints, dayEnd, trainRange, focusDay
             </Popup>
           </Marker>
         ))}
+        {userPos && (
+          <>
+            <Circle
+              center={[userPos.lat, userPos.lon]}
+              radius={Math.max(userPos.acc ?? 30, 15)}
+              pathOptions={{ color: '#2563eb', weight: 1, fillColor: '#2563eb', fillOpacity: 0.12 }}
+            />
+            <CircleMarker
+              center={[userPos.lat, userPos.lon]}
+              radius={7}
+              pathOptions={{ color: '#ffffff', weight: 3, fillColor: '#2563eb', fillOpacity: 1 }}
+            >
+              <Popup>Tvoje poloha</Popup>
+            </CircleMarker>
+          </>
+        )}
         <HoverMarker />
         <FitBounds track={track} />
         <FocusController segments={segments} focusDay={focusDay} />

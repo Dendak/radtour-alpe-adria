@@ -3,11 +3,17 @@ import { DAY_COLORS, DAY_CAPTIONS, RIDE_DAYS, type DayNum } from '@/data/trip';
 import { pointAtDist, type TrackPoint } from '@/hooks/useGpxTrack';
 import { setHover } from '@/hooks/useHoverStore';
 
+export type ProfileCity = { name: string; dist: number; border?: boolean };
+
 interface Props {
   track: TrackPoint[];
   dayEnd: Record<number, number>;
   /** Úsek jetý vlakem [odKm, doKm] — kreslí se přerušovaně, ne jako stoupání. */
   trainRange?: [number, number] | null;
+  /** Města a hranice k vyznačení na křivce. */
+  cities?: ProfileCity[];
+  /** Kumulativní km vlastní polohy podél trasy (z geolokace). */
+  userDist?: number | null;
 }
 
 const W = 1000;
@@ -25,7 +31,7 @@ function dayForDist(dist: number, dayEnd: Record<number, number>): DayNum {
   return result;
 }
 
-export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
+export default function ElevationProfile({ track, dayEnd, trainRange, cities, userDist }: Props) {
   const view = useMemo(() => {
     if (track.length < 2) return null;
     const total = track[track.length - 1].dist;
@@ -119,6 +125,22 @@ export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
   }
 
   const v = view;
+
+  // vlakový úsek dostane barvu svého dne (Tauernschleuse = den 2), ne šedou
+  const trainColor = trainRange ? DAY_COLORS[dayForDist(trainRange[0], dayEnd)] : '#94a3b8';
+
+  // body měst/hranice na křivce
+  const cityMarks = (cities ?? [])
+    .map((c) => {
+      const p = pointAtDist(track, c.dist);
+      return { ...c, x: v.xFor(c.dist), y: p ? v.yFor(p.ele) : v.baseY };
+    })
+    .filter((c) => c.x >= PAD.l - 1 && c.x <= W - PAD.r + 1);
+
+  // vlastní poloha podél trasy
+  const userP = userDist != null ? pointAtDist(track, userDist) : null;
+  const userMark = userP ? { x: v.xFor(userDist as number), y: v.yFor(userP.ele), ele: userP.ele } : null;
+
   const onMove = (clientX: number, el: SVGSVGElement) => {
     const rect = el.getBoundingClientRect();
     if (rect.width === 0) return;
@@ -164,21 +186,17 @@ export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
             </text>
           </g>
         ))}
-        {/* day boundaries */}
+        {/* hranice dnů (jen tenké linky; popisky měst jsou níž) */}
         {view.bounds.map((b) => (
-          <g key={b.d}>
-            <line
-              x1={b.x}
-              y1={PAD.t}
-              x2={b.x}
-              y2={view.baseY}
-              stroke="rgba(15,23,42,0.12)"
-              strokeDasharray="3 3"
-            />
-            <text x={b.x} y={H - 8} textAnchor="middle" fontSize="10" fill="#64748b">
-              {Math.round(b.km)} km
-            </text>
-          </g>
+          <line
+            key={b.d}
+            x1={b.x}
+            y1={PAD.t}
+            x2={b.x}
+            y2={view.baseY}
+            stroke="rgba(15,23,42,0.12)"
+            strokeDasharray="3 3"
+          />
         ))}
         {/* vlakový úsek (Tauernschleuse) — pás místo čáry, aby bylo jasné,
             že se tudy NEJEDE na kole, ale vlakem */}
@@ -189,11 +207,11 @@ export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
               y={PAD.t}
               width={view.trainBand.x1 - view.trainBand.x0}
               height={view.baseY - PAD.t}
-              fill="#94a3b8"
+              fill={trainColor}
               opacity={0.16}
             />
-            <line x1={view.trainBand.x0} y1={PAD.t} x2={view.trainBand.x0} y2={view.baseY} stroke="#94a3b8" strokeWidth={1} strokeDasharray="3 3" />
-            <line x1={view.trainBand.x1} y1={PAD.t} x2={view.trainBand.x1} y2={view.baseY} stroke="#94a3b8" strokeWidth={1} strokeDasharray="3 3" />
+            <line x1={view.trainBand.x0} y1={PAD.t} x2={view.trainBand.x0} y2={view.baseY} stroke={trainColor} strokeWidth={1} strokeDasharray="3 3" />
+            <line x1={view.trainBand.x1} y1={PAD.t} x2={view.trainBand.x1} y2={view.baseY} stroke={trainColor} strokeWidth={1} strokeDasharray="3 3" />
             <text x={(view.trainBand.x0 + view.trainBand.x1) / 2} y={PAD.t + 16} textAnchor="middle" fontSize="14">
               🚆
             </text>
@@ -202,7 +220,7 @@ export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
               y={PAD.t + 30}
               textAnchor="middle"
               fontSize="9"
-              fill="#475569"
+              fill={trainColor}
               fontWeight="700"
             >
               vlak
@@ -235,6 +253,31 @@ export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
             <circle cx={hover.x} cy={hover.y} r={5.5} fill="#ffffff" stroke="#0f1b2a" strokeWidth={2.5} />
           </g>
         )}
+        {/* města a hranice AT/IT */}
+        {cityMarks.map((c) => {
+          const anchor = c.x < 70 ? 'start' : c.x > W - 70 ? 'end' : 'middle';
+          return (
+            <g key={c.name} pointerEvents="none">
+              {c.border && (
+                <>
+                  <line x1={c.x} y1={PAD.t} x2={c.x} y2={view.baseY} stroke="#b91c1c" strokeWidth={1.2} strokeDasharray="4 3" />
+                  <text x={c.x} y={PAD.t + 10} textAnchor="middle" fontSize="11">🇦🇹 🇮🇹</text>
+                </>
+              )}
+              <circle cx={c.x} cy={c.y} r={3.2} fill="#ffffff" stroke={c.border ? '#b91c1c' : '#0f1b2a'} strokeWidth={1.5} />
+              <text x={c.x} y={H - 6} textAnchor={anchor} fontSize="9" fontWeight="600" fill={c.border ? '#b91c1c' : '#475569'}>
+                {c.name}
+              </text>
+            </g>
+          );
+        })}
+        {/* vlastní poloha podél trasy */}
+        {userMark && (
+          <g pointerEvents="none">
+            <line x1={userMark.x} y1={PAD.t} x2={userMark.x} y2={view.baseY} stroke="#2563eb" strokeWidth={1.5} />
+            <circle cx={userMark.x} cy={userMark.y} r={6} fill="#2563eb" stroke="#ffffff" strokeWidth={2.5} />
+          </g>
+        )}
       </svg>
 
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
@@ -246,8 +289,11 @@ export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
         ))}
         {trainRange && (
           <div className="flex items-center gap-1.5 text-xs text-slate-500">
-            <span className="inline-block w-5 h-3 rounded-sm bg-slate-400/30 border border-dashed border-slate-400" />
-            🚆 vlak (Tauernschleuse) — nejede se na kole
+            <span
+              className="inline-block w-5 h-3 rounded-sm border border-dashed"
+              style={{ background: `${trainColor}29`, borderColor: trainColor }}
+            />
+            🚆 vlak Tauernschleuse (den 2) — nejede se na kole
           </div>
         )}
       </div>
