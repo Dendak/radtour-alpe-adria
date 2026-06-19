@@ -15,8 +15,14 @@ const H = 230;
 const PAD = { l: 44, r: 14, t: 14, b: 28 };
 
 function dayForDist(dist: number, dayEnd: Record<number, number>): DayNum {
-  for (const d of RIDE_DAYS) if (dist <= (dayEnd[d] ?? Infinity) + 0.01) return d;
-  return 4;
+  // Den d pokrývá [konec dne d-1, konec dne d). Bod se barví podle dne,
+  // který „začíná" — start dne 2 (Bad Gastein) tak patří dni 2, ne dni 1.
+  let result: DayNum = 1;
+  for (const d of RIDE_DAYS) {
+    const start = d === 1 ? 0 : (dayEnd[d - 1] ?? Infinity);
+    if (dist >= start - 0.001) result = d;
+  }
+  return result;
 }
 
 export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
@@ -42,22 +48,24 @@ export default function ElevationProfile({ track, dayEnd, trainRange }: Props) {
     const inTrain = (d: number) =>
       !!trainRange && d >= trainRange[0] - 0.01 && d <= trainRange[1] + 0.01;
 
-    // downsample
+    // downsample — ale VŽDY zachovej body, kde se mění den nebo typ (jízda/vlak),
+    // jinak by řídký vlakový úsek (2 body) z decimace vypadl a čára by ho „přejela"
     const step = Math.max(1, Math.floor(track.length / 500));
     type P = { x: number; y: number; day: DayNum; dist: number; ele: number; train: boolean };
     const pts: P[] = [];
-    for (let i = 0; i < track.length; i += step) {
+    let prevDay = -1;
+    let prevTrain = -1;
+    for (let i = 0; i < track.length; i++) {
       const p = track[i];
-      pts.push({
-        x: xFor(p.dist), y: yFor(p.ele), day: dayForDist(p.dist, dayEnd),
-        dist: p.dist, ele: p.ele, train: inTrain(p.dist),
-      });
+      const day = dayForDist(p.dist, dayEnd);
+      const train = inTrain(p.dist);
+      const transition = day !== prevDay || (train ? 1 : 0) !== prevTrain;
+      if (i % step === 0 || transition || i === track.length - 1) {
+        pts.push({ x: xFor(p.dist), y: yFor(p.ele), day, dist: p.dist, ele: p.ele, train });
+        prevDay = day;
+        prevTrain = train ? 1 : 0;
+      }
     }
-    const last = track[track.length - 1];
-    pts.push({
-      x: xFor(last.dist), y: yFor(last.ele), day: 4,
-      dist: last.dist, ele: last.ele, train: inTrain(last.dist),
-    });
 
     // souvislé úseky stejného dne a typu (jízda / vlak)
     const areas: { day: DayNum; line: string; area: string; train: boolean }[] = [];
