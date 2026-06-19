@@ -209,21 +209,15 @@ export const HIGHLIGHTS: Highlight[] = [
     photo: commons('Tarvisio, view of Via Roma.jpg'),
   },
   {
-    day: 3, kind: 'voda', name: 'Jezera Fusine (odbočka)', where: 'za Tarvisiem',
-    blurb: 'Dvě tyrkysová horská jezera pod Mangartem — krásná odbočka kousek za hranicí (kus do kopce).',
-    mapsQuery: 'Laghi di Fusine',
-    photo: commons('Fusine in Valromana, Ratece-Tarvisio cycling trail 02.jpg'),
-  },
-  {
     day: 3, kind: 'historie', name: 'Venzone', where: 'Venzone · ~310 km',
     blurb: 'Středověké hradbami obehnané město, po zemětřesení 1976 kámen po kameni věrně obnovené — „nejkrásnější vesnice Itálie".',
     mapsQuery: 'Venzone',
     photo: commons('Venzone veduta 09.jpg'),
   },
   {
-    day: 3, kind: 'gastro', name: 'Furlanská kuchyně', where: 'Gemona · cíl dne',
-    blurb: 'Frico (sýrový placek), uzeniny, bílá vína Friuli. První večer v Itálii — čas na espresso a gelato.',
-    mapsQuery: 'Gemona del Friuli centro',
+    day: 3, kind: 'historie', name: 'Gemona del Friuli', where: 'Gemona · cíl dne',
+    blurb: 'Cíl dne přímo v srdci oblasti, kterou v květnu 1976 zničilo ničivé zemětřesení (epicentrum bylo právě zde). Pečlivě obnovené historické jádro a dóm Santa Maria Assunta.',
+    mapsQuery: 'Gemona del Friuli Duomo',
     photo: commons('Gemona del Friuli veduta 03.jpg'),
   },
 
@@ -401,4 +395,64 @@ export const EMERGENCY: Emergency[] = [
   { label: 'Záchranná služba Rakousko', number: '144' },
   { label: 'Záchranná služba Itálie', number: '118' },
   { label: 'Odtah/asistence ÖAMTC (AT)', number: '120' },
+];
+
+// ─── Gastronomie ────────────────────────────────────────────
+export type GastroRegion = {
+  area: string;
+  note: string;
+  accent: DayNum;
+  emoji: string;
+  items: { name: string; desc: string }[];
+};
+
+export const GASTRO: GastroRegion[] = [
+  {
+    area: 'Salcbursko & Pongau',
+    note: 'Den 1 · Rakousko',
+    accent: 1,
+    emoji: '🥨',
+    items: [
+      { name: 'Kasnocken', desc: 'Sýrové nočky zapečené s cibulkou — vydatná alpská klasika do kopců.' },
+      { name: 'Bauernkrapfen', desc: 'Selské smažené koblihy, sladké i slané; ideální svačina u cesty.' },
+      { name: 'Salzburger Nockerl', desc: 'Nadýchaný pečený dezert ve tvaru tří „vršků" salcburských kopců.' },
+      { name: 'Stiegl & Almdudler', desc: 'Salcburské pivo a bylinková limonáda na žízeň.' },
+    ],
+  },
+  {
+    area: 'Korutany & Gastein',
+    note: 'Den 2 · Rakousko',
+    accent: 2,
+    emoji: '🥟',
+    items: [
+      { name: 'Kärntner Kasnudeln', desc: 'Ikonické korutanské taštičky plněné tvarohem a mátou — must-try.' },
+      { name: 'Frigga', desc: 'Smažený horský sýr, často s polentou; rychlá energie po sjezdu.' },
+      { name: 'Reindling', desc: 'Sladký kynutý věnec se skořicí a rozinkami.' },
+      { name: 'Gailtaler Almkäse', desc: 'Chráněný horský sýr z korutanských salaší.' },
+    ],
+  },
+  {
+    area: 'Friuli (Furlandsko)',
+    note: 'Den 3–4 · Itálie',
+    accent: 3,
+    emoji: '🧀',
+    items: [
+      { name: 'Frico', desc: 'Křupavý placek z Montasia a brambor — vlajková loď furlanské kuchyně.' },
+      { name: 'Prosciutto di San Daniele', desc: 'Proslulá sladká šunka; San Daniele leží kousek od trasy.' },
+      { name: 'Cjarsons', desc: 'Sladko-slané plněné nočky z Karnie, posypané uzenou ricottou.' },
+      { name: 'Friulano & gubana', desc: 'Suché bílé víno Friuli a ořechový závin gubana (k tomu kapka grappy).' },
+    ],
+  },
+  {
+    area: 'Grado & Jadran',
+    note: 'Den 4–5 · u moře',
+    accent: 4,
+    emoji: '🦑',
+    items: [
+      { name: 'Boreto alla gradese', desc: 'Gradeský rybí guláš na octě a pepři, podávaný s bílou polentou.' },
+      { name: 'Sardoni & frutti di mare', desc: 'Marinované sardelky a čerstvé mořské plody přímo z laguny.' },
+      { name: 'Spritz', desc: 'Aperol/Select s proseccem — povinný aperitiv u moře.' },
+      { name: 'Gelato', desc: 'Italská zmrzlina jako zasloužená odměna po dojezdu k Jadranu.' },
+    ],
+  },
 ];

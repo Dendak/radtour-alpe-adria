@@ -6,6 +6,7 @@ const LINKS = [
   { href: '#mapa', label: 'Mapa' },
   { href: '#pocasi', label: 'Počasí' },
   { href: '#na-trase', label: 'Na trase' },
+  { href: '#gastro', label: 'Gastro' },
   { href: '#ubytovani', label: 'Ubytování' },
   { href: '#o-trase', label: 'O trase' },
   { href: '#historie', label: 'Historie' },

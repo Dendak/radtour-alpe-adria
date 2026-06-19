@@ -7,6 +7,7 @@ import { OnRoute } from './components/OnRoute';
 import { Stays } from './components/Stays';
 import { AboutRoute } from './components/AboutRoute';
 import { RouteHistory } from './components/RouteHistory';
+import { Gastronomy } from './components/Gastronomy';
 import { PracticalInfo } from './components/PracticalInfo';
 import { Footer } from './components/Footer';
 import { ScrollTop } from './components/ScrollTop';
@@ -122,6 +123,9 @@ export default function App() {
         </div>
         <div id="na-trase" className="scroll-mt-16" data-reveal>
           <OnRoute />
+        </div>
+        <div id="gastro" className="scroll-mt-16" data-reveal>
+          <Gastronomy />
         </div>
         <div id="ubytovani" className="scroll-mt-16" data-reveal>
           <Stays />
