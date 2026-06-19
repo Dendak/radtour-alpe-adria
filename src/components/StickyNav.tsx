@@ -8,6 +8,7 @@ const LINKS = [
   { href: '#na-trase', label: 'Na trase' },
   { href: '#ubytovani', label: 'Ubytování' },
   { href: '#o-trase', label: 'O trase' },
+  { href: '#historie', label: 'Historie' },
   { href: '#info', label: 'Info' },
 ];
 

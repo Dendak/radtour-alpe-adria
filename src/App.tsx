@@ -6,6 +6,7 @@ import { WeatherDays, type WeatherDayMeta } from './components/WeatherDays';
 import { OnRoute } from './components/OnRoute';
 import { Stays } from './components/Stays';
 import { AboutRoute } from './components/AboutRoute';
+import { RouteHistory } from './components/RouteHistory';
 import { PracticalInfo } from './components/PracticalInfo';
 import { Footer } from './components/Footer';
 import { ScrollTop } from './components/ScrollTop';
@@ -127,6 +128,9 @@ export default function App() {
         </div>
         <div id="o-trase" className="scroll-mt-16" data-reveal>
           <AboutRoute />
+        </div>
+        <div id="historie" className="scroll-mt-16" data-reveal>
+          <RouteHistory />
         </div>
         <div id="info" className="scroll-mt-16" data-reveal>
           <PracticalInfo />
