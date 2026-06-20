@@ -7,10 +7,11 @@ import {
   Polyline,
   Popup,
   TileLayer,
+  Tooltip,
   useMap,
 } from 'react-leaflet';
 import L from 'leaflet';
-import { DAY_COLORS, type Waypoint } from '@/data/trip';
+import { DAY_COLORS, MAP_CITIES, type Waypoint } from '@/data/trip';
 import { splitByDay, type TrackPoint } from '@/hooks/useGpxTrack';
 import { useHover } from '@/hooks/useHoverStore';
 
@@ -53,25 +54,12 @@ function splitTrain(
   return runs;
 }
 
-function tagEmoji(tag: string): string {
-  if (tag === 'Start') return '🚩';
-  if (tag.startsWith('Nocleh')) return '🛏️';
-  if (tag === 'Cíl') return '🏁';
-  if (tag === 'Vlak') return '🚆';
-  if (tag === 'Oběd') return '🍽️';
-  if (tag === 'Hranice') return '🛂';
-  if (tag === 'Odpočinek') return '🏖️';
-  if (tag === 'Zajímavost') return '📍';
-  return '•';
-}
-
-function pin(emoji: string, bg: string, size = 28): L.DivIcon {
+function cityDot(bg: string): L.DivIcon {
   return L.divIcon({
-    className: 'map-pin-wrap',
-    html: `<div class="map-pin" style="background:${bg}"><span>${emoji}</span></div>`,
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size],
-    popupAnchor: [0, -size + 4],
+    className: 'city-dot-wrap',
+    html: `<div class="city-dot" style="background:${bg}"></div>`,
+    iconSize: [13, 13],
+    iconAnchor: [6.5, 6.5],
   });
 }
 
@@ -120,8 +108,15 @@ function HoverMarker() {
 
 export default function TripMap({ track, waypoints, dayEnd, trainRange, focusDay, userPos }: Props) {
   const segments = useMemo(() => splitByDay(track, dayEnd), [track, dayEnd]);
-  // jen významné body (ne každá průjezdní přestávka má vlastní pin barvu)
-  const markers = waypoints;
+  // jen pojmenovaná města (bez drobných POI) — kvůli přehlednosti mapy
+  const cityMarkers = useMemo(() => {
+    const seen = new Set<string>();
+    return waypoints.filter((w) => {
+      if (!MAP_CITIES.includes(w.name) || seen.has(w.name)) return false;
+      seen.add(w.name);
+      return true;
+    });
+  }, [waypoints]);
 
   return (
     <div className="h-[420px] md:h-[520px]">
@@ -145,16 +140,15 @@ export default function TripMap({ track, waypoints, dayEnd, trainRange, focusDay
             />
           )),
         )}
-        {markers.map((w, i) => (
-          <Marker
-            key={`${w.name}-${i}`}
-            position={[w.lat, w.lon]}
-            icon={pin(tagEmoji(w.tag), DAY_COLORS[w.day])}
-          >
+        {cityMarkers.map((w, i) => (
+          <Marker key={`${w.name}-${i}`} position={[w.lat, w.lon]} icon={cityDot(DAY_COLORS[w.day])}>
+            <Tooltip permanent direction="top" offset={[0, -5]} className="city-label">
+              {w.name === 'Gemona del Friuli' ? 'Gemona' : w.name === 'Spittal an der Drau' ? 'Spittal' : w.name}
+            </Tooltip>
             <Popup>
               <strong>{w.name}</strong>
               <br />
-              {w.tag} · ~{Math.round(w.dist)} km
+              ~{Math.round(w.dist)} km
             </Popup>
           </Marker>
         ))}

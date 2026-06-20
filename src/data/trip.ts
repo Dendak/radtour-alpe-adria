@@ -100,6 +100,23 @@ export const WAYPOINTS: Waypoint[] = [
   { day: 4, dist: 412, lat: 45.6772, lon: 13.3939, name: 'Grado', time: '2026-07-24T15:30', tag: 'Cíl' },
 ];
 
+// Města zobrazená na mapě (pojmenovaná) — bez drobných POI, ať je mapa přehledná.
+export const MAP_CITIES = [
+  'Salzburg',
+  'Hallein',
+  'Bischofshofen',
+  'St. Johann im Pongau',
+  'Bad Gastein',
+  'Spittal an der Drau',
+  'Villach',
+  'Tarvisio',
+  'Pontebba',
+  'Gemona del Friuli',
+  'Udine',
+  'Palmanova',
+  'Grado',
+];
+
 export const WMO: Record<number, string> = {
   0: 'Jasno', 1: 'Převážně jasno', 2: 'Polojasno', 3: 'Zataženo',
   45: 'Mlha', 48: 'Namrzající mlha',

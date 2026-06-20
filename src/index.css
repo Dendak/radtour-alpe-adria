@@ -100,3 +100,25 @@
   border: 2px solid #fff;
 }
 .map-pin span { transform: rotate(45deg); font-size: 0.9rem; line-height: 1; }
+
+/* města na mapě — čistá tečka + popisek */
+.city-dot-wrap { background: transparent !important; border: none !important; }
+.city-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2.5px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+.leaflet-tooltip.city-label {
+  background: rgba(255, 255, 255, 0.92);
+  border: none;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
+  color: #0f1b2a;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.leaflet-tooltip.city-label::before { display: none; }
