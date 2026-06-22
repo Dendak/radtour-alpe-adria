@@ -3,6 +3,7 @@ import { StickyNav } from './components/StickyNav';
 import { Hero } from './components/Hero';
 import { SectionTitle } from './components/SectionTitle';
 import { WeatherDays, type WeatherDayMeta } from './components/WeatherDays';
+import { RouteWeather } from './components/RouteWeather';
 import { OnRoute } from './components/OnRoute';
 import { Stays } from './components/Stays';
 import { AboutRoute } from './components/AboutRoute';
@@ -215,6 +216,7 @@ export default function App() {
 
         <div id="pocasi" className="scroll-mt-16" data-reveal>
           <WeatherDays days={weatherMeta} byDay={byDay} />
+          <RouteWeather />
         </div>
         <div id="na-trase" className="scroll-mt-16" data-reveal>
           <OnRoute />
