@@ -17,8 +17,8 @@ interface Props {
 }
 
 const W = 1000;
-const H = 230;
-const PAD = { l: 44, r: 14, t: 14, b: 28 };
+const H = 248;
+const PAD = { l: 44, r: 14, t: 14, b: 46 };
 
 function dayForDist(dist: number, dayEnd: Record<number, number>): DayNum {
   // Den d pokrývá [konec dne d-1, konec dne d). Bod se barví podle dne,
@@ -121,7 +121,7 @@ export default function ElevationProfile({ track, dayEnd, trainRange, cities, us
   );
 
   if (!view) {
-    return <div className="h-[230px] animate-pulse bg-gradient-to-br from-slate-100 to-slate-200" />;
+    return <div className="h-[248px] animate-pulse bg-gradient-to-br from-slate-100 to-slate-200" />;
   }
 
   const v = view;
@@ -129,13 +129,14 @@ export default function ElevationProfile({ track, dayEnd, trainRange, cities, us
   // vlakový úsek dostane barvu svého dne (Tauernschleuse = den 2), ne šedou
   const trainColor = trainRange ? DAY_COLORS[dayForDist(trainRange[0], dayEnd)] : '#94a3b8';
 
-  // body měst/hranice na křivce
+  // body měst/hranice na křivce (seřazené podle x kvůli střídání řad popisků)
   const cityMarks = (cities ?? [])
     .map((c) => {
       const p = pointAtDist(track, c.dist);
       return { ...c, x: v.xFor(c.dist), y: p ? v.yFor(p.ele) : v.baseY };
     })
-    .filter((c) => c.x >= PAD.l - 1 && c.x <= W - PAD.r + 1);
+    .filter((c) => c.x >= PAD.l - 1 && c.x <= W - PAD.r + 1)
+    .sort((a, b) => a.x - b.x);
 
   // vlastní poloha podél trasy
   const userP = userDist != null ? pointAtDist(track, userDist) : null;
@@ -253,9 +254,10 @@ export default function ElevationProfile({ track, dayEnd, trainRange, cities, us
             <circle cx={hover.x} cy={hover.y} r={5.5} fill="#ffffff" stroke="#0f1b2a" strokeWidth={2.5} />
           </g>
         )}
-        {/* města a hranice AT/IT */}
-        {cityMarks.map((c) => {
+        {/* města a hranice AT/IT — popisky ve dvou střídavých řadách, ať se nepřekrývají */}
+        {cityMarks.map((c, i) => {
           const anchor = c.x < 70 ? 'start' : c.x > W - 70 ? 'end' : 'middle';
+          const labelY = view.baseY + (i % 2 === 0 ? 16 : 30);
           return (
             <g key={c.name} pointerEvents="none">
               {c.border && (
@@ -264,8 +266,10 @@ export default function ElevationProfile({ track, dayEnd, trainRange, cities, us
                   <text x={c.x} y={PAD.t + 10} textAnchor="middle" fontSize="11">🇦🇹 🇮🇹</text>
                 </>
               )}
+              {/* tenká spojnice od bodu k jeho popisku (kvůli střídání řad) */}
+              <line x1={c.x} y1={c.y} x2={c.x} y2={labelY - 8} stroke={c.border ? '#b91c1c' : '#94a3b8'} strokeWidth={0.6} strokeDasharray="2 2" opacity={0.55} />
               <circle cx={c.x} cy={c.y} r={3.2} fill="#ffffff" stroke={c.border ? '#b91c1c' : '#0f1b2a'} strokeWidth={1.5} />
-              <text x={c.x} y={H - 6} textAnchor={anchor} fontSize="9" fontWeight="600" fill={c.border ? '#b91c1c' : '#475569'}>
+              <text x={c.x} y={labelY} textAnchor={anchor} fontSize="9" fontWeight="600" fill={c.border ? '#b91c1c' : '#475569'}>
                 {c.name}
               </text>
             </g>

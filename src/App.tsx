@@ -93,21 +93,22 @@ export default function App() {
   // města + hranice AT/IT pro výškový profil (ze snapnutých waypointů)
   const profileCities = useMemo(() => {
     const want = [
-      'Salzburg', 'Bischofshofen', 'Bad Gastein', 'Spittal an der Drau',
-      'Villach', 'Tarvisio', 'Gemona del Friuli', 'Grado',
+      'Salzburg', 'Hallein', 'Werfen', 'Bischofshofen', 'St. Johann im Pongau',
+      'Bad Hofgastein', 'Bad Gastein', 'Mallnitz', 'Spittal an der Drau', 'Villach',
+      'Tarvisio', 'Pontebba', 'Venzone', 'Gemona del Friuli', 'Udine', 'Palmanova',
+      'Aquileia', 'Grado',
     ];
+    const SHORT: Record<string, string> = {
+      'Gemona del Friuli': 'Gemona',
+      'Spittal an der Drau': 'Spittal',
+      'St. Johann im Pongau': 'St. Johann',
+    };
     const seen = new Set<string>();
     const out: { name: string; dist: number; border?: boolean }[] = [];
     for (const w of waypoints) {
       if (want.includes(w.name) && !seen.has(w.name)) {
         seen.add(w.name);
-        const short =
-          w.name === 'Gemona del Friuli'
-            ? 'Gemona'
-            : w.name === 'Spittal an der Drau'
-              ? 'Spittal'
-              : w.name;
-        out.push({ name: short, dist: w.dist, border: w.tag === 'Hranice' });
+        out.push({ name: SHORT[w.name] ?? w.name, dist: w.dist, border: w.tag === 'Hranice' });
       }
     }
     return out;
@@ -201,7 +202,7 @@ export default function App() {
               <>
                 <TripMap track={track} waypoints={waypoints} dayEnd={dayEnd} trainRange={trainRange} focusDay={focusDay} userPos={userPos} />
                 <div className="border-t border-slate-200/70">
-                  <Suspense fallback={<div className="h-[230px] animate-pulse bg-slate-100" />}>
+                  <Suspense fallback={<div className="h-[248px] animate-pulse bg-slate-100" />}>
                     <ElevationProfile track={track} dayEnd={dayEnd} trainRange={trainRange} cities={profileCities} userDist={userDist} />
                   </Suspense>
                 </div>
