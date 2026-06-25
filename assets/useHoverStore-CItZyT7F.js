@@ -1,0 +1,1 @@
+import{D as e,k as t}from"./useGpxTrack-K8ScOqI9.js";var n=t(e(),1),r=null,i=new Set;function a(e){r=e,i.forEach(e=>e())}function o(e){return i.add(e),()=>i.delete(e)}function s(){return r}function c(){return(0,n.useSyncExternalStore)(o,s,s)}export{c as n,a as t};
