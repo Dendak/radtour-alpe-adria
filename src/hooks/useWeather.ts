@@ -24,7 +24,9 @@ export type WeatherEntry =
 
 export type WeatherDay = { day: number; lat: number; lon: number; date: string };
 
-const HORIZON = 16;
+// Open-Meteo předpověď sahá dnešek + 15 dní (16 dní včetně dneška).
+// Datum na +16 dní je už mimo dosah → pro takové dny bereme klimatologii.
+const HORIZON = 15;
 const CLIMATE_YEARS = 10;
 const CLIMATE_WINDOW = 3; // ± dní kolem cílového data
 

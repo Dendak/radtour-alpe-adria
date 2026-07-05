@@ -15,7 +15,7 @@ export function WeatherDays({ days, byDay }: Props) {
       <SectionTitle
         eyebrow="Počasí"
         title="Předpověď po dnech"
-        hint="Do 16 dní před výjezdem reálná předpověď z Open-Meteo. Zatím ukazujeme typické počasí — průměr z posledních 10 let pro dané místo a datum."
+        hint="Do 15 dní před výjezdem reálná předpověď z Open-Meteo. Zatím ukazujeme typické počasí — průměr z posledních 10 let pro dané místo a datum."
       />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {days.map((d) => {
@@ -52,7 +52,7 @@ export function WeatherDays({ days, byDay }: Props) {
               ) : (
                 <div className="mt-2 text-xs text-slate-500">
                   {w?.status === 'climate_loading' && 'Počítám typické počasí…'}
-                  {w?.status === 'too_far' && `Předpověď ~16 dní předem (zbývá ${w.daysUntil} dní)`}
+                  {w?.status === 'too_far' && `Předpověď ~15 dní předem (zbývá ${w.daysUntil} dní)`}
                   {w?.status === 'loading' && 'Načítám…'}
                   {w?.status === 'error' && 'Nedostupné'}
                   {w?.status === 'past' && 'Proběhlo'}
