@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RouteStop } from '@/lib/schedule';
+import { fetchArchive } from '@/lib/openMeteoArchive';
 
 /** Klimatický normál (10letý průměr) pro jedno místo a okno kolem data. */
 export type ClimateNorm = { tMin: number; tMax: number; rainProb: number; precipAvg: number; years: number };
@@ -47,8 +48,8 @@ export function useRouteClimate(stops: RouteStop[]): { byStop: RouteClimate } {
     const perCoord = new Map<string, Sample[]>();
     for (const c of coordOrder) perCoord.set(c.key, []);
 
-    // Open-Meteo má nízký limit souběhu → dotazy posíláme sekvenčně,
-    // a selhání jednoho roku celek neshodí (počítáme z toho, co dorazí).
+    // Dotazy jdou přes sdílenou sekvenční frontu s retry a cache
+    // (fetchArchive) — selhání jednoho roku celek neshodí.
     (async () => {
       let okYears = 0;
       for (const y of years) {
@@ -58,11 +59,16 @@ export function useRouteClimate(stops: RouteStop[]): { byStop: RouteClimate } {
             `https://archive-api.open-meteo.com/v1/archive?latitude=${lats}&longitude=${lons}` +
             `&start_date=${y}-${start}&end_date=${y}-${end}` +
             `&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`;
-          const res = await fetch(url);
-          if (!res.ok) continue;
-          const j = await res.json();
+          const j = await fetchArchive(url);
           // jedna lokalita → objekt; více → pole
-          const arr = Array.isArray(j) ? j : [j];
+          const arr = (Array.isArray(j) ? j : [j]) as {
+            daily?: {
+              time: string[];
+              temperature_2m_max: (number | null)[];
+              temperature_2m_min: (number | null)[];
+              precipitation_sum: (number | null)[];
+            };
+          }[];
           for (let ci = 0; ci < coordOrder.length; ci++) {
             const block = arr[ci]?.daily;
             if (!block?.time) continue;

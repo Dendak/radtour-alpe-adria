@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { fetchArchive } from '@/lib/openMeteoArchive';
 
 export type DayWeather = { tMax: number; tMin: number; precip: number; code: number };
 
@@ -122,12 +123,18 @@ export function useWeather(days: WeatherDay[]): { byDay: Record<number, WeatherE
           `&end_date=${endYear}-${mm}-${String(hi).padStart(2, '0')}` +
           `&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`;
         try {
-          const res = await fetch(url);
-          if (!res.ok) throw new Error('http');
-          const j = await res.json();
+          // sdílená sekvenční fronta s retry na 429 a cache (sessionStorage)
+          const j = (await fetchArchive(url)) as {
+            daily?: {
+              time: string[];
+              temperature_2m_max: (number | null)[];
+              temperature_2m_min: (number | null)[];
+              precipitation_sum: (number | null)[];
+            };
+          };
           const dd = j?.daily;
-          const time: string[] = dd?.time ?? [];
-          if (!time.length) return { day: d.day, r: { status: 'too_far' as const } };
+          if (!dd?.time?.length) return { day: d.day, r: { status: 'too_far' as const } };
+          const time = dd.time;
 
           let tMaxSum = 0;
           let tMinSum = 0;

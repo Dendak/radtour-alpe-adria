@@ -28,7 +28,7 @@ export function Gastronomy() {
                   </div>
                 </div>
               </div>
-              <div className="mt-3 text-[0.7rem] font-bold uppercase tracking-wide text-slate-400">
+              <div className="mt-3 text-[0.7rem] font-bold uppercase tracking-wide text-slate-500">
                 🍽️ K jídlu
               </div>
               <ul className="mt-1.5 space-y-2">
@@ -39,7 +39,7 @@ export function Gastronomy() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-3 text-[0.7rem] font-bold uppercase tracking-wide text-slate-400">
+              <div className="mt-3 text-[0.7rem] font-bold uppercase tracking-wide text-slate-500">
                 🥂 K pití
               </div>
               <ul className="mt-1.5 space-y-2">

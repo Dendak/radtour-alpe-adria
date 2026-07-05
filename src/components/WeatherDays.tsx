@@ -45,7 +45,7 @@ export function WeatherDays({ days, byDay }: Props) {
                       ? `Déšť ~${Math.round(w.data.rainProb * 100)} % dní · ⌀ ${w.data.precipAvg.toFixed(1)} mm`
                       : 'Většinou bez deště'}
                   </div>
-                  <div className="text-[11px] text-slate-400 mt-1.5">
+                  <div className="text-[11px] text-slate-500 mt-1.5">
                     Typicky (průměr {w.data.years} let) · zbývá {w.daysUntil} dní
                   </div>
                 </div>

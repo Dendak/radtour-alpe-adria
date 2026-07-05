@@ -51,7 +51,7 @@ export function DayOverview({ stats, activeDay, onFocusDay }: Props) {
                 <div className="text-xs font-bold uppercase tracking-wide" style={{ color: DAY_COLORS[d.day] }}>
                   {DAY_NAMES[d.day]}
                 </div>
-                <span className="text-[11px] text-slate-400" style={active ? { color: DAY_COLORS[d.day] } : undefined}>
+                <span className="text-[11px] text-slate-500" style={active ? { color: DAY_COLORS[d.day] } : undefined}>
                   🔍
                 </span>
               </div>

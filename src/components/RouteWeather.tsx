@@ -56,12 +56,12 @@ export function RouteWeather() {
                       {ok ? (
                         <span className="flex items-center gap-2 shrink-0">
                           <span className="text-base font-extrabold tabular-nums">{tHour}°</span>
-                          <span className="text-[11px] text-slate-400 w-12 text-right">
+                          <span className="text-[11px] text-slate-500 w-12 text-right">
                             {c.rainProb >= 0.15 ? `🌧 ${Math.round(c.rainProb * 100)} %` : '☀'}
                           </span>
                         </span>
                       ) : (
-                        <span className="text-[11px] text-slate-400 shrink-0">
+                        <span className="text-[11px] text-slate-500 shrink-0">
                           {c === 'error' ? '—' : '…'}
                         </span>
                       )}
@@ -73,7 +73,7 @@ export function RouteWeather() {
           );
         })}
       </div>
-      <p className="text-[11px] text-slate-400 mt-3">
+      <p className="text-[11px] text-slate-500 mt-3">
         Teplota je odhad pro danou hodinu z denního průběhu (ráno chladněji, maximum odpoledne). Den 2 ovlivní
         jízdní řád vlaku Tauernschleuse (Böckstein → Mallnitz).
       </p>

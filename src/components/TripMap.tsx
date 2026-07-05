@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Circle,
   CircleMarker,
@@ -93,6 +93,20 @@ function FocusController({
   return null;
 }
 
+/** Sleduje zoom mapy (kvůli hustotě popisků měst). */
+function ZoomWatcher({ onZoom }: { onZoom: (z: number) => void }) {
+  const map = useMap();
+  useEffect(() => {
+    const handler = () => onZoom(map.getZoom());
+    handler();
+    map.on('zoomend', handler);
+    return () => {
+      map.off('zoomend', handler);
+    };
+  }, [map, onZoom]);
+  return null;
+}
+
 /** Tečka „kde právě jsem" — řízená najetím myší nad výškovým profilem. */
 function HoverMarker() {
   const h = useHover();
@@ -106,8 +120,13 @@ function HoverMarker() {
   );
 }
 
+// při oddáleném pohledu jen konce etap, ať se popisky nepřekrývají
+const MAJOR_CITIES = ['Salzburg', 'Bad Gastein', 'Villach', 'Gemona del Friuli', 'Grado'];
+const LABEL_ZOOM = 9;
+
 export default function TripMap({ track, waypoints, dayEnd, trainRange, focusDay, userPos }: Props) {
   const segments = useMemo(() => splitByDay(track, dayEnd), [track, dayEnd]);
+  const [zoom, setZoom] = useState(8);
   // jen pojmenovaná města (bez drobných POI) — kvůli přehlednosti mapy
   const cityMarkers = useMemo(() => {
     const seen = new Set<string>();
@@ -140,18 +159,23 @@ export default function TripMap({ track, waypoints, dayEnd, trainRange, focusDay
             />
           )),
         )}
-        {cityMarkers.map((w, i) => (
-          <Marker key={`${w.name}-${i}`} position={[w.lat, w.lon]} icon={cityDot(DAY_COLORS[w.day])}>
-            <Tooltip permanent direction="top" offset={[0, -5]} className="city-label">
-              {w.name === 'Gemona del Friuli' ? 'Gemona' : w.name === 'Spittal an der Drau' ? 'Spittal' : w.name}
-            </Tooltip>
-            <Popup>
-              <strong>{w.name}</strong>
-              <br />
-              ~{Math.round(w.dist)} km
-            </Popup>
-          </Marker>
-        ))}
+        {cityMarkers.map((w, i) => {
+          // oddáleno → trvalý popisek jen u konců etap (jinak se překrývají);
+          // ostatní města ho ukážou po najetí/kliku a od zoomu 9 trvale
+          const labeled = zoom >= LABEL_ZOOM || MAJOR_CITIES.includes(w.name);
+          return (
+            <Marker key={`${w.name}-${i}-${labeled}`} position={[w.lat, w.lon]} icon={cityDot(DAY_COLORS[w.day])}>
+              <Tooltip permanent={labeled} direction="top" offset={[0, -5]} className="city-label">
+                {w.name === 'Gemona del Friuli' ? 'Gemona' : w.name === 'Spittal an der Drau' ? 'Spittal' : w.name}
+              </Tooltip>
+              <Popup>
+                <strong>{w.name}</strong>
+                <br />
+                ~{Math.round(w.dist)} km
+              </Popup>
+            </Marker>
+          );
+        })}
         {userPos && (
           <>
             <Circle
@@ -169,6 +193,7 @@ export default function TripMap({ track, waypoints, dayEnd, trainRange, focusDay
           </>
         )}
         <HoverMarker />
+        <ZoomWatcher onZoom={setZoom} />
         <FitBounds track={track} />
         <FocusController segments={segments} focusDay={focusDay} />
       </MapContainer>
