@@ -215,7 +215,12 @@ export default function App() {
           </div>
         </section>
 
-        <div id="pocasi" className="scroll-mt-16" data-reveal>
+        {/* tónovaný pás — rozbíjí monotónnost bílých sekcí */}
+        <div
+          id="pocasi"
+          className="scroll-mt-16 mt-10 md:mt-12 -mx-5 px-5 md:-mx-6 md:px-6 pt-1 pb-8 md:pb-10 rounded-none md:rounded-[2rem] bg-sea/[0.06]"
+          data-reveal
+        >
           <WeatherDays days={weatherMeta} byDay={byDay} />
           <RouteWeather />
         </div>
@@ -225,7 +230,12 @@ export default function App() {
         <div id="gastro" className="scroll-mt-16" data-reveal>
           <Gastronomy />
         </div>
-        <div id="ubytovani" className="scroll-mt-16" data-reveal>
+        {/* druhý tónovaný pás (viz #pocasi) */}
+        <div
+          id="ubytovani"
+          className="scroll-mt-16 mt-10 md:mt-12 -mx-5 px-5 md:-mx-6 md:px-6 pt-1 pb-8 md:pb-10 rounded-none md:rounded-[2rem] bg-sea/[0.06]"
+          data-reveal
+        >
           <Stays />
         </div>
         <div id="o-trase" className="scroll-mt-16" data-reveal>

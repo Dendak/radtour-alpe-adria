@@ -1,10 +1,21 @@
+import type { ReactNode } from 'react';
 import { commons, TEAM, TRIP } from '@/data/trip';
+import { FlagAT, FlagIT } from './Flags';
 
-const STATS = [
+const STATS: { value: ReactNode; label: string }[] = [
   { value: `${TRIP.totalKm}`, label: 'kilometrů' },
   { value: `${TRIP.rideDays}`, label: 'jízdní dny' },
   { value: '~100', label: 'km denně' },
-  { value: '🇦🇹 🇮🇹', label: '2 země' },
+  {
+    // emoji vlajky se na Windows nevykreslí → vlastní SVG
+    value: (
+      <span className="flex items-center gap-1.5 h-[1em]">
+        <FlagAT className="h-[0.8em] w-auto drop-shadow-sm" />
+        <FlagIT className="h-[0.8em] w-auto drop-shadow-sm" />
+      </span>
+    ),
+    label: '2 země',
+  },
 ];
 
 const HERO_IMG = commons('Hohe Tauern von Nordwest.jpg', 2400);

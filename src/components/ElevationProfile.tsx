@@ -263,7 +263,19 @@ export default function ElevationProfile({ track, dayEnd, trainRange, cities, us
               {c.border && (
                 <>
                   <line x1={c.x} y1={PAD.t} x2={c.x} y2={view.baseY} stroke="#b91c1c" strokeWidth={1.2} strokeDasharray="4 3" />
-                  <text x={c.x} y={PAD.t + 10} textAnchor="middle" fontSize="11">🇦🇹 🇮🇹</text>
+                  {/* mini vlajky AT | IT — emoji by se na Windows nevykreslily */}
+                  <g transform={`translate(${c.x - 14}, ${PAD.t + 3})`}>
+                    <rect width="12" height="8" rx="1" fill="#ffffff" />
+                    <rect width="12" height="2.67" fill="#C8102E" />
+                    <rect y="5.33" width="12" height="2.67" fill="#C8102E" />
+                    <rect width="12" height="8" rx="1" fill="none" stroke="rgba(15,23,42,0.25)" strokeWidth="0.5" />
+                    <g transform="translate(16, 0)">
+                      <rect width="12" height="8" rx="1" fill="#ffffff" />
+                      <rect width="4" height="8" fill="#009246" />
+                      <rect x="8" width="4" height="8" fill="#CE2B37" />
+                      <rect width="12" height="8" rx="1" fill="none" stroke="rgba(15,23,42,0.25)" strokeWidth="0.5" />
+                    </g>
+                  </g>
                 </>
               )}
               {/* tenká spojnice od bodu k jeho popisku (kvůli střídání řad) */}
