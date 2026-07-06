@@ -2,13 +2,15 @@ import { useMemo } from 'react';
 import { SectionTitle } from './SectionTitle';
 import { routeSchedule, tempAtHour, type RouteStop } from '@/lib/schedule';
 import { useRouteClimate } from '@/hooks/useRouteClimate';
-import { DAY_NAMES, DAY_COLORS, type DayNum } from '@/data/trip';
+import { useRouteForecast } from '@/hooks/useRouteForecast';
+import { DAY_NAMES, DAY_COLORS, wmoEmoji, type DayNum } from '@/data/trip';
 
 const RIDE_DAYS: DayNum[] = [1, 2, 3, 4];
 
 export function RouteWeather() {
   const stops = useMemo(() => routeSchedule(), []);
   const { byStop } = useRouteClimate(stops);
+  const { byStop: forecastByStop } = useRouteForecast(stops);
 
   const byDay = useMemo(() => {
     const m = new Map<DayNum, RouteStop[]>();
@@ -25,7 +27,7 @@ export function RouteWeather() {
       <SectionTitle
         eyebrow="Počasí na trase"
         title="Kdy a jak teplo bude ve městech"
-        hint="Odhad času průjezdu (start 8:00, ~20 km/h, 2 h na oběd) a typická teplota v daný čas — průměr z posledních 10 let pro každé místo."
+        hint="Odhad času průjezdu (start 8:00, ~20 km/h, 2 h na oběd). V dosahu předpovědi (~14 dní) reálná hodinová předpověď se srážkami v mm, dál typické počasí z posledních 10 let."
       />
       <div className="grid md:grid-cols-2 gap-4">
         {RIDE_DAYS.map((day) => {
@@ -38,9 +40,14 @@ export function RouteWeather() {
               </div>
               <ol className="space-y-1.5">
                 {dayStops.map((s) => {
+                  const f = forecastByStop[s.stopKey];
                   const c = byStop[s.stopKey];
-                  const ok = c && c !== 'loading' && c !== 'error';
-                  const tHour = ok ? Math.round(tempAtHour(c.tMin, c.tMax, s.etaMin / 60)) : null;
+                  const climOk = c && c !== 'loading' && c !== 'error';
+                  const tHour = f
+                    ? Math.round(f.temp)
+                    : climOk
+                      ? Math.round(tempAtHour(c.tMin, c.tMax, s.etaMin / 60))
+                      : null;
                   return (
                     <li
                       key={s.stopKey}
@@ -53,11 +60,22 @@ export function RouteWeather() {
                         <span className="text-sm font-medium truncate">{s.name}</span>
                         {s.isLunch && <span className="ml-1.5 text-xs">🍴</span>}
                       </span>
-                      {ok ? (
+                      {f ? (
+                        // reálná hodinová předpověď: stav + srážky v mm v čase průjezdu
                         <span className="flex items-center gap-2 shrink-0">
                           <span className="text-base font-extrabold tabular-nums">{tHour}°</span>
-                          <span className="text-[11px] text-slate-500 w-12 text-right">
-                            {c.rainProb >= 0.15 ? `🌧 ${Math.round(c.rainProb * 100)} %` : '☀'}
+                          <span className="text-[11px] text-slate-500 w-20 text-right whitespace-nowrap">
+                            {wmoEmoji(f.code)} {f.precip > 0 ? `${f.precip.toFixed(1)} mm` : '0 mm'}
+                          </span>
+                        </span>
+                      ) : climOk ? (
+                        // klimatologie: pravděpodobnost deště + průměrný denní úhrn
+                        <span className="flex items-center gap-2 shrink-0">
+                          <span className="text-base font-extrabold tabular-nums">{tHour}°</span>
+                          <span className="text-[11px] text-slate-500 w-20 text-right whitespace-nowrap">
+                            {c.rainProb >= 0.15
+                              ? `🌧 ${Math.round(c.rainProb * 100)} % · ⌀${c.precipAvg.toFixed(1)}`
+                              : '☀'}
                           </span>
                         </span>
                       ) : (
@@ -74,8 +92,9 @@ export function RouteWeather() {
         })}
       </div>
       <p className="text-[11px] text-slate-500 mt-3">
-        Teplota je odhad pro danou hodinu z denního průběhu (ráno chladněji, maximum odpoledne). Den 2 ovlivní
-        jízdní řád vlaku Tauernschleuse (Böckstein → Mallnitz).
+        V dosahu předpovědi: teplota a srážky (mm) v hodinu průjezdu. U typického počasí: odhad teploty
+        z denního průběhu a „🌧 % · ⌀mm/den" z 10 let. Den 2 ovlivní jízdní řád vlaku Tauernschleuse
+        (Böckstein → Mallnitz).
       </p>
     </section>
   );
