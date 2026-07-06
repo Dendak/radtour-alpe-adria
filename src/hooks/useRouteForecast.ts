@@ -11,7 +11,18 @@ export type StopForecast = {
   code: number;
 };
 
+/** Srážky v jednu hodinu dne — v místě, kde v tu hodinu podle plánu budeme. */
+export type HourPrecip = {
+  hour: number;
+  precip: number;
+  /** nejbližší zastávka (pro popisek) */
+  near: string;
+};
+
 const HORIZON = 15;
+/** hodinová osa grafu: od startu (8:00 minus rezerva) po večer */
+const HOUR_FROM = 7;
+const HOUR_TO = 20;
 
 function daysUntil(iso: string): number {
   const today = new Date();
@@ -24,11 +35,19 @@ function daysUntil(iso: string): number {
  * Hodinová předpověď Open-Meteo pro zastávky v dosahu (~15 dní).
  * Jeden dotaz na den (všechny zastávky dne najednou). Kde model ještě
  * nemá čísla (hrana horizontu), zastávka chybí → UI spadne na klimatologii.
+ *
+ * Krom hodnot v čase průjezdu vrací i hodinovou řadu srážek po dnech:
+ * pro každou hodinu bere srážky v místě, kde se podle plánu právě jedeme
+ * (nejbližší zastávka časem) — „bude pršet NA nás?".
  */
 export function useRouteForecast(stops: RouteStop[]): {
   byStop: Record<string, StopForecast | undefined>;
+  hoursByDate: Record<string, HourPrecip[] | undefined>;
 } {
-  const [data, setData] = useState<Record<string, StopForecast>>({});
+  const [data, setData] = useState<{
+    byStop: Record<string, StopForecast>;
+    hoursByDate: Record<string, HourPrecip[]>;
+  }>({ byStop: {}, hoursByDate: {} });
   const ref = useRef(stops);
   ref.current = stops;
 
@@ -41,7 +60,7 @@ export function useRouteForecast(stops: RouteStop[]): {
       return du >= 0 && du <= HORIZON;
     });
     if (inRange.length === 0) {
-      setData({});
+      setData({ byStop: {}, hoursByDate: {} });
       return;
     }
 
@@ -57,9 +76,10 @@ export function useRouteForecast(stops: RouteStop[]): {
           `&hourly=temperature_2m,precipitation,weathercode` +
           `&timezone=auto&start_date=${date}&end_date=${date}`;
         const out: Record<string, StopForecast> = {};
+        let hours: HourPrecip[] | null = null;
         try {
           const res = await fetch(url);
-          if (!res.ok) return out;
+          if (!res.ok) return { out, date, hours };
           const j = await res.json();
           // jedna lokalita → objekt; více → pole
           const arr = (Array.isArray(j) ? j : [j]) as {
@@ -83,16 +103,42 @@ export function useRouteForecast(stops: RouteStop[]): {
               code: h.weathercode?.[idx] ?? 3,
             };
           });
+
+          // hodinová řada: v každou hodinu srážky u časově nejbližší zastávky
+          const series: HourPrecip[] = [];
+          for (let hour = HOUR_FROM; hour <= HOUR_TO; hour++) {
+            let bestI = -1;
+            let bestDist = Infinity;
+            for (let i = 0; i < dayStops.length; i++) {
+              if (!arr[i]?.hourly?.time?.length) continue;
+              const d = Math.abs(dayStops[i].etaMin / 60 - hour);
+              if (d < bestDist) {
+                bestDist = d;
+                bestI = i;
+              }
+            }
+            if (bestI < 0) continue;
+            const h = arr[bestI].hourly!;
+            const p = h.precipitation?.[hour];
+            const t = h.temperature_2m?.[hour];
+            if (typeof t !== 'number') continue; // hrana horizontu
+            series.push({ hour, precip: typeof p === 'number' ? p : 0, near: dayStops[bestI].name });
+          }
+          if (series.length > 0) hours = series;
         } catch {
           // den bez předpovědi → klimatologie
         }
-        return out;
+        return { out, date, hours };
       }),
     ).then((parts) => {
       if (!alive) return;
-      const next: Record<string, StopForecast> = {};
-      for (const p of parts) Object.assign(next, p);
-      setData(next);
+      const byStop: Record<string, StopForecast> = {};
+      const hoursByDate: Record<string, HourPrecip[]> = {};
+      for (const p of parts) {
+        Object.assign(byStop, p.out);
+        if (p.hours) hoursByDate[p.date] = p.hours;
+      }
+      setData({ byStop, hoursByDate });
     });
 
     return () => {
@@ -100,5 +146,5 @@ export function useRouteForecast(stops: RouteStop[]): {
     };
   }, [key]);
 
-  return { byStop: data };
+  return { byStop: data.byStop, hoursByDate: data.hoursByDate };
 }
