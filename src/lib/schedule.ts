@@ -4,7 +4,7 @@
 // 2 hodiny na oběd (přičtou se po obědové zastávce).
 // =============================================================
 
-import { WAYPOINTS, DAY_DATES, type DayNum, type Waypoint } from '@/data/trip';
+import { DAY_DATES, type DayNum, type Waypoint } from '@/data/trip';
 
 export const DEPART_HOUR = 8;
 export const SPEED_KMH = 20;
@@ -36,10 +36,14 @@ export function fmtHM(min: number): string {
 
 export const coordKeyOf = (lat: number, lon: number) => `${lat.toFixed(4)},${lon.toFixed(4)}`;
 
-/** Časová osa všech zastávek podle pravidel (8:00 / 20 km/h / 2 h oběd). */
-export function routeSchedule(): RouteStop[] {
+/**
+ * Časová osa všech zastávek podle pravidel (8:00 / 20 km/h / 2 h oběd).
+ * Bere waypointy PŘISNAPOVANÉ na GPX (useGpxTrack) — jejich `dist` jsou
+ * skutečné km trasy, stejné jako v kartách dnů, na mapě i v profilu.
+ */
+export function routeSchedule(waypoints: Waypoint[]): RouteStop[] {
   const byDay = new Map<DayNum, Waypoint[]>();
-  for (const w of WAYPOINTS) {
+  for (const w of waypoints) {
     const arr = byDay.get(w.day) ?? [];
     arr.push(w);
     byDay.set(w.day, arr);

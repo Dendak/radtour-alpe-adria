@@ -10,7 +10,7 @@ import {
 } from '@/lib/schedule';
 import { useRouteClimate } from '@/hooks/useRouteClimate';
 import { useRouteForecast, forecastAt, type HourPrecip } from '@/hooks/useRouteForecast';
-import { DAY_NAMES, DAY_COLORS, wmoEmoji, type DayNum } from '@/data/trip';
+import { DAY_NAMES, DAY_COLORS, wmoEmoji, type DayNum, type Waypoint } from '@/data/trip';
 
 const RIDE_DAYS: DayNum[] = [1, 2, 3, 4];
 
@@ -66,6 +66,8 @@ function PrecipHours({ hours, color }: { hours: HourPrecip[]; color: string }) {
 }
 
 interface Props {
+  /** waypointy přisnapované na GPX (skutečné km trasy) */
+  waypoints: Waypoint[];
   /** kumulativní km vlastní polohy na trase (z geolokace) */
   userDist?: number | null;
   /** override „dneška" pro vyzkoušení živého režimu (?simdate=…) */
@@ -76,8 +78,8 @@ function toIso(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-export function RouteWeather({ userDist = null, simDate = null }: Props) {
-  const stops = useMemo(() => routeSchedule(), []);
+export function RouteWeather({ waypoints, userDist = null, simDate = null }: Props) {
+  const stops = useMemo(() => routeSchedule(waypoints), [waypoints]);
   const { byStop } = useRouteClimate(stops);
   const { hourlyByStop, hoursByDate } = useRouteForecast(stops);
 

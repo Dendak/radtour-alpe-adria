@@ -9,12 +9,12 @@ vše v češtině.
 
 | Den | Datum | Etapa | ~km | Nocleh |
 |-----|-------|-------|-----|--------|
-| 1 | Út 21. 7. | Salzburg → Bad Gastein | 107 | Bad Gastein |
-| 2 | St 22. 7. | Bad Gastein → Villach *(Tauernschleuse)* | 115 | Villach |
-| 3 | Čt 23. 7. | Villach → Gemona del Friuli | 100 | Gemona |
-| 4 | Pá 24. 7. | Gemona → Grado | 90 | Grado (1 noc) |
+| 1 | Út 21. 7. | Salzburg → Bad Gastein | 106 | Bad Gastein |
+| 2 | St 22. 7. | Bad Gastein → Villach *(Tauernschleuse)* | 99 | Villach |
+| 3 | Čt 23. 7. | Villach → Gemona del Friuli | 98 | Gemona |
+| 4 | Pá 24. 7. | Gemona → Grado | 93 | Grado (1 noc) |
 
-Celkem ≈ **412 km**. Trasa je reálná, vygenerovaná routovacím enginem **BRouter**
+Celkem ≈ **396 km**. Trasa je reálná, vygenerovaná routovacím enginem **BRouter**
 (profil trekking) a uložená v `public/alpe-adria.gpx`. Úsek Böckstein → Mallnitz
 je veden jako vlak (Tauernschleuse).
 

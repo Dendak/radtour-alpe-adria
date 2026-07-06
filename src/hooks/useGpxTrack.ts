@@ -77,9 +77,10 @@ function snap(track: TrackPoint[]): { waypoints: Waypoint[]; dayEnd: Record<numb
     const dayWps = waypoints.filter((w) => w.day === d);
     dayEnd[d] = dayWps.length ? Math.max(...dayWps.map((w) => w.dist)) : 0;
   }
-  // Start dalšího dne = konec předchozího
+  // Start dne = konec předchozího (den 1 = km 0 trasy) — jinak by se
+  // waypoint centra města snapnul kousek do trasy a km dne by neseděly
   waypoints.forEach((w) => {
-    if (w.tag === 'Start' && w.day > 1) w.dist = dayEnd[w.day - 1] ?? w.dist;
+    if (w.tag === 'Start') w.dist = w.day === 1 ? 0 : (dayEnd[w.day - 1] ?? w.dist);
   });
   return { waypoints, dayEnd };
 }

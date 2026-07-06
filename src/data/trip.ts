@@ -64,41 +64,41 @@ export const DAY_CAPTIONS: Record<DayNum, string> = {
   4: 'Gemona → Grado · furlanskou nížinou k moři',
 };
 
-// Hrubé kumulativní km (přesné konce etap z GPX: 107 / 222 / 322 / 412)
+// Kumulativní km podle GPX (konce etap: 106 / 205 / 303 / 396); za běhu se ještě snapují na trasu
 export const WAYPOINTS: Waypoint[] = [
   // Den 1 — Salzburg → Bad Gastein
   { day: 1, dist: 0,   lat: 47.8009, lon: 13.0450, name: 'Salzburg', time: '2026-07-21T09:00', tag: 'Start' },
-  { day: 1, dist: 18,  lat: 47.6833, lon: 13.0972, name: 'Hallein', time: '2026-07-21T10:00', tag: 'Přestávka' },
-  { day: 1, dist: 33,  lat: 47.5969, lon: 13.1644, name: 'Golling', time: '2026-07-21T11:00', tag: 'Přestávka' },
-  { day: 1, dist: 45,  lat: 47.4794, lon: 13.1900, name: 'Werfen', time: '2026-07-21T12:00', tag: 'Zajímavost' },
-  { day: 1, dist: 60,  lat: 47.4167, lon: 13.2206, name: 'Bischofshofen', time: '2026-07-21T13:00', tag: 'Oběd' },
-  { day: 1, dist: 72,  lat: 47.3500, lon: 13.2017, name: 'St. Johann im Pongau', time: '2026-07-21T14:00', tag: 'Přestávka' },
-  { day: 1, dist: 90,  lat: 47.1700, lon: 13.1019, name: 'Bad Hofgastein', time: '2026-07-21T16:00', tag: 'Přestávka' },
-  { day: 1, dist: 107, lat: 47.1147, lon: 13.1342, name: 'Bad Gastein', time: '2026-07-21T17:30', tag: 'Nocleh 1' },
+  { day: 1, dist: 19,  lat: 47.6833, lon: 13.0972, name: 'Hallein', time: '2026-07-21T10:00', tag: 'Přestávka' },
+  { day: 1, dist: 31,  lat: 47.5969, lon: 13.1644, name: 'Golling', time: '2026-07-21T11:00', tag: 'Přestávka' },
+  { day: 1, dist: 48,  lat: 47.4794, lon: 13.1900, name: 'Werfen', time: '2026-07-21T12:00', tag: 'Zajímavost' },
+  { day: 1, dist: 57,  lat: 47.4167, lon: 13.2206, name: 'Bischofshofen', time: '2026-07-21T13:00', tag: 'Oběd' },
+  { day: 1, dist: 66,  lat: 47.3500, lon: 13.2017, name: 'St. Johann im Pongau', time: '2026-07-21T14:00', tag: 'Přestávka' },
+  { day: 1, dist: 98,  lat: 47.1700, lon: 13.1019, name: 'Bad Hofgastein', time: '2026-07-21T16:00', tag: 'Přestávka' },
+  { day: 1, dist: 106, lat: 47.1147, lon: 13.1342, name: 'Bad Gastein', time: '2026-07-21T17:30', tag: 'Nocleh 1' },
 
   // Den 2 — Bad Gastein → Villach (vlak Tauernschleuse)
-  { day: 2, dist: 107, lat: 47.1147, lon: 13.1342, name: 'Bad Gastein', time: '2026-07-22T09:00', tag: 'Start' },
-  { day: 2, dist: 111, lat: 47.1083, lon: 13.1183, name: 'Böckstein', time: '2026-07-22T09:30', tag: 'Vlak' },
-  { day: 2, dist: 124, lat: 46.9897, lon: 13.1689, name: 'Mallnitz', time: '2026-07-22T10:15', tag: 'Zajímavost' },
-  { day: 2, dist: 140, lat: 46.9381, lon: 13.2017, name: 'Obervellach', time: '2026-07-22T11:15', tag: 'Přestávka' },
-  { day: 2, dist: 180, lat: 46.7950, lon: 13.4969, name: 'Spittal an der Drau', time: '2026-07-22T13:30', tag: 'Oběd' },
-  { day: 2, dist: 222, lat: 46.6111, lon: 13.8558, name: 'Villach', time: '2026-07-22T17:00', tag: 'Nocleh 2' },
+  { day: 2, dist: 106, lat: 47.1147, lon: 13.1342, name: 'Bad Gastein', time: '2026-07-22T09:00', tag: 'Start' },
+  { day: 2, dist: 109, lat: 47.1083, lon: 13.1183, name: 'Böckstein', time: '2026-07-22T09:30', tag: 'Vlak' },
+  { day: 2, dist: 123, lat: 46.9897, lon: 13.1689, name: 'Mallnitz', time: '2026-07-22T10:15', tag: 'Zajímavost' },
+  { day: 2, dist: 132, lat: 46.9381, lon: 13.2017, name: 'Obervellach', time: '2026-07-22T11:15', tag: 'Přestávka' },
+  { day: 2, dist: 166, lat: 46.7950, lon: 13.4969, name: 'Spittal an der Drau', time: '2026-07-22T13:30', tag: 'Oběd' },
+  { day: 2, dist: 205, lat: 46.6111, lon: 13.8558, name: 'Villach', time: '2026-07-22T17:00', tag: 'Nocleh 2' },
 
   // Den 3 — Villach → Gemona
-  { day: 3, dist: 222, lat: 46.6111, lon: 13.8558, name: 'Villach', time: '2026-07-23T09:00', tag: 'Start' },
-  { day: 3, dist: 235, lat: 46.5489, lon: 13.7100, name: 'Arnoldstein', time: '2026-07-23T09:45', tag: 'Přestávka' },
-  { day: 3, dist: 252, lat: 46.5050, lon: 13.5800, name: 'Tarvisio', time: '2026-07-23T11:00', tag: 'Hranice' },
-  { day: 3, dist: 278, lat: 46.5050, lon: 13.3060, name: 'Pontebba', time: '2026-07-23T12:30', tag: 'Oběd' },
-  { day: 3, dist: 310, lat: 46.3344, lon: 13.1389, name: 'Venzone', time: '2026-07-23T15:00', tag: 'Zajímavost' },
-  { day: 3, dist: 322, lat: 46.2767, lon: 13.1378, name: 'Gemona del Friuli', time: '2026-07-23T16:30', tag: 'Nocleh 3' },
+  { day: 3, dist: 205, lat: 46.6111, lon: 13.8558, name: 'Villach', time: '2026-07-23T09:00', tag: 'Start' },
+  { day: 3, dist: 224, lat: 46.5489, lon: 13.7100, name: 'Arnoldstein', time: '2026-07-23T09:45', tag: 'Přestávka' },
+  { day: 3, dist: 238, lat: 46.5050, lon: 13.5800, name: 'Tarvisio', time: '2026-07-23T11:00', tag: 'Hranice' },
+  { day: 3, dist: 261, lat: 46.5050, lon: 13.3060, name: 'Pontebba', time: '2026-07-23T12:30', tag: 'Oběd' },
+  { day: 3, dist: 295, lat: 46.3344, lon: 13.1389, name: 'Venzone', time: '2026-07-23T15:00', tag: 'Zajímavost' },
+  { day: 3, dist: 303, lat: 46.2767, lon: 13.1378, name: 'Gemona del Friuli', time: '2026-07-23T16:30', tag: 'Nocleh 3' },
 
   // Den 4 — Gemona → Grado
-  { day: 4, dist: 322, lat: 46.2767, lon: 13.1378, name: 'Gemona del Friuli', time: '2026-07-24T09:00', tag: 'Start' },
-  { day: 4, dist: 350, lat: 46.0711, lon: 13.2347, name: 'Udine', time: '2026-07-24T09:30', tag: 'Přestávka' },
+  { day: 4, dist: 303, lat: 46.2767, lon: 13.1378, name: 'Gemona del Friuli', time: '2026-07-24T09:00', tag: 'Start' },
+  { day: 4, dist: 339, lat: 46.0711, lon: 13.2347, name: 'Udine', time: '2026-07-24T09:30', tag: 'Přestávka' },
   // oběd až za polovinou etapy (50. z 90 km) — v Udine (28. km) by bylo moc brzy
-  { day: 4, dist: 372, lat: 45.9047, lon: 13.3097, name: 'Palmanova', time: '2026-07-24T10:30', tag: 'Oběd' },
-  { day: 4, dist: 395, lat: 45.7700, lon: 13.3697, name: 'Aquileia', time: '2026-07-24T14:00', tag: 'Zajímavost' },
-  { day: 4, dist: 412, lat: 45.6772, lon: 13.3939, name: 'Grado', time: '2026-07-24T15:30', tag: 'Cíl' },
+  { day: 4, dist: 367, lat: 45.9047, lon: 13.3097, name: 'Palmanova', time: '2026-07-24T10:30', tag: 'Oběd' },
+  { day: 4, dist: 384, lat: 45.7700, lon: 13.3697, name: 'Aquileia', time: '2026-07-24T14:00', tag: 'Zajímavost' },
+  { day: 4, dist: 396, lat: 45.6772, lon: 13.3939, name: 'Grado', time: '2026-07-24T15:30', tag: 'Cíl' },
 ];
 
 // Města zobrazená na mapě (pojmenovaná) — bez drobných POI, ať je mapa přehledná.
@@ -175,31 +175,31 @@ export const HIGHLIGHTS: Highlight[] = [
     photo: commons('Salzburg Altstadt Panorama 20170409 02.jpg'),
   },
   {
-    day: 1, kind: 'historie', name: 'Hallein — keltské město', where: 'Hallein · ~18 km',
+    day: 1, kind: 'historie', name: 'Hallein — keltské město', where: 'Hallein · ~19 km',
     blurb: 'Druhé největší město Salcburska na Salzachu. Proslulé keltskou minulostí — nedaleký solný důl Dürrnberg a Keltské muzeum. Půvabné staré město s úzkými uličkami.',
     mapsQuery: 'Hallein Altstadt',
     photo: commons('Hallein - Altstadt - Kornsteinplatz Ansicht - 2016 06 10.jpg'),
   },
   {
-    day: 1, kind: 'historie', name: 'Hrad Hohenwerfen', where: 'Werfen · ~45 km',
+    day: 1, kind: 'historie', name: 'Hrad Hohenwerfen', where: 'Werfen · ~48 km',
     blurb: 'Mohutný hrad z 11. století na skále nad údolím Salzachu, s každodenní ukázkou letu dravců.',
     mapsQuery: 'Burg Hohenwerfen', website: 'https://www.burg-hohenwerfen.at',
     photo: commons('Castillo de Hohenwerfen, Werfen, Austria, 2019-05-17, DD 143-149 PAN.jpg'),
   },
   {
-    day: 1, kind: 'kultura', name: 'Bischofshofen', where: 'Bischofshofen · ~60 km',
+    day: 1, kind: 'kultura', name: 'Bischofshofen', where: 'Bischofshofen · ~57 km',
     blurb: 'Městečko v Pongau na soutoku — věhlasné skoky na lyžích (Turné čtyř můstků, novoroční závod) a dochovaná Kastenova věž s kostelem sv. Maxmiliána.',
     mapsQuery: 'Bischofshofen',
     photo: commons('Bischofshofen Salzburg.jpg'),
   },
   {
-    day: 1, kind: 'příroda', name: 'Liechtensteinklamm', where: 'St. Johann · ~72 km',
+    day: 1, kind: 'příroda', name: 'Liechtensteinklamm', where: 'St. Johann · ~69 km',
     blurb: 'Jedna z nejhlubších a nejdelších soutěsek v Alpách — burácející voda mezi až 300 m vysokými stěnami.',
     mapsQuery: 'Liechtensteinklamm', website: 'https://www.liechtensteinklamm.at',
     photo: commons('Liechtensteinklamm, Bild 1.jpg'),
   },
   {
-    day: 1, kind: 'kultura', name: 'Bad Hofgastein', where: 'Bad Hofgastein · ~90 km',
+    day: 1, kind: 'kultura', name: 'Bad Hofgastein', where: 'Bad Hofgastein · ~98 km',
     blurb: 'Lázeňské městečko v Gasteinském údolí těsně před cílem dne — termály, sluneční promenáda a první velké výhledy na hřebeny Vysokých Taur.',
     mapsQuery: 'Bad Hofgastein',
     photo: commons('Panorama Bad Hofgastein 01.jpg'),
@@ -219,19 +219,19 @@ export const HIGHLIGHTS: Highlight[] = [
     website: 'https://www.oebb.at/de/services/autoreisezug/tauernschleuse',
   },
   {
-    day: 2, kind: 'příroda', name: 'Mallnitz — Národní park Vysoké Taury', where: 'Mallnitz · ~124 km',
+    day: 2, kind: 'příroda', name: 'Mallnitz — Národní park Vysoké Taury', where: 'Mallnitz · ~123 km',
     blurb: 'Horská obec a brána do největšího národního parku Alp. Odtud už to jede převážně z kopce do Korutan.',
     mapsQuery: 'Mallnitz',
     photo: commons('Mallnitz Stappitz Ankogel-Panorama 01.jpg'),
   },
   {
-    day: 2, kind: 'kultura', name: 'Villach — cíl 2. dne', where: 'Villach · ~208 km',
+    day: 2, kind: 'kultura', name: 'Villach — cíl 2. dne', where: 'Villach · ~205 km',
     blurb: 'Po pohodové Drávské cyklostezce (podél tyrkysové řeky, téměř bez stoupání) dojíždíme do Villachu — živé korutanské město s historickým náměstím a spoustou lokálů.',
     mapsQuery: 'Villach Hauptplatz',
     photo: commons('Villach Innenstadt Hauptplatz SW-Ansicht 03082015 6487.jpg'),
   },
   {
-    day: 2, kind: 'historie', name: 'Zámek Porcia', where: 'Spittal an der Drau · ~180 km',
+    day: 2, kind: 'historie', name: 'Zámek Porcia', where: 'Spittal an der Drau · ~166 km',
     blurb: 'Jeden z nejvýznamnějších renesančních zámků severně od Alp s arkádovým nádvořím.',
     mapsQuery: 'Schloss Porcia Spittal',
     photo: commons('Spittal Schloss Porcia Arkadenhof 20042015 2422.jpg'),
@@ -239,7 +239,7 @@ export const HIGHLIGHTS: Highlight[] = [
 
   // Den 3
   {
-    day: 3, kind: 'kultura', name: 'Tarvisio a hranice', where: 'Tarvisio · ~252 km',
+    day: 3, kind: 'kultura', name: 'Tarvisio a hranice', where: 'Tarvisio · ~238 km',
     blurb: 'Pohraniční trojmezí. Odtud běží Ciclovia Alpe Adria po staré železniční trati pozvolna z kopce.',
     mapsQuery: 'Tarvisio',
     photo: commons('Val Canale Camporosso Monte Lussari 31052008 51.jpg'),
@@ -251,13 +251,13 @@ export const HIGHLIGHTS: Highlight[] = [
     photo: commons('Pontebba veduta 05.jpg'),
   },
   {
-    day: 3, kind: 'historie', name: 'Most u Chiusaforte', where: 'Chiusaforte · ~270 km',
+    day: 3, kind: 'historie', name: 'Most u Chiusaforte', where: 'Chiusaforte · ~274 km',
     blurb: 'Jeden z nejhezčích úseků staré Pontebbany — cyklostezka přechází po kamenných obloucích a tunely nad soutěskou řeky Fella. Přesně ta atmosféra „jízdy po železnici".',
     mapsQuery: 'Ponte di Chiusaforte ciclovia',
     photo: commons('Ponte di Chiusaforte.jpg'),
   },
   {
-    day: 3, kind: 'historie', name: 'Venzone', where: 'Venzone · ~310 km',
+    day: 3, kind: 'historie', name: 'Venzone', where: 'Venzone · ~295 km',
     blurb: 'Středověké hradbami obehnané město, po zemětřesení 1976 kámen po kameni věrně obnovené — „nejkrásnější vesnice Itálie".',
     mapsQuery: 'Venzone',
     photo: commons('Venzone veduta 09.jpg'),
@@ -271,19 +271,19 @@ export const HIGHLIGHTS: Highlight[] = [
 
   // Den 4
   {
-    day: 4, kind: 'kultura', name: 'Udine — Piazza Libertà', where: 'Udine · ~350 km',
+    day: 4, kind: 'kultura', name: 'Udine — Piazza Libertà', where: 'Udine · ~339 km',
     blurb: '„Nejkrásnější benátské náměstí na pevnině" a zámecký kopec s rozhledem. Tiepolovy fresky ve městě.',
     mapsQuery: 'Piazza della Libertà Udine',
     photo: commons('Piazza Libertà (Udine).jpg'),
   },
   {
-    day: 4, kind: 'památka', name: 'Palmanova (UNESCO)', where: 'Palmanova · ~372 km',
+    day: 4, kind: 'památka', name: 'Palmanova (UNESCO)', where: 'Palmanova · ~367 km',
     blurb: 'Benátská hvězdicová pevnost z roku 1593 — ideální renesanční město. Tvar hvězdy je nejlépe vidět ze vzduchu.',
     mapsQuery: 'Palmanova',
     photo: commons('Aerial image of Palmanova (view from the northwest).jpg'),
   },
   {
-    day: 4, kind: 'historie', name: 'Aquileia (UNESCO)', where: 'Aquileia · ~395 km',
+    day: 4, kind: 'historie', name: 'Aquileia (UNESCO)', where: 'Aquileia · ~384 km',
     blurb: 'Kdysi jedno z největších měst římské říše. Bazilika s obří raně křesťanskou mozaikovou podlahou ze 4. století.',
     mapsQuery: 'Basilica di Aquileia', website: 'https://www.fondazioneaquileia.it',
     photo: commons('Mosaico pavimentale della basilica di aquileia, 313-350 dc. ca. 01 meduse.jpg'),

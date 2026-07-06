@@ -230,7 +230,7 @@ export default function App() {
           data-reveal
         >
           <WeatherDays days={weatherMeta} byDay={byDay} />
-          <RouteWeather userDist={routeUserDist} simDate={sim.date} />
+          <RouteWeather waypoints={waypoints} userDist={routeUserDist} simDate={sim.date} />
         </div>
         <div id="na-trase" className="scroll-mt-16" data-reveal>
           <OnRoute />
