@@ -6,7 +6,7 @@
 // =============================================================
 
 const CACHE_PREFIX = 'om-archive:';
-const MAX_TRIES = 3;
+const MAX_TRIES = 5;
 
 let queue: Promise<unknown> = Promise.resolve();
 
@@ -32,7 +32,8 @@ async function fetchWithRetry(url: string): Promise<unknown> {
     const res = await fetch(url);
     if (res.ok) return res.json();
     if (res.status === 429 && t < MAX_TRIES) {
-      await new Promise((r) => setTimeout(r, 1500 * t));
+      // krom limitu souběhu má Open-Meteo i minutový limit → delší backoff
+      await new Promise((r) => setTimeout(r, 2500 * t));
       continue;
     }
     throw new Error(`http ${res.status}`);

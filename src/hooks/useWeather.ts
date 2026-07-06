@@ -38,7 +38,11 @@ function daysUntil(iso: string): number {
   return Math.round((target.getTime() - today.getTime()) / 86_400_000);
 }
 
-type ForecastResult = Record<number, { status: 'ok'; data: DayWeather } | { status: 'error' }>;
+type ForecastResult = Record<
+  number,
+  // no_data: den je formálně v horizontu, ale model pro něj ještě nemá čísla (vrací null)
+  { status: 'ok'; data: DayWeather } | { status: 'error' } | { status: 'no_data' }
+>;
 type ClimateResult = Record<number, { status: 'climate'; data: ClimateData } | { status: 'too_far' }>;
 
 export function useWeather(days: WeatherDay[]): { byDay: Record<number, WeatherEntry> } {
@@ -72,15 +76,22 @@ export function useWeather(days: WeatherDay[]): { byDay: Record<number, WeatherE
           const j = await res.json();
           const dd = j?.daily;
           if (!dd?.time?.length) return { day: d.day, r: { status: 'error' as const } };
+          const tMax = dd.temperature_2m_max[0];
+          const tMin = dd.temperature_2m_min[0];
+          // na hraně horizontu API datum přijme, ale hodnoty jsou null
+          // (model tak daleko ještě nedosáhl) → fallback na klimatologii
+          if (typeof tMax !== 'number' || typeof tMin !== 'number') {
+            return { day: d.day, r: { status: 'no_data' as const } };
+          }
           return {
             day: d.day,
             r: {
               status: 'ok' as const,
               data: {
-                tMax: dd.temperature_2m_max[0],
-                tMin: dd.temperature_2m_min[0],
-                precip: dd.precipitation_sum[0],
-                code: dd.weathercode[0],
+                tMax,
+                tMin,
+                precip: dd.precipitation_sum[0] ?? 0,
+                code: dd.weathercode[0] ?? 3,
               },
             },
           };
@@ -99,10 +110,12 @@ export function useWeather(days: WeatherDay[]): { byDay: Record<number, WeatherE
     };
   }, [key]);
 
-  // klimatický normál pro dny mimo dosah předpovědi (> 16 dní)
+  // Klimatický normál — stahujeme pro VŠECHNY budoucí dny (přes cache je to
+  // levné): slouží jako obsah pro dny mimo horizont předpovědi a zároveň
+  // jako fallback pro dny, kde předpověď selže nebo ještě nemá data.
   useEffect(() => {
     let alive = true;
-    const toFetch = daysRef.current.filter((d) => daysUntil(d.date) > HORIZON);
+    const toFetch = daysRef.current.filter((d) => daysUntil(d.date) >= 0);
     if (toFetch.length === 0) {
       setClimate({});
       return;
@@ -193,15 +206,27 @@ export function useWeather(days: WeatherDay[]): { byDay: Record<number, WeatherE
       byDay[d.day] = { status: 'past' };
       continue;
     }
-    if (du <= HORIZON) {
-      byDay[d.day] = forecast[d.day] ?? { status: 'loading' };
+    // 1) skutečná předpověď s reálnými čísly má vždy přednost
+    const f = du <= HORIZON ? forecast[d.day] : undefined;
+    if (f?.status === 'ok') {
+      byDay[d.day] = f;
       continue;
     }
-    // mimo dosah předpovědi → klimatický normál
+    // 2) jinak klimatologie (mimo horizont i jako fallback při no_data/error)
     const c = climate[d.day];
-    if (!c) byDay[d.day] = { status: 'climate_loading', daysUntil: du };
-    else if (c.status === 'climate') byDay[d.day] = { status: 'climate', data: c.data, daysUntil: du };
-    else byDay[d.day] = { status: 'too_far', daysUntil: du };
+    if (c?.status === 'climate') {
+      byDay[d.day] = { status: 'climate', data: c.data, daysUntil: du };
+      continue;
+    }
+    // 3) zatím nemáme nic použitelného
+    if (!c) {
+      // klimatologie ještě letí (nebo i předpověď) → načítací stav
+      byDay[d.day] =
+        du <= HORIZON && !f ? { status: 'loading' } : { status: 'climate_loading', daysUntil: du };
+    } else {
+      // klimatologie selhala; v horizontu už selhala i předpověď → error
+      byDay[d.day] = du <= HORIZON ? { status: 'error' } : { status: 'too_far', daysUntil: du };
+    }
   }
   return { byDay };
 }
