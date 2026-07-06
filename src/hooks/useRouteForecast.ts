@@ -1,14 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RouteStop } from '@/lib/schedule';
 
-/** Reálná hodinová předpověď pro zastávku v čase průjezdu. */
+/** Reálná hodinová předpověď pro zastávku v konkrétní čas. */
 export type StopForecast = {
-  /** teplota v hodinu průjezdu (°C) */
+  /** teplota (°C) */
   temp: number;
-  /** srážky v hodinu průjezdu (mm) */
+  /** srážky (mm/h) */
   precip: number;
-  /** WMO kód počasí v hodinu průjezdu */
+  /** WMO kód počasí */
   code: number;
+};
+
+/** Celodenní hodinové řady pro jednu zastávku (24 hodnot). */
+export type StopHourly = {
+  temp: (number | null)[];
+  precip: (number | null)[];
+  code: (number | null)[];
 };
 
 /** Srážky v jednu hodinu dne — v místě, kde v tu hodinu podle plánu budeme. */
@@ -31,23 +38,30 @@ function daysUntil(iso: string): number {
   return Math.round((target.getTime() - today.getTime()) / 86_400_000);
 }
 
+/** Vybere z hodinové řady hodnoty pro daný čas (minuty od půlnoci). */
+export function forecastAt(h: StopHourly | undefined, etaMin: number): StopForecast | null {
+  if (!h?.temp?.length) return null;
+  const idx = Math.max(0, Math.min(h.temp.length - 1, Math.round(etaMin / 60)));
+  const t = h.temp[idx];
+  // na hraně horizontu model vrací null → volající spadne na klimatologii
+  if (typeof t !== 'number') return null;
+  return { temp: t, precip: h.precip[idx] ?? 0, code: h.code[idx] ?? 3 };
+}
+
 /**
  * Hodinová předpověď Open-Meteo pro zastávky v dosahu (~15 dní).
- * Jeden dotaz na den (všechny zastávky dne najednou). Kde model ještě
- * nemá čísla (hrana horizontu), zastávka chybí → UI spadne na klimatologii.
- *
- * Krom hodnot v čase průjezdu vrací i hodinovou řadu srážek po dnech:
- * pro každou hodinu bere srážky v místě, kde se podle plánu právě jedeme
- * (nejbližší zastávka časem) — „bude pršet NA nás?".
+ * Jeden dotaz na den (všechny zastávky dne najednou). Vrací celé hodinové
+ * řady po zastávkách (výběr konkrétní hodiny dělá volající — plánovaný čas
+ * i živý čas podle polohy) a hodinovou řadu srážek „kde právě jsme".
  */
 export function useRouteForecast(stops: RouteStop[]): {
-  byStop: Record<string, StopForecast | undefined>;
+  hourlyByStop: Record<string, StopHourly | undefined>;
   hoursByDate: Record<string, HourPrecip[] | undefined>;
 } {
   const [data, setData] = useState<{
-    byStop: Record<string, StopForecast>;
+    hourlyByStop: Record<string, StopHourly>;
     hoursByDate: Record<string, HourPrecip[]>;
-  }>({ byStop: {}, hoursByDate: {} });
+  }>({ hourlyByStop: {}, hoursByDate: {} });
   const ref = useRef(stops);
   ref.current = stops;
 
@@ -60,7 +74,7 @@ export function useRouteForecast(stops: RouteStop[]): {
       return du >= 0 && du <= HORIZON;
     });
     if (inRange.length === 0) {
-      setData({ byStop: {}, hoursByDate: {} });
+      setData({ hourlyByStop: {}, hoursByDate: {} });
       return;
     }
 
@@ -75,7 +89,7 @@ export function useRouteForecast(stops: RouteStop[]): {
           `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}` +
           `&hourly=temperature_2m,precipitation,weathercode` +
           `&timezone=auto&start_date=${date}&end_date=${date}`;
-        const out: Record<string, StopForecast> = {};
+        const out: Record<string, StopHourly> = {};
         let hours: HourPrecip[] | null = null;
         try {
           const res = await fetch(url);
@@ -93,14 +107,10 @@ export function useRouteForecast(stops: RouteStop[]): {
           dayStops.forEach((s, i) => {
             const h = arr[i]?.hourly;
             if (!h?.time?.length) return;
-            const idx = Math.max(0, Math.min(h.time.length - 1, Math.round(s.etaMin / 60)));
-            const t = h.temperature_2m?.[idx];
-            // na hraně horizontu model vrací null → přeskočit (fallback klimatologie)
-            if (typeof t !== 'number') return;
             out[s.stopKey] = {
-              temp: t,
-              precip: h.precipitation?.[idx] ?? 0,
-              code: h.weathercode?.[idx] ?? 3,
+              temp: h.temperature_2m ?? [],
+              precip: h.precipitation ?? [],
+              code: h.weathercode ?? [],
             };
           });
 
@@ -132,13 +142,13 @@ export function useRouteForecast(stops: RouteStop[]): {
       }),
     ).then((parts) => {
       if (!alive) return;
-      const byStop: Record<string, StopForecast> = {};
+      const hourlyByStop: Record<string, StopHourly> = {};
       const hoursByDate: Record<string, HourPrecip[]> = {};
       for (const p of parts) {
-        Object.assign(byStop, p.out);
+        Object.assign(hourlyByStop, p.out);
         if (p.hours) hoursByDate[p.date] = p.hours;
       }
-      setData({ byStop, hoursByDate });
+      setData({ hourlyByStop, hoursByDate });
     });
 
     return () => {
@@ -146,5 +156,5 @@ export function useRouteForecast(stops: RouteStop[]): {
     };
   }, [key]);
 
-  return { byStop: data.byStop, hoursByDate: data.hoursByDate };
+  return { hourlyByStop: data.hourlyByStop, hoursByDate: data.hoursByDate };
 }

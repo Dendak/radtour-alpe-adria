@@ -120,6 +120,14 @@ export default function App() {
     return nearestOnTrack(track, userPos.lat, userPos.lon)?.dist ?? null;
   }, [userPos, track]);
 
+  // vyzkoušení živého režimu bez GPS: ?simkm=150&simdate=2026-07-22
+  const sim = useMemo(() => {
+    const p = new URLSearchParams(window.location.search);
+    const km = p.get('simkm');
+    return { km: km != null ? Number(km) : null, date: p.get('simdate') };
+  }, []);
+  const routeUserDist = sim.km ?? userDist;
+
   // jemné odhalení sekcí při scrollu (fail-safe: bez JS zůstávají viditelné)
   useEffect(() => {
     if (!('IntersectionObserver' in window)) return;
@@ -222,7 +230,7 @@ export default function App() {
           data-reveal
         >
           <WeatherDays days={weatherMeta} byDay={byDay} />
-          <RouteWeather />
+          <RouteWeather userDist={routeUserDist} simDate={sim.date} />
         </div>
         <div id="na-trase" className="scroll-mt-16" data-reveal>
           <OnRoute />

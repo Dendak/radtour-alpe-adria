@@ -19,13 +19,17 @@ export type RouteStop = {
   date: string; // ISO datum dne
   coordKey: string;
   stopKey: string;
+  /** kumulativní km celé trasy */
+  dist: number;
+  /** km od startu daného dne */
+  kmOfDay: number;
   etaMin: number; // minuty od půlnoci
   etaLabel: string; // "08:54"
   isLunch: boolean;
 };
 
-function fmt(min: number): string {
-  const h = Math.floor(min / 60);
+export function fmtHM(min: number): string {
+  const h = Math.floor(min / 60) % 24;
   const m = Math.round(min % 60);
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
@@ -62,8 +66,10 @@ export function routeSchedule(): RouteStop[] {
         date: DAY_DATES[day],
         coordKey: coordKeyOf(w.lat, w.lon),
         stopKey: `${day}:${w.name}`,
+        dist: w.dist,
+        kmOfDay: withinKm,
         etaMin,
-        etaLabel: fmt(etaMin),
+        etaLabel: fmtHM(etaMin),
         isLunch: w.tag === 'Oběd',
       });
     }

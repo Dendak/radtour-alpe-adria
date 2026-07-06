@@ -1,11 +1,21 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { SectionTitle } from './SectionTitle';
-import { routeSchedule, tempAtHour, type RouteStop } from '@/lib/schedule';
+import {
+  routeSchedule,
+  tempAtHour,
+  fmtHM,
+  SPEED_KMH,
+  LUNCH_HOURS,
+  type RouteStop,
+} from '@/lib/schedule';
 import { useRouteClimate } from '@/hooks/useRouteClimate';
-import { useRouteForecast, type HourPrecip } from '@/hooks/useRouteForecast';
+import { useRouteForecast, forecastAt, type HourPrecip } from '@/hooks/useRouteForecast';
 import { DAY_NAMES, DAY_COLORS, wmoEmoji, type DayNum } from '@/data/trip';
 
 const RIDE_DAYS: DayNum[] = [1, 2, 3, 4];
+
+/** Zastávka s případně přepočítaným časem podle skutečné polohy. */
+type Row = RouteStop & { live?: boolean; passed?: boolean };
 
 /** Mini graf: srážky po hodinách v místě, kde v tu hodinu podle plánu jsme. */
 function PrecipHours({ hours, color }: { hours: HourPrecip[]; color: string }) {
@@ -55,20 +65,61 @@ function PrecipHours({ hours, color }: { hours: HourPrecip[]; color: string }) {
   );
 }
 
-export function RouteWeather() {
+interface Props {
+  /** kumulativní km vlastní polohy na trase (z geolokace) */
+  userDist?: number | null;
+  /** override „dneška" pro vyzkoušení živého režimu (?simdate=…) */
+  simDate?: string | null;
+}
+
+function toIso(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+export function RouteWeather({ userDist = null, simDate = null }: Props) {
   const stops = useMemo(() => routeSchedule(), []);
   const { byStop } = useRouteClimate(stops);
-  const { byStop: forecastByStop, hoursByDate } = useRouteForecast(stops);
+  const { hourlyByStop, hoursByDate } = useRouteForecast(stops);
+
+  // živý čas — tiká jen když známe polohu (kvůli přepočtu ETA)
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    if (userDist == null) return;
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, [userDist]);
+
+  const todayIso = simDate ?? toIso(now);
+
+  // přepočet časů dnešní etapy podle skutečné polohy:
+  // ETA = teď + (zbývající km / 20 km/h) + oběd (pokud je ještě před námi)
+  const rows: Row[] = useMemo(() => {
+    if (userDist == null) return stops;
+    const todays = stops.filter((s) => s.date === todayIso);
+    if (todays.length === 0) return stops;
+    const lunch = todays.find((s) => s.isLunch);
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    return stops.map((s) => {
+      if (s.date !== todayIso) return s;
+      if (s.dist <= userDist + 0.3) return { ...s, passed: true };
+      const rideMin = ((s.dist - userDist) / SPEED_KMH) * 60;
+      const lunchMin = lunch && s.dist > lunch.dist && userDist < lunch.dist ? LUNCH_HOURS * 60 : 0;
+      const etaMin = nowMin + rideMin + lunchMin;
+      return { ...s, etaMin, etaLabel: fmtHM(etaMin), live: true };
+    });
+  }, [stops, userDist, todayIso, now]);
 
   const byDay = useMemo(() => {
-    const m = new Map<DayNum, RouteStop[]>();
-    for (const s of stops) {
+    const m = new Map<DayNum, Row[]>();
+    for (const s of rows) {
       const arr = m.get(s.day) ?? [];
       arr.push(s);
       m.set(s.day, arr);
     }
     return m;
-  }, [stops]);
+  }, [rows]);
+
+  const liveActive = rows.some((r) => r.live);
 
   return (
     <section className="mt-10 md:mt-12">
@@ -80,15 +131,21 @@ export function RouteWeather() {
       <div className="grid md:grid-cols-2 gap-4">
         {RIDE_DAYS.map((day) => {
           const dayStops = byDay.get(day) ?? [];
+          const dayLive = dayStops.some((s) => s.live || s.passed);
           return (
             <div key={day} className="card p-4">
               <div className="flex items-center gap-2 mb-3">
                 <span className="h-3 w-3 rounded-full" style={{ background: DAY_COLORS[day] }} />
                 <h3 className="font-bold text-sm">{DAY_NAMES[day]}</h3>
+                {dayLive && (
+                  <span className="ml-auto text-[11px] font-semibold text-sea">
+                    ⏱ podle tvé polohy{userDist != null ? ` (km ${Math.round(userDist)})` : ''}
+                  </span>
+                )}
               </div>
               <ol className="space-y-1.5">
                 {dayStops.map((s) => {
-                  const f = forecastByStop[s.stopKey];
+                  const f = forecastAt(hourlyByStop[s.stopKey], s.etaMin);
                   const c = byStop[s.stopKey];
                   const climOk = c && c !== 'loading' && c !== 'error';
                   const tHour = f
@@ -99,14 +156,29 @@ export function RouteWeather() {
                   return (
                     <li
                       key={s.stopKey}
-                      className="flex items-center gap-3 py-1 border-b border-slate-100 last:border-0"
+                      className={
+                        'flex items-center gap-3 py-1 border-b border-slate-100 last:border-0' +
+                        (s.passed ? ' opacity-50' : '')
+                      }
                     >
-                      <span className="tabular-nums text-xs font-semibold text-slate-500 w-11 shrink-0">
-                        {s.etaLabel}
+                      <span
+                        className={
+                          'tabular-nums text-xs w-11 shrink-0 ' +
+                          (s.passed
+                            ? 'font-semibold text-slate-400 line-through'
+                            : s.live
+                              ? 'font-bold text-sea'
+                              : 'font-semibold text-slate-500')
+                        }
+                      >
+                        {s.passed ? '✓' : s.etaLabel}
                       </span>
                       <span className="flex-1 min-w-0">
                         <span className="text-sm font-medium truncate">{s.name}</span>
                         {s.isLunch && <span className="ml-1.5 text-xs">🍴</span>}
+                        <span className="ml-1.5 text-[11px] text-slate-500 whitespace-nowrap">
+                          {Math.round(s.kmOfDay)} km
+                        </span>
                       </span>
                       {f ? (
                         // reálná hodinová předpověď: stav + srážky v mm v čase průjezdu
@@ -146,8 +218,11 @@ export function RouteWeather() {
       </div>
       <p className="text-[11px] text-slate-500 mt-3">
         V dosahu předpovědi: teplota a srážky (mm) v hodinu průjezdu. U typického počasí: odhad teploty
-        z denního průběhu a „🌧 % · ⌀mm/den" z 10 let. Den 2 ovlivní jízdní řád vlaku Tauernschleuse
-        (Böckstein → Mallnitz).
+        z denního průběhu a „🌧 % · ⌀mm/den" z 10 let.
+        {liveActive
+          ? ' Časy dnešní etapy jsou přepočítané podle tvé aktuální polohy (✓ = projeto).'
+          : ' Se zapnutou polohou (📍 u mapy) se časy dnešní etapy přepočítávají podle toho, kde právě jsi.'}{' '}
+        Den 2 ovlivní jízdní řád vlaku Tauernschleuse (Böckstein → Mallnitz).
       </p>
     </section>
   );
