@@ -94,8 +94,9 @@ export const WAYPOINTS: Waypoint[] = [
 
   // Den 4 — Gemona → Grado
   { day: 4, dist: 322, lat: 46.2767, lon: 13.1378, name: 'Gemona del Friuli', time: '2026-07-24T09:00', tag: 'Start' },
-  { day: 4, dist: 350, lat: 46.0711, lon: 13.2347, name: 'Udine', time: '2026-07-24T11:00', tag: 'Oběd' },
-  { day: 4, dist: 372, lat: 45.9047, lon: 13.3097, name: 'Palmanova', time: '2026-07-24T12:30', tag: 'Zajímavost' },
+  { day: 4, dist: 350, lat: 46.0711, lon: 13.2347, name: 'Udine', time: '2026-07-24T09:30', tag: 'Přestávka' },
+  // oběd až za polovinou etapy (50. z 90 km) — v Udine (28. km) by bylo moc brzy
+  { day: 4, dist: 372, lat: 45.9047, lon: 13.3097, name: 'Palmanova', time: '2026-07-24T10:30', tag: 'Oběd' },
   { day: 4, dist: 395, lat: 45.7700, lon: 13.3697, name: 'Aquileia', time: '2026-07-24T14:00', tag: 'Zajímavost' },
   { day: 4, dist: 412, lat: 45.6772, lon: 13.3939, name: 'Grado', time: '2026-07-24T15:30', tag: 'Cíl' },
 ];
