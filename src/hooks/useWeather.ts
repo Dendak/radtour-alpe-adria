@@ -69,6 +69,7 @@ export function useWeather(days: WeatherDay[]): { byDay: Record<number, WeatherE
         const url =
           `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}` +
           `&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode` +
+          `&hourly=temperature_2m,precipitation,weathercode` +
           `&timezone=auto&start_date=${d.date}&end_date=${d.date}`;
         try {
           const res = await fetch(url);
@@ -78,23 +79,50 @@ export function useWeather(days: WeatherDay[]): { byDay: Record<number, WeatherE
           if (!dd?.time?.length) return { day: d.day, r: { status: 'error' as const } };
           const tMax = dd.temperature_2m_max[0];
           const tMin = dd.temperature_2m_min[0];
-          // na hraně horizontu API datum přijme, ale hodnoty jsou null
-          // (model tak daleko ještě nedosáhl) → fallback na klimatologii
-          if (typeof tMax !== 'number' || typeof tMin !== 'number') {
-            return { day: d.day, r: { status: 'no_data' as const } };
-          }
-          return {
-            day: d.day,
-            r: {
-              status: 'ok' as const,
-              data: {
-                tMax,
-                tMin,
-                precip: dd.precipitation_sum[0] ?? 0,
-                code: dd.weathercode[0] ?? 3,
+          if (typeof tMax === 'number' && typeof tMin === 'number') {
+            return {
+              day: d.day,
+              r: {
+                status: 'ok' as const,
+                data: {
+                  tMax,
+                  tMin,
+                  precip: dd.precipitation_sum[0] ?? 0,
+                  code: dd.weathercode[0] ?? 3,
+                },
               },
-            },
-          };
+            };
+          }
+          // Denní souhrn na hraně horizontu ještě chybí (null), ale hodinový
+          // model často dosáhne dřív → souhrn si spočítáme z hodin sami,
+          // aby karty nikdy nezaostávaly za rozpisem trasy.
+          const h = j?.hourly;
+          const temps: (number | null)[] = h?.temperature_2m ?? [];
+          const valid = temps.filter((t: number | null): t is number => typeof t === 'number');
+          if (valid.length >= 20) {
+            const precips: (number | null)[] = h?.precipitation ?? [];
+            const codes: (number | null)[] = h?.weathercode ?? [];
+            // reprezentativní stav: nejvýraznější počasí přes den (7–20 h)
+            let code = 0;
+            for (let i = 7; i <= 20 && i < codes.length; i++) {
+              const c = codes[i];
+              if (typeof c === 'number' && c > code) code = c;
+            }
+            return {
+              day: d.day,
+              r: {
+                status: 'ok' as const,
+                data: {
+                  tMax: Math.max(...valid),
+                  tMin: Math.min(...valid),
+                  precip: precips.reduce((a: number, p) => a + (p ?? 0), 0),
+                  code,
+                },
+              },
+            };
+          }
+          // ani hodinová data nejsou → fallback na klimatologii
+          return { day: d.day, r: { status: 'no_data' as const } };
         } catch {
           return { day: d.day, r: { status: 'error' as const } };
         }
