@@ -101,20 +101,30 @@ export const WAYPOINTS: Waypoint[] = [
   { day: 4, dist: 396, lat: 45.6772, lon: 13.3939, name: 'Grado', time: '2026-07-24T15:30', tag: 'Cíl' },
 ];
 
-// Města zobrazená na mapě (pojmenovaná) — bez drobných POI, ať je mapa přehledná.
+// Města zobrazená na mapě — všechny zastávky trasy (trvalé popisky se při
+// oddálení stejně omezují na konce etap, takže se mapa nezahltí).
 export const MAP_CITIES = [
   'Salzburg',
   'Hallein',
+  'Golling',
+  'Werfen',
   'Bischofshofen',
   'St. Johann im Pongau',
+  'Bad Hofgastein',
   'Bad Gastein',
+  'Böckstein',
+  'Mallnitz',
+  'Obervellach',
   'Spittal an der Drau',
   'Villach',
+  'Arnoldstein',
   'Tarvisio',
   'Pontebba',
+  'Venzone',
   'Gemona del Friuli',
   'Udine',
   'Palmanova',
+  'Aquileia',
   'Grado',
 ];
 

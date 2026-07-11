@@ -92,11 +92,13 @@ export default function App() {
 
   // města + hranice AT/IT pro výškový profil (ze snapnutých waypointů)
   const profileCities = useMemo(() => {
+    // vše kromě Böcksteinu — je 3 km od Bad Gasteinu (popisky by kolidovaly)
+    // a na profilu ho už značí vlakový pás Tauernschleuse
     const want = [
-      'Salzburg', 'Hallein', 'Werfen', 'Bischofshofen', 'St. Johann im Pongau',
-      'Bad Hofgastein', 'Bad Gastein', 'Mallnitz', 'Spittal an der Drau', 'Villach',
-      'Tarvisio', 'Pontebba', 'Venzone', 'Gemona del Friuli', 'Udine', 'Palmanova',
-      'Aquileia', 'Grado',
+      'Salzburg', 'Hallein', 'Golling', 'Werfen', 'Bischofshofen', 'St. Johann im Pongau',
+      'Bad Hofgastein', 'Bad Gastein', 'Mallnitz', 'Obervellach', 'Spittal an der Drau',
+      'Villach', 'Arnoldstein', 'Tarvisio', 'Pontebba', 'Venzone', 'Gemona del Friuli',
+      'Udine', 'Palmanova', 'Aquileia', 'Grado',
     ];
     const SHORT: Record<string, string> = {
       'Gemona del Friuli': 'Gemona',
