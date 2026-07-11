@@ -54,7 +54,11 @@ export function forecastAt(h: StopHourly | undefined, etaMin: number): StopForec
  * řady po zastávkách (výběr konkrétní hodiny dělá volající — plánovaný čas
  * i živý čas podle polohy) a hodinovou řadu srážek „kde právě jsme".
  */
-export function useRouteForecast(stops: RouteStop[]): {
+export function useRouteForecast(
+  stops: RouteStop[],
+  /** zvýšení čísla vynutí nové stažení předpovědi (tlačítko Aktualizovat) */
+  refresh = 0,
+): {
   hourlyByStop: Record<string, StopHourly | undefined>;
   hoursByDate: Record<string, HourPrecip[] | undefined>;
 } {
@@ -154,7 +158,7 @@ export function useRouteForecast(stops: RouteStop[]): {
     return () => {
       alive = false;
     };
-  }, [key]);
+  }, [key, refresh]);
 
   return { hourlyByStop: data.hourlyByStop, hoursByDate: data.hoursByDate };
 }

@@ -7,16 +7,40 @@ export type WeatherDayMeta = { day: DayNum; label: string; town: string };
 interface Props {
   days: WeatherDayMeta[];
   byDay: Record<number, WeatherEntry>;
+  /** ruční aktualizace předpovědi */
+  onRefresh?: () => void;
+  updatedAt?: Date | null;
 }
 
-export function WeatherDays({ days, byDay }: Props) {
+export function WeatherDays({ days, byDay, onRefresh, updatedAt }: Props) {
+  const loading = days.some((d) => byDay[d.day]?.status === 'loading');
   return (
     <section className="mt-10 md:mt-12">
-      <SectionTitle
-        eyebrow="Počasí"
-        title="Předpověď po dnech"
-        hint="Do 15 dní před výjezdem reálná předpověď z Open-Meteo. Zatím ukazujeme typické počasí — průměr z posledních 10 let pro dané místo a datum."
-      />
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <SectionTitle
+          eyebrow="Počasí"
+          title="Předpověď po dnech"
+          hint="Do 15 dní před výjezdem reálná předpověď z Open-Meteo. Zatím ukazujeme typické počasí — průměr z posledních 10 let pro dané místo a datum."
+        />
+        {onRefresh && (
+          <div className="shrink-0 text-right">
+            <button
+              type="button"
+              onClick={onRefresh}
+              disabled={loading}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-ink hover:border-sea transition-colors disabled:opacity-50"
+            >
+              <span className={loading ? 'inline-block animate-spin' : ''}>🔄</span>
+              {loading ? 'Aktualizuji…' : 'Aktualizovat'}
+            </button>
+            {updatedAt && (
+              <div className="mt-1 text-[11px] text-slate-500">
+                naposledy {updatedAt.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {days.map((d) => {
           const w = byDay[d.day];

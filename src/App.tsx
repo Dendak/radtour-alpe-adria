@@ -155,7 +155,14 @@ export default function App() {
       }),
     [],
   );
-  const { byDay } = useWeather(weatherInput);
+  // ruční aktualizace předpovědi (tlačítko v sekci Počasí)
+  const [weatherRefresh, setWeatherRefresh] = useState(0);
+  const [weatherUpdatedAt, setWeatherUpdatedAt] = useState<Date | null>(null);
+  const refreshWeather = () => {
+    setWeatherRefresh((n) => n + 1);
+    setWeatherUpdatedAt(new Date());
+  };
+  const { byDay } = useWeather(weatherInput, weatherRefresh);
 
   const weatherMeta = useMemo<WeatherDayMeta[]>(
     () =>
@@ -229,8 +236,8 @@ export default function App() {
           className="scroll-mt-16 mt-10 md:mt-12 -mx-5 px-5 md:-mx-6 md:px-6 pt-1 pb-8 md:pb-10 rounded-none md:rounded-[2rem] bg-sea/[0.06]"
           data-reveal
         >
-          <WeatherDays days={weatherMeta} byDay={byDay} />
-          <RouteWeather waypoints={waypoints} userDist={routeUserDist} simDate={sim.date} />
+          <WeatherDays days={weatherMeta} byDay={byDay} onRefresh={refreshWeather} updatedAt={weatherUpdatedAt} />
+          <RouteWeather waypoints={waypoints} userDist={routeUserDist} simDate={sim.date} refresh={weatherRefresh} />
         </div>
         <div id="na-trase" className="scroll-mt-16" data-reveal>
           <OnRoute />

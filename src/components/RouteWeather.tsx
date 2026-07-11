@@ -72,16 +72,18 @@ interface Props {
   userDist?: number | null;
   /** override „dneška" pro vyzkoušení živého režimu (?simdate=…) */
   simDate?: string | null;
+  /** zvýšení čísla vynutí nové stažení předpovědi */
+  refresh?: number;
 }
 
 function toIso(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-export function RouteWeather({ waypoints, userDist = null, simDate = null }: Props) {
+export function RouteWeather({ waypoints, userDist = null, simDate = null, refresh = 0 }: Props) {
   const stops = useMemo(() => routeSchedule(waypoints), [waypoints]);
   const { byStop } = useRouteClimate(stops);
-  const { hourlyByStop, hoursByDate } = useRouteForecast(stops);
+  const { hourlyByStop, hoursByDate } = useRouteForecast(stops, refresh);
 
   // živý čas — tiká jen když známe polohu (kvůli přepočtu ETA)
   const [now, setNow] = useState(() => new Date());

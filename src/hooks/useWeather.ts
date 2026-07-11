@@ -45,7 +45,11 @@ type ForecastResult = Record<
 >;
 type ClimateResult = Record<number, { status: 'climate'; data: ClimateData } | { status: 'too_far' }>;
 
-export function useWeather(days: WeatherDay[]): { byDay: Record<number, WeatherEntry> } {
+export function useWeather(
+  days: WeatherDay[],
+  /** zvýšení čísla vynutí nové stažení předpovědi (tlačítko Aktualizovat) */
+  refresh = 0,
+): { byDay: Record<number, WeatherEntry> } {
   const [forecast, setForecast] = useState<ForecastResult>({});
   const [climate, setClimate] = useState<ClimateResult>({});
   const daysRef = useRef(days);
@@ -56,12 +60,13 @@ export function useWeather(days: WeatherDay[]): { byDay: Record<number, WeatherE
   // krátkodobá předpověď (≤ 16 dní)
   useEffect(() => {
     let alive = true;
+    // při ruční aktualizaci ukázat načítací stav (vyčistit staré hodnoty)
+    setForecast({});
     const toFetch = daysRef.current.filter((d) => {
       const du = daysUntil(d.date);
       return du >= 0 && du <= HORIZON;
     });
     if (toFetch.length === 0) {
-      setForecast({});
       return;
     }
     Promise.all(
@@ -136,7 +141,7 @@ export function useWeather(days: WeatherDay[]): { byDay: Record<number, WeatherE
     return () => {
       alive = false;
     };
-  }, [key]);
+  }, [key, refresh]);
 
   // Klimatický normál — stahujeme pro VŠECHNY budoucí dny (přes cache je to
   // levné): slouží jako obsah pro dny mimo horizont předpovědi a zároveň
