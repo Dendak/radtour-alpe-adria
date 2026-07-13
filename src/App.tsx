@@ -15,6 +15,8 @@ import { ScrollTop } from './components/ScrollTop';
 import { DayOverview } from './components/DayOverview';
 import { useGpxTrack, computeDayStats, nearestOnTrack } from './hooks/useGpxTrack';
 import { useWeather, type WeatherDay } from './hooks/useWeather';
+import { useEnsemble } from './hooks/useEnsemble';
+import { routeSchedule } from './lib/schedule';
 import { DAY_DATES, DAY_NAMES, WAYPOINTS, type DayNum } from './data/trip';
 
 const TripMap = lazy(() => import('./components/TripMap'));
@@ -166,6 +168,10 @@ export default function App() {
   };
   const { byDay } = useWeather(weatherInput, weatherRefresh);
 
+  // ensemble GFS (31 běhů): pravděpodobnosti deště pro karty i rozpis trasy
+  const routeStops = useMemo(() => routeSchedule(waypoints), [waypoints]);
+  const ensemble = useEnsemble(routeStops, weatherRefresh);
+
   const weatherMeta = useMemo<WeatherDayMeta[]>(
     () =>
       DAYS.map((d) => ({
@@ -238,8 +244,20 @@ export default function App() {
           className="scroll-mt-16 mt-10 md:mt-12 -mx-5 px-5 md:-mx-6 md:px-6 pt-1 pb-8 md:pb-10 rounded-none md:rounded-[2rem] bg-sea/[0.06]"
           data-reveal
         >
-          <WeatherDays days={weatherMeta} byDay={byDay} onRefresh={refreshWeather} updatedAt={weatherUpdatedAt} />
-          <RouteWeather waypoints={waypoints} userDist={routeUserDist} simDate={sim.date} refresh={weatherRefresh} />
+          <WeatherDays
+            days={weatherMeta}
+            byDay={byDay}
+            ensemble={ensemble.byDay}
+            onRefresh={refreshWeather}
+            updatedAt={weatherUpdatedAt}
+          />
+          <RouteWeather
+            waypoints={waypoints}
+            userDist={routeUserDist}
+            simDate={sim.date}
+            refresh={weatherRefresh}
+            ensembleByStop={ensemble.byStop}
+          />
         </div>
         <div id="na-trase" className="scroll-mt-16" data-reveal>
           <OnRoute />

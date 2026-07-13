@@ -74,13 +74,21 @@ interface Props {
   simDate?: string | null;
   /** zvýšení čísla vynutí nové stažení předpovědi */
   refresh?: number;
+  /** ensemble: podíl běhů s deštěm při průjezdu (0–1) po zastávkách */
+  ensembleByStop?: Record<string, number | undefined>;
 }
 
 function toIso(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-export function RouteWeather({ waypoints, userDist = null, simDate = null, refresh = 0 }: Props) {
+export function RouteWeather({
+  waypoints,
+  userDist = null,
+  simDate = null,
+  refresh = 0,
+  ensembleByStop,
+}: Props) {
   const stops = useMemo(() => routeSchedule(waypoints), [waypoints]);
   const { byStop } = useRouteClimate(stops);
   const { hourlyByStop, hoursByDate } = useRouteForecast(stops, refresh);
@@ -185,11 +193,19 @@ export function RouteWeather({ waypoints, userDist = null, simDate = null, refre
                         </span>
                       </span>
                       {f ? (
-                        // reálná hodinová předpověď: stav + srážky v mm v čase průjezdu
+                        // reálná hodinová předpověď: stav + % běhů ensemblu
+                        // s deštěm při průjezdu + srážky v mm
                         <span className="flex items-center gap-2 shrink-0">
                           <span className="text-base font-extrabold tabular-nums">{tHour}°</span>
-                          <span className="text-[11px] text-slate-500 w-20 text-right whitespace-nowrap">
-                            {wmoEmoji(f.code)} {f.precip > 0 ? `${f.precip.toFixed(1)} mm` : '0 mm'}
+                          <span
+                            className="text-[11px] text-slate-500 w-24 text-right whitespace-nowrap"
+                            title="stav · pravděpodobnost deště při průjezdu (ensemble) · srážky"
+                          >
+                            {wmoEmoji(f.code)}
+                            {ensembleByStop?.[s.stopKey] != null
+                              ? ` ${Math.round((ensembleByStop[s.stopKey] as number) * 100)} %`
+                              : ''}{' '}
+                            · {f.precip > 0 ? `${f.precip.toFixed(1)} mm` : '0 mm'}
                           </span>
                         </span>
                       ) : climOk ? (

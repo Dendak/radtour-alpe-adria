@@ -1,18 +1,21 @@
 import { SectionTitle } from './SectionTitle';
 import { wmoEmoji, wmoText, type DayNum } from '@/data/trip';
 import type { WeatherEntry } from '@/hooks/useWeather';
+import type { DayEnsemble } from '@/hooks/useEnsemble';
 
 export type WeatherDayMeta = { day: DayNum; label: string; town: string };
 
 interface Props {
   days: WeatherDayMeta[];
   byDay: Record<number, WeatherEntry>;
+  /** souhrn ensemblu (31 běhů GFS) po dnech */
+  ensemble?: Record<number, DayEnsemble | undefined>;
   /** ruční aktualizace předpovědi */
   onRefresh?: () => void;
   updatedAt?: Date | null;
 }
 
-export function WeatherDays({ days, byDay, onRefresh, updatedAt }: Props) {
+export function WeatherDays({ days, byDay, ensemble, onRefresh, updatedAt }: Props) {
   const loading = days.some((d) => byDay[d.day]?.status === 'loading');
   return (
     <section className="mt-10 md:mt-12">
@@ -44,6 +47,7 @@ export function WeatherDays({ days, byDay, onRefresh, updatedAt }: Props) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {days.map((d) => {
           const w = byDay[d.day];
+          const ens = ensemble?.[d.day];
           return (
             <div key={d.day} className="card p-4 lift">
               <div className="text-xs font-bold uppercase tracking-wide text-slate-500">{d.label}</div>
@@ -80,6 +84,16 @@ export function WeatherDays({ days, byDay, onRefresh, updatedAt }: Props) {
                   {w?.status === 'loading' && 'Načítám…'}
                   {w?.status === 'error' && 'Nedostupné'}
                   {w?.status === 'past' && 'Proběhlo'}
+                </div>
+              )}
+              {ens && (
+                <div
+                  className="mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-500"
+                  title={`Souhrn ${ens.members} běhů modelu GFS — jak moc se předpověď „shodne sama se sebou"`}
+                >
+                  🎲 {ens.members} běhů: déšť{' '}
+                  <span className="font-semibold text-ink">{Math.round(ens.rainProb * 100)} %</span> · max{' '}
+                  {Math.round(ens.tMaxMin)}–{Math.round(ens.tMaxMax)}°
                 </div>
               )}
             </div>
