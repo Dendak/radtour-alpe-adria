@@ -29,8 +29,10 @@ export type RouteStop = {
 };
 
 export function fmtHM(min: number): string {
-  const h = Math.floor(min / 60) % 24;
-  const m = Math.round(min % 60);
+  // zaokrouhlit NEJDŘÍV celkové minuty — jinak 10:59,6 vyjde jako „10:60"
+  const total = Math.round(min);
+  const h = Math.floor(total / 60) % 24;
+  const m = total % 60;
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
 
