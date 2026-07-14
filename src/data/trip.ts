@@ -347,11 +347,14 @@ export const STAYS: Stay[] = [
   },
   {
     night: 'Nocleh 3 · Čt 23. 7.', town: 'Gemona del Friuli', nights: 1, tentative: false,
-    mapsQuery: 'Gemona del Friuli hotel',
+    name: 'B&B Rio Rai',
+    mapsQuery: 'B&B Rio Rai Gemona del Friuli',
+    website: 'https://www.riorai.net',
     description:
       'Rezervováno: třílůžkový pokoj (131 €) + prostorný dvoulůžkový (91 €), celkem 222 € / 5 osob. ' +
-      'Bez snídaně v ceně — snídaně 5 €/os. Rezervace s bezplatným stornem.',
-    amenities: ['3+2 lůžka', 'Snídaně 5 €/os.', 'Storno zdarma'],
+      'Bez snídaně v ceně — snídaně 5 €/os. Bezplatné storno. ' +
+      'Agroturistika rodiny Patat — vlastní farmářské produkty.',
+    amenities: ['3+2 lůžka', 'Snídaně 5 €/os.', 'Storno zdarma', 'Farma'],
   },
   {
     night: 'Nocleh 4 · Pá 24. 7.', town: 'Grado', nights: 1, tentative: true,
