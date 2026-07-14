@@ -8,7 +8,7 @@ export function Stays() {
       <SectionTitle
         eyebrow="Ubytování"
         title="Kde spíme"
-        hint="Zatím návrhy — jakmile bude rezervováno, doplníme název, adresu a cenu."
+        hint="Postupně rezervujeme — potvrzené noclehy mají ✓, ostatní jsou zatím návrhy."
       />
       <div className="grid sm:grid-cols-2 gap-3">
         {STAYS.map((s) => (

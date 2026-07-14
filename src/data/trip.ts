@@ -346,10 +346,12 @@ export const STAYS: Stay[] = [
     amenities: ['Kolárna', 'Snídaně', 'Centrum'],
   },
   {
-    night: 'Nocleh 3 · Čt 23. 7.', town: 'Gemona del Friuli', nights: 1, tentative: true,
-    mapsQuery: 'B&B Gemona del Friuli',
-    description: 'B&B nebo albergo v Gemoně/Venzone. Region je podél cyklostezky dobře vybavený pro cyklisty.',
-    amenities: ['Kolárna', 'Snídaně'],
+    night: 'Nocleh 3 · Čt 23. 7.', town: 'Gemona del Friuli', nights: 1, tentative: false,
+    mapsQuery: 'Gemona del Friuli hotel',
+    description:
+      'Rezervováno: třílůžkový pokoj (131 €) + prostorný dvoulůžkový (91 €), celkem 222 € / 5 osob. ' +
+      'Bez snídaně v ceně — snídaně 5 €/os. Rezervace s bezplatným stornem.',
+    amenities: ['3+2 lůžka', 'Snídaně 5 €/os.', 'Storno zdarma'],
   },
   {
     night: 'Nocleh 4 · Pá 24. 7.', town: 'Grado', nights: 1, tentative: true,
