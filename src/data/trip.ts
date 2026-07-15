@@ -32,8 +32,8 @@ export const TEAM: TeamMember[] = [
   { name: 'Denis Holub' },
   { name: 'Karolína Masařová' },
   { name: 'Petra Masařová' },
-  { name: 'Kevin Holub', optional: true },
-  { name: 'Dáša Medů', optional: true },
+  { name: 'Kevin Holub' },
+  { name: 'Dáša Medů' },
 ];
 
 export const DAY_COLORS: Record<DayNum, string> = {
