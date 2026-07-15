@@ -12,7 +12,24 @@ export function Stays() {
       />
       <div className="grid sm:grid-cols-2 gap-3">
         {STAYS.map((s) => (
-          <article key={s.night} className="card p-5 lift">
+          <article key={s.night} className="card overflow-hidden lift flex flex-col">
+            {s.photos && s.photos.length > 0 && (
+              <div className={'grid gap-px ' + (s.photos.length > 1 ? 'grid-cols-2' : '')}>
+                {s.photos.slice(0, 2).map((p) => (
+                  <img
+                    key={p.src}
+                    src={p.src}
+                    alt={p.alt}
+                    loading="lazy"
+                    className="h-32 md:h-36 w-full object-cover bg-slate-100"
+                    onError={(e) => {
+                      (e.currentTarget.parentElement as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+            <div className="p-5 flex-1">
             <div className="flex items-center justify-between gap-2">
               <div className="text-xs font-bold uppercase tracking-wide text-slate-500">{s.night}</div>
               <span
@@ -39,7 +56,7 @@ export function Stays() {
                 </span>
               ))}
             </div>
-            <div className="mt-2.5 flex gap-3 text-sm font-semibold">
+            <div className="mt-2.5 flex flex-wrap items-baseline gap-3 text-sm font-semibold">
               <a href={mapsUrl(s.mapsQuery)} target="_blank" rel="noopener noreferrer" className="text-sea">
                 Hledat v mapě →
               </a>
@@ -48,6 +65,12 @@ export function Stays() {
                   Web →
                 </a>
               )}
+              {s.photos && s.photos.length > 0 && s.website && (
+                <span className="ml-auto text-[11px] font-normal text-slate-500">
+                  foto: {new URL(s.website).hostname.replace('www.', '')}
+                </span>
+              )}
+            </div>
             </div>
           </article>
         ))}

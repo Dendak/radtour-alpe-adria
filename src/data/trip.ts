@@ -330,6 +330,8 @@ export type Stay = {
   amenities: string[];
   website?: string;
   name?: string;
+  /** fotky ubytování — hotlink z webu objektu (zdroj uveden na kartě) */
+  photos?: { src: string; alt: string }[];
 };
 
 export const STAYS: Stay[] = [
@@ -355,6 +357,16 @@ export const STAYS: Stay[] = [
       'Bez snídaně v ceně — snídaně 5 €/os. Bezplatné storno. ' +
       'Agroturistika rodiny Patat — vlastní farmářské produkty.',
     amenities: ['3+2 lůžka', 'Snídaně 5 €/os.', 'Storno zdarma', 'Farma'],
+    photos: [
+      {
+        src: 'https://static.wixstatic.com/media/c34cf9_f1cad35a056a44e2b3ffba1451112bf2~mv2.jpg/v1/fill/w_800,h_520,al_c,q_85/riorai.jpg',
+        alt: 'B&B Rio Rai — budova',
+      },
+      {
+        src: 'https://static.wixstatic.com/media/c34cf9_1ead3344fd284c1393c152a2f0318f0c~mv2.jpg/v1/fill/w_800,h_520,al_c,q_85/riorai-pokoj.jpg',
+        alt: 'B&B Rio Rai — pokoj',
+      },
+    ],
   },
   {
     night: 'Nocleh 4 · Pá 24. 7.', town: 'Grado', nights: 1, tentative: true,
