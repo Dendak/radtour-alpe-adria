@@ -347,8 +347,9 @@ export const STAYS: Stay[] = [
     amenities: ['Polopenze', 'Felsentherme v ceně', '1+2+2 lůžka', 'U termálů'],
     photos: [
       {
-        src: 'https://www.thermenhotel-krone.at/assets/images/heads/hotelansicht-sommer-tag.jpg',
-        alt: 'Thermenhotel Krone — budova v létě',
+        // letecký pohled: Felsentherme + šipka na hotel — je vidět, jak blízko to je
+        src: 'https://www.thermenhotel-krone.at/assets/images/heads/sommerurlaub-hotel-therme-bad-gastein.jpg',
+        alt: 'Letecký pohled — Felsentherme a Thermenhotel Krone přes ulici',
       },
       {
         src: 'https://www.thermenhotel-krone.at/assets/images/zimmer/graukogel/doppelzimmer.jpg',
