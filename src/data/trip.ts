@@ -336,16 +336,46 @@ export type Stay = {
 
 export const STAYS: Stay[] = [
   {
-    night: 'Nocleh 1 · Út 21. 7.', town: 'Bad Gastein', nights: 1, tentative: true,
-    mapsQuery: 'Hotel Bad Gastein Zentrum',
-    description: 'Hotel či penzion v centru lázní, ideálně poblíž vodopádu. Hlídat uzamykatelnou kolárnu.',
-    amenities: ['Kolárna', 'Snídaně', 'Centrum'],
+    night: 'Nocleh 1 · Út 21. 7.', town: 'Bad Gastein', nights: 1, tentative: false,
+    name: 'Thermenhotel Krone',
+    mapsQuery: 'Thermenhotel Krone Bad Gastein',
+    website: 'https://www.thermenhotel-krone.at',
+    description:
+      'Rezervováno s polopenzí: 459 € / 5 osob (92 €/os.). Jednolůžkový (Kevin) + 2× dvoulůžkový ' +
+      '(Petra+Dáša, Karolína+Denis). Neomezený vstup do Felsentherme (9–21 h) v ceně — ' +
+      'hotel stojí přímo naproti termálům, u nádraží.',
+    amenities: ['Polopenze', 'Felsentherme v ceně', '1+2+2 lůžka', 'U termálů'],
+    photos: [
+      {
+        src: 'https://www.thermenhotel-krone.at/assets/images/heads/hotelansicht-sommer-tag.jpg',
+        alt: 'Thermenhotel Krone — budova v létě',
+      },
+      {
+        src: 'https://www.thermenhotel-krone.at/assets/images/zimmer/graukogel/doppelzimmer.jpg',
+        alt: 'Thermenhotel Krone — dvoulůžkový pokoj',
+      },
+    ],
   },
   {
-    night: 'Nocleh 2 · St 22. 7.', town: 'Villach', nights: 1, tentative: true,
-    mapsQuery: 'Hotel Villach Innenstadt',
-    description: 'Městský hotel ve Villachu, dobrá nabídka restaurací na náměstí. Drávská stezka vede přímo městem.',
-    amenities: ['Kolárna', 'Snídaně', 'Centrum'],
+    night: 'Nocleh 2 · St 22. 7.', town: 'Villach', nights: 1, tentative: false,
+    name: 'Hotel City',
+    mapsQuery: 'Hotel City Villach Bahnhofplatz',
+    website: 'https://hotelcity.at',
+    description:
+      'Rezervováno se snídaní: 350 € / 5 osob (70 €/os.). Jednolůžkový (Kevin) + 2× dvoulůžkový ' +
+      '(Petra+Dáša, Karolína+Denis). Čerstvě renovovaný hotel přímo v centru na Bahnhofplatz — ' +
+      'večeře na náměstí pěšky, čtvrteční etapa startuje ode dveří.',
+    amenities: ['Snídaně', '4★ v centru', '1+2+2 lůžka'],
+    photos: [
+      {
+        src: 'https://hotelcity.at/wp-content/uploads/2025/07/HotelCity-3-compressed-1280x853.jpg',
+        alt: 'Hotel City Villach — salonek',
+      },
+      {
+        src: 'https://hotelcity.at/wp-content/uploads/2024/10/superior-bett.jpg',
+        alt: 'Hotel City Villach — pokoj Superior',
+      },
+    ],
   },
   {
     night: 'Nocleh 3 · Čt 23. 7.', town: 'Gemona del Friuli', nights: 1, tentative: false,
@@ -353,8 +383,8 @@ export const STAYS: Stay[] = [
     mapsQuery: 'B&B Rio Rai Gemona del Friuli',
     website: 'https://www.riorai.net',
     description:
-      'Rezervováno: třílůžkový pokoj (131 €) + prostorný dvoulůžkový (91 €), celkem 222 € / 5 osob. ' +
-      'Bez snídaně v ceně — snídaně 5 €/os. Bezplatné storno. ' +
+      'Rezervováno: třílůžkový pokoj (131 €, Karolína+Denis+Kevin) + dvoulůžkový (91 €, Petra+Dáša), ' +
+      'celkem 222 € / 5 osob. Bez snídaně v ceně — snídaně 5 €/os. Bezplatné storno. ' +
       'Agroturistika rodiny Patat — vlastní farmářské produkty.',
     amenities: ['3+2 lůžka', 'Snídaně 5 €/os.', 'Storno zdarma', 'Farma'],
     photos: [
