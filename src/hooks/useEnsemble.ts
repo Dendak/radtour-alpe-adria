@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RouteStop } from '@/lib/schedule';
+import { fetchJsonRetry } from '@/lib/fetchRetry';
 
 /** Souhrn ensemblu (31 běhů GFS) pro jeden den — u cíle etapy. */
 export type DayEnsemble = {
@@ -70,19 +71,7 @@ export function useEnsemble(
           `&hourly=temperature_2m,precipitation&models=gfs_seamless` +
           `&timezone=auto&start_date=${date}&end_date=${date}`;
         try {
-          let j: unknown = null;
-          for (let t = 1; t <= 3; t++) {
-            const res = await fetch(url);
-            if (res.ok) {
-              j = await res.json();
-              break;
-            }
-            if (res.status === 429 && t < 3) {
-              await new Promise((r) => setTimeout(r, 2500 * t));
-              continue;
-            }
-            throw new Error(`http ${res.status}`);
-          }
+          const j = await fetchJsonRetry(url);
           const arr = (Array.isArray(j) ? j : [j]) as { hourly?: Hourly }[];
 
           // % deště při průjezdu pro každou zastávku

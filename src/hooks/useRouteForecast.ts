@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RouteStop } from '@/lib/schedule';
+import { fetchJsonRetry } from '@/lib/fetchRetry';
 
 /** Reálná hodinová předpověď pro zastávku v konkrétní čas. */
 export type StopForecast = {
@@ -96,9 +97,7 @@ export function useRouteForecast(
         const out: Record<string, StopHourly> = {};
         let hours: HourPrecip[] | null = null;
         try {
-          const res = await fetch(url);
-          if (!res.ok) return { out, date, hours };
-          const j = await res.json();
+          const j = await fetchJsonRetry(url);
           // jedna lokalita → objekt; více → pole
           const arr = (Array.isArray(j) ? j : [j]) as {
             hourly?: {

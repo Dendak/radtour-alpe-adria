@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { fetchArchive } from '@/lib/openMeteoArchive';
+import { fetchJsonRetry } from '@/lib/fetchRetry';
 
 export type DayWeather = { tMax: number; tMin: number; precip: number; code: number };
 
@@ -77,9 +78,8 @@ export function useWeather(
           `&hourly=temperature_2m,precipitation,weathercode` +
           `&timezone=auto&start_date=${d.date}&end_date=${d.date}`;
         try {
-          const res = await fetch(url);
-          if (!res.ok) throw new Error('http');
-          const j = await res.json();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const j = (await fetchJsonRetry(url)) as any;
           const dd = j?.daily;
           if (!dd?.time?.length) return { day: d.day, r: { status: 'error' as const } };
           const tMax = dd.temperature_2m_max[0];
