@@ -31,7 +31,7 @@ function dayDestination(day: DayNum) {
 
 export default function App() {
   // ?v= verze proti cache — po každé změně GPX zvýšit (jinak prohlížeč/CDN drží starou trasu)
-  const gpxUrl = `${import.meta.env.BASE_URL}alpe-adria.gpx?v=2`;
+  const gpxUrl = `${import.meta.env.BASE_URL}alpe-adria.gpx?v=3`;
   const { track, waypoints, dayEnd, totalKm, loaded } = useGpxTrack(gpxUrl);
 
   // Úsek jetý vlakem (Tauernschleuse: Böckstein → Mallnitz) — pro profil i mapu.

@@ -19,7 +19,7 @@ export const TRIP = {
   title: 'Alpe Adria 2026',
   subtitle: 'Salzburg → Grado',
   dateLabel: 'Út 21. – Pá 24. července 2026',
-  totalKm: 396,
+  totalKm: 395,
   rideDays: 4,
   days: 4,
 };
@@ -64,7 +64,7 @@ export const DAY_CAPTIONS: Record<DayNum, string> = {
   4: 'Gemona → Grado · furlanskou nížinou k moři',
 };
 
-// Kumulativní km podle GPX (konce etap: 106 / 205 / 303 / 396); za běhu se ještě snapují na trasu
+// Kumulativní km podle GPX v2 (trasa přes rezervované hotely; konce etap: 108 / 205 / 306 / 394); za běhu se snapují na trasu
 export const WAYPOINTS: Waypoint[] = [
   // Den 1 — Salzburg → Bad Gastein
   { day: 1, dist: 0,   lat: 47.8009, lon: 13.0450, name: 'Salzburg', time: '2026-07-21T09:00', tag: 'Start' },
@@ -74,31 +74,31 @@ export const WAYPOINTS: Waypoint[] = [
   { day: 1, dist: 57,  lat: 47.4167, lon: 13.2206, name: 'Bischofshofen', time: '2026-07-21T13:00', tag: 'Oběd' },
   { day: 1, dist: 66,  lat: 47.3500, lon: 13.2017, name: 'St. Johann im Pongau', time: '2026-07-21T14:00', tag: 'Přestávka' },
   { day: 1, dist: 98,  lat: 47.1700, lon: 13.1019, name: 'Bad Hofgastein', time: '2026-07-21T16:00', tag: 'Přestávka' },
-  { day: 1, dist: 106, lat: 47.1147, lon: 13.1342, name: 'Bad Gastein', time: '2026-07-21T17:30', tag: 'Nocleh 1' },
+  { day: 1, dist: 108, lat: 47.1102, lon: 13.1330, name: 'Bad Gastein', time: '2026-07-21T17:30', tag: 'Nocleh 1' },
 
   // Den 2 — Bad Gastein → Villach (vlak Tauernschleuse)
-  { day: 2, dist: 106, lat: 47.1147, lon: 13.1342, name: 'Bad Gastein', time: '2026-07-22T09:00', tag: 'Start' },
+  { day: 2, dist: 108, lat: 47.1102, lon: 13.1330, name: 'Bad Gastein', time: '2026-07-22T09:00', tag: 'Start' },
   { day: 2, dist: 109, lat: 47.1083, lon: 13.1183, name: 'Böckstein', time: '2026-07-22T09:30', tag: 'Vlak' },
   { day: 2, dist: 123, lat: 46.9897, lon: 13.1689, name: 'Mallnitz', time: '2026-07-22T10:15', tag: 'Zajímavost' },
   { day: 2, dist: 132, lat: 46.9381, lon: 13.2017, name: 'Obervellach', time: '2026-07-22T11:15', tag: 'Přestávka' },
   { day: 2, dist: 166, lat: 46.7950, lon: 13.4969, name: 'Spittal an der Drau', time: '2026-07-22T13:30', tag: 'Oběd' },
-  { day: 2, dist: 205, lat: 46.6111, lon: 13.8558, name: 'Villach', time: '2026-07-22T17:00', tag: 'Nocleh 2' },
+  { day: 2, dist: 205, lat: 46.6177, lon: 13.8497, name: 'Villach', time: '2026-07-22T17:00', tag: 'Nocleh 2' },
 
   // Den 3 — Villach → Gemona
-  { day: 3, dist: 205, lat: 46.6111, lon: 13.8558, name: 'Villach', time: '2026-07-23T09:00', tag: 'Start' },
-  { day: 3, dist: 224, lat: 46.5489, lon: 13.7100, name: 'Arnoldstein', time: '2026-07-23T09:45', tag: 'Přestávka' },
-  { day: 3, dist: 238, lat: 46.5050, lon: 13.5800, name: 'Tarvisio', time: '2026-07-23T11:00', tag: 'Hranice' },
-  { day: 3, dist: 261, lat: 46.5050, lon: 13.3060, name: 'Pontebba', time: '2026-07-23T12:30', tag: 'Oběd' },
-  { day: 3, dist: 295, lat: 46.3344, lon: 13.1389, name: 'Venzone', time: '2026-07-23T15:00', tag: 'Zajímavost' },
-  { day: 3, dist: 303, lat: 46.2767, lon: 13.1378, name: 'Gemona del Friuli', time: '2026-07-23T16:30', tag: 'Nocleh 3' },
+  { day: 3, dist: 205, lat: 46.6177, lon: 13.8497, name: 'Villach', time: '2026-07-23T09:00', tag: 'Start' },
+  { day: 3, dist: 223, lat: 46.5489, lon: 13.7100, name: 'Arnoldstein', time: '2026-07-23T09:45', tag: 'Přestávka' },
+  { day: 3, dist: 237, lat: 46.5050, lon: 13.5800, name: 'Tarvisio', time: '2026-07-23T11:00', tag: 'Hranice' },
+  { day: 3, dist: 260, lat: 46.5050, lon: 13.3060, name: 'Pontebba', time: '2026-07-23T12:30', tag: 'Oběd' },
+  { day: 3, dist: 294, lat: 46.3344, lon: 13.1389, name: 'Venzone', time: '2026-07-23T15:00', tag: 'Zajímavost' },
+  { day: 3, dist: 306, lat: 46.2548, lon: 13.1134, name: 'Gemona del Friuli', time: '2026-07-23T16:30', tag: 'Nocleh 3' },
 
   // Den 4 — Gemona → Grado
-  { day: 4, dist: 303, lat: 46.2767, lon: 13.1378, name: 'Gemona del Friuli', time: '2026-07-24T09:00', tag: 'Start' },
-  { day: 4, dist: 339, lat: 46.0711, lon: 13.2347, name: 'Udine', time: '2026-07-24T09:30', tag: 'Přestávka' },
+  { day: 4, dist: 306, lat: 46.2548, lon: 13.1134, name: 'Gemona del Friuli', time: '2026-07-24T09:00', tag: 'Start' },
+  { day: 4, dist: 337, lat: 46.0711, lon: 13.2347, name: 'Udine', time: '2026-07-24T09:30', tag: 'Přestávka' },
   // oběd až za polovinou etapy (50. z 90 km) — v Udine (28. km) by bylo moc brzy
-  { day: 4, dist: 367, lat: 45.9047, lon: 13.3097, name: 'Palmanova', time: '2026-07-24T10:30', tag: 'Oběd' },
-  { day: 4, dist: 384, lat: 45.7700, lon: 13.3697, name: 'Aquileia', time: '2026-07-24T14:00', tag: 'Zajímavost' },
-  { day: 4, dist: 396, lat: 45.6772, lon: 13.3939, name: 'Grado', time: '2026-07-24T15:30', tag: 'Cíl' },
+  { day: 4, dist: 366, lat: 45.9047, lon: 13.3097, name: 'Palmanova', time: '2026-07-24T10:30', tag: 'Oběd' },
+  { day: 4, dist: 383, lat: 45.7700, lon: 13.3697, name: 'Aquileia', time: '2026-07-24T14:00', tag: 'Zajímavost' },
+  { day: 4, dist: 394, lat: 45.6772, lon: 13.3939, name: 'Grado', time: '2026-07-24T15:30', tag: 'Cíl' },
 ];
 
 // Města zobrazená na mapě — všechny zastávky trasy (trvalé popisky se při
