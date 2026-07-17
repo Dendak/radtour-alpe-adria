@@ -17,6 +17,7 @@ import { useGpxTrack, computeDayStats, nearestOnTrack } from './hooks/useGpxTrac
 import { useWeather, type WeatherDay } from './hooks/useWeather';
 import { useEnsemble } from './hooks/useEnsemble';
 import { routeSchedule } from './lib/schedule';
+import { bearing } from './lib/wind';
 import { DAY_DATES, DAY_NAMES, WAYPOINTS, type DayNum } from './data/trip';
 
 const TripMap = lazy(() => import('./components/TripMap'));
@@ -174,12 +175,21 @@ export default function App() {
 
   const weatherMeta = useMemo<WeatherDayMeta[]>(
     () =>
-      DAYS.map((d) => ({
-        day: d,
-        label: DAY_NAMES[d].split('—')[1]?.trim() ?? `Den ${d}`,
-        town: dayDestination(d).name,
-      })),
-    [],
+      DAYS.map((d) => {
+        // hrubý směr jízdy dne (start → cíl) pro klasifikaci větru
+        const wps = waypoints.filter((w) => w.day === d);
+        const b =
+          wps.length >= 2
+            ? bearing(wps[0].lat, wps[0].lon, wps[wps.length - 1].lat, wps[wps.length - 1].lon)
+            : undefined;
+        return {
+          day: d,
+          label: DAY_NAMES[d].split('—')[1]?.trim() ?? `Den ${d}`,
+          town: dayDestination(d).name,
+          bearing: b,
+        };
+      }),
+    [waypoints],
   );
 
   return (

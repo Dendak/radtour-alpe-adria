@@ -2,8 +2,15 @@ import { SectionTitle } from './SectionTitle';
 import { wmoEmoji, wmoText, type DayNum } from '@/data/trip';
 import type { WeatherEntry } from '@/hooks/useWeather';
 import type { DayEnsemble } from '@/hooks/useEnsemble';
+import { classifyWind, WIND_CLASS_TEXT, WIND_CLASS_ICON, windDirText } from '@/lib/wind';
 
-export type WeatherDayMeta = { day: DayNum; label: string; town: string };
+export type WeatherDayMeta = {
+  day: DayNum;
+  label: string;
+  town: string;
+  /** hrubý azimut jízdy dne (pro vítr do zad / proti) */
+  bearing?: number;
+};
 
 interface Props {
   days: WeatherDayMeta[];
@@ -62,6 +69,22 @@ export function WeatherDays({ days, byDay, ensemble, onRefresh, updatedAt }: Pro
                     {wmoText(w.data.code)}
                     {w.data.precip > 0 ? ` · ${w.data.precip.toFixed(1)} mm` : ''}
                   </div>
+                  {w.data.windMax != null && w.data.windDir != null && (
+                    <div
+                      className="text-xs text-slate-500 mt-0.5"
+                      title="Vítr: odkud fouká · max rychlost (nárazy) · vůči směru jízdy"
+                    >
+                      💨 {windDirText(w.data.windDir)} {Math.round(w.data.windMax)}
+                      {w.data.gustMax != null ? ` (${Math.round(w.data.gustMax)})` : ''} km/h
+                      {d.bearing != null && (
+                        <>
+                          {' · '}
+                          {WIND_CLASS_ICON[classifyWind(w.data.windDir, d.bearing)]}{' '}
+                          {WIND_CLASS_TEXT[classifyWind(w.data.windDir, d.bearing)]}
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
               ) : w?.status === 'climate' ? (
                 <div className="mt-2">

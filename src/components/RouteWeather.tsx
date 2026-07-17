@@ -9,13 +9,56 @@ import {
   type RouteStop,
 } from '@/lib/schedule';
 import { useRouteClimate } from '@/hooks/useRouteClimate';
-import { useRouteForecast, forecastAt, type HourPrecip } from '@/hooks/useRouteForecast';
+import { useRouteForecast, forecastAt, type HourPrecip, type StopHourly } from '@/hooks/useRouteForecast';
 import { DAY_NAMES, DAY_COLORS, wmoEmoji, type DayNum, type Waypoint } from '@/data/trip';
+import {
+  bearing,
+  classifyWind,
+  WIND_CLASS_TEXT,
+  WIND_CLASS_ICON,
+  windDirText,
+  type WindClass,
+} from '@/lib/wind';
 
 const RIDE_DAYS: DayNum[] = [1, 2, 3, 4];
 
 /** Zastávka s případně přepočítaným časem podle skutečné polohy. */
 type Row = RouteStop & { live?: boolean; passed?: boolean };
+
+/** Souhrn větru za den: rychlost/nárazy/směr + převládající klasifikace vůči jízdě. */
+function windSummary(dayStops: Row[], hourlyByStop: Record<string, StopHourly | undefined>) {
+  const items: { wind: number; gust: number; dirTxt: string; cls: WindClass }[] = [];
+  for (let i = 0; i < dayStops.length; i++) {
+    const s = dayStops[i];
+    const f = forecastAt(hourlyByStop[s.stopKey], s.etaMin);
+    if (!f || f.wind == null || f.windDir == null) continue;
+    // směr jízdy: k další zastávce (u poslední z předchozí)
+    const nb = i + 1 < dayStops.length ? dayStops[i + 1] : dayStops[i - 1];
+    if (!nb) continue;
+    const br =
+      i + 1 < dayStops.length
+        ? bearing(s.lat, s.lon, nb.lat, nb.lon)
+        : bearing(nb.lat, nb.lon, s.lat, s.lon);
+    items.push({
+      wind: f.wind,
+      gust: f.gust ?? f.wind,
+      dirTxt: windDirText(f.windDir),
+      cls: classifyWind(f.windDir, br),
+    });
+  }
+  if (!items.length) return null;
+  const mean = items.reduce((a, x) => a + x.wind, 0) / items.length;
+  const maxGust = Math.max(...items.map((x) => x.gust));
+  // převládající klasifikace vážená rychlostí (silný boční přebije slabé „do zad")
+  const score: Record<WindClass, number> = { tail: 0, head: 0, cross: 0 };
+  for (const x of items) score[x.cls] += x.wind;
+  const cls = (Object.keys(score) as WindClass[]).sort((a, b) => score[b] - score[a])[0];
+  // nejčastější směr
+  const cnt: Record<string, number> = {};
+  for (const x of items) cnt[x.dirTxt] = (cnt[x.dirTxt] ?? 0) + 1;
+  const dirTxt = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0];
+  return { mean, maxGust, cls, dirTxt };
+}
 
 /** Mini graf: srážky po hodinách v místě, kde v tu hodinu podle plánu jsme. */
 function PrecipHours({ hours, color }: { hours: HourPrecip[]; color: string }) {
@@ -227,6 +270,18 @@ export function RouteWeather({
                   );
                 })}
               </ol>
+              {(() => {
+                const w = windSummary(dayStops, hourlyByStop);
+                return w ? (
+                  <div
+                    className="mt-3 pt-2.5 border-t border-slate-100 text-[11px] text-slate-500"
+                    title="Vítr při jízdě: odkud fouká · průměr (max nárazy) · vůči směru jízdy po úsecích"
+                  >
+                    💨 Vítr při jízdě: {w.dirTxt} ~{Math.round(w.mean)} km/h · nárazy do{' '}
+                    {Math.round(w.maxGust)} · {WIND_CLASS_ICON[w.cls]} převážně {WIND_CLASS_TEXT[w.cls]}
+                  </div>
+                ) : null;
+              })()}
               {(() => {
                 const date = dayStops[0]?.date;
                 const hours = date ? hoursByDate[date] : undefined;

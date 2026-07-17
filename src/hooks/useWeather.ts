@@ -2,7 +2,18 @@ import { useEffect, useRef, useState } from 'react';
 import { fetchArchive } from '@/lib/openMeteoArchive';
 import { fetchJsonRetry } from '@/lib/fetchRetry';
 
-export type DayWeather = { tMax: number; tMin: number; precip: number; code: number };
+export type DayWeather = {
+  tMax: number;
+  tMin: number;
+  precip: number;
+  code: number;
+  /** max. rychlost větru (km/h) */
+  windMax?: number;
+  /** max. nárazy (km/h) */
+  gustMax?: number;
+  /** převládající směr — odkud fouká (°) */
+  windDir?: number;
+};
 
 /** Klimatický normál spočítaný z historických dat (Open-Meteo Archive). */
 export type ClimateData = {
@@ -74,7 +85,8 @@ export function useWeather(
       toFetch.map(async (d) => {
         const url =
           `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}` +
-          `&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode` +
+          `&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode,` +
+          `windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant` +
           `&hourly=temperature_2m,precipitation,weathercode` +
           `&timezone=auto&start_date=${d.date}&end_date=${d.date}`;
         try {
@@ -94,6 +106,9 @@ export function useWeather(
                   tMin,
                   precip: dd.precipitation_sum[0] ?? 0,
                   code: dd.weathercode[0] ?? 3,
+                  windMax: dd.windspeed_10m_max?.[0] ?? undefined,
+                  gustMax: dd.windgusts_10m_max?.[0] ?? undefined,
+                  windDir: dd.winddirection_10m_dominant?.[0] ?? undefined,
                 },
               },
             };

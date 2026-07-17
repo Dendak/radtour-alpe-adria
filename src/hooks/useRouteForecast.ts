@@ -10,6 +10,12 @@ export type StopForecast = {
   precip: number;
   /** WMO kód počasí */
   code: number;
+  /** vítr (km/h) v čase průjezdu */
+  wind?: number;
+  /** nárazy (km/h) */
+  gust?: number;
+  /** směr — odkud fouká (°) */
+  windDir?: number;
 };
 
 /** Celodenní hodinové řady pro jednu zastávku (24 hodnot). */
@@ -17,6 +23,9 @@ export type StopHourly = {
   temp: (number | null)[];
   precip: (number | null)[];
   code: (number | null)[];
+  wind?: (number | null)[];
+  gust?: (number | null)[];
+  windDir?: (number | null)[];
 };
 
 /** Srážky v jednu hodinu dne — v místě, kde v tu hodinu podle plánu budeme. */
@@ -46,7 +55,14 @@ export function forecastAt(h: StopHourly | undefined, etaMin: number): StopForec
   const t = h.temp[idx];
   // na hraně horizontu model vrací null → volající spadne na klimatologii
   if (typeof t !== 'number') return null;
-  return { temp: t, precip: h.precip[idx] ?? 0, code: h.code[idx] ?? 3 };
+  return {
+    temp: t,
+    precip: h.precip[idx] ?? 0,
+    code: h.code[idx] ?? 3,
+    wind: h.wind?.[idx] ?? undefined,
+    gust: h.gust?.[idx] ?? undefined,
+    windDir: h.windDir?.[idx] ?? undefined,
+  };
 }
 
 /**
@@ -92,7 +108,7 @@ export function useRouteForecast(
         const lons = dayStops.map((s) => s.lon).join(',');
         const url =
           `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}` +
-          `&hourly=temperature_2m,precipitation,weathercode` +
+          `&hourly=temperature_2m,precipitation,weathercode,windspeed_10m,windgusts_10m,winddirection_10m` +
           `&timezone=auto&start_date=${date}&end_date=${date}`;
         const out: Record<string, StopHourly> = {};
         let hours: HourPrecip[] | null = null;
@@ -105,6 +121,9 @@ export function useRouteForecast(
               temperature_2m: (number | null)[];
               precipitation: (number | null)[];
               weathercode: (number | null)[];
+              windspeed_10m?: (number | null)[];
+              windgusts_10m?: (number | null)[];
+              winddirection_10m?: (number | null)[];
             };
           }[];
           dayStops.forEach((s, i) => {
@@ -114,6 +133,9 @@ export function useRouteForecast(
               temp: h.temperature_2m ?? [],
               precip: h.precipitation ?? [],
               code: h.weathercode ?? [],
+              wind: h.windspeed_10m,
+              gust: h.windgusts_10m,
+              windDir: h.winddirection_10m,
             };
           });
 
