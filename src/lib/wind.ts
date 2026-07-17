@@ -43,3 +43,12 @@ export function windDirText(deg: number): string {
   const dirs = ['S', 'SV', 'V', 'JV', 'J', 'JZ', 'Z', 'SZ'];
   return dirs[Math.round(deg / 45) % 8];
 }
+
+/**
+ * Rotace šipky „kam vítr fouká" (mapově: sever nahoru, jih dolů).
+ * Vstup je meteorologický směr ODKUD fouká → šipka míří opačně:
+ * severák (0°) = šipka dolů (180°), západní (270°) = šipka doprava (90°).
+ */
+export function windArrowRotation(windFrom: number): number {
+  return (windFrom + 180) % 360;
+}

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { SectionTitle } from './SectionTitle';
+import { WindArrow } from './WeatherDays';
 import {
   routeSchedule,
   tempAtHour,
@@ -27,7 +28,7 @@ type Row = RouteStop & { live?: boolean; passed?: boolean };
 
 /** Souhrn větru za den: rychlost/nárazy/směr + převládající klasifikace vůči jízdě. */
 function windSummary(dayStops: Row[], hourlyByStop: Record<string, StopHourly | undefined>) {
-  const items: { wind: number; gust: number; dirTxt: string; cls: WindClass }[] = [];
+  const items: { wind: number; gust: number; dir: number; cls: WindClass }[] = [];
   for (let i = 0; i < dayStops.length; i++) {
     const s = dayStops[i];
     const f = forecastAt(hourlyByStop[s.stopKey], s.etaMin);
@@ -42,7 +43,7 @@ function windSummary(dayStops: Row[], hourlyByStop: Record<string, StopHourly | 
     items.push({
       wind: f.wind,
       gust: f.gust ?? f.wind,
-      dirTxt: windDirText(f.windDir),
+      dir: f.windDir,
       cls: classifyWind(f.windDir, br),
     });
   }
@@ -53,11 +54,15 @@ function windSummary(dayStops: Row[], hourlyByStop: Record<string, StopHourly | 
   const score: Record<WindClass, number> = { tail: 0, head: 0, cross: 0 };
   for (const x of items) score[x.cls] += x.wind;
   const cls = (Object.keys(score) as WindClass[]).sort((a, b) => score[b] - score[a])[0];
-  // nejčastější směr
-  const cnt: Record<string, number> = {};
-  for (const x of items) cnt[x.dirTxt] = (cnt[x.dirTxt] ?? 0) + 1;
-  const dirTxt = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0];
-  return { mean, maxGust, cls, dirTxt };
+  // reprezentativní směr: kruhový průměr vážený rychlostí
+  let sx = 0;
+  let sy = 0;
+  for (const x of items) {
+    sx += Math.cos((x.dir * Math.PI) / 180) * x.wind;
+    sy += Math.sin((x.dir * Math.PI) / 180) * x.wind;
+  }
+  const dirDeg = ((Math.atan2(sy, sx) * 180) / Math.PI + 360) % 360;
+  return { mean, maxGust, cls, dirDeg, dirTxt: windDirText(dirDeg) };
 }
 
 /** Mini graf: srážky po hodinách v místě, kde v tu hodinu podle plánu jsme. */
@@ -277,8 +282,9 @@ export function RouteWeather({
                     className="mt-3 pt-2.5 border-t border-slate-100 text-[11px] text-slate-500"
                     title="Vítr při jízdě: odkud fouká · průměr (max nárazy) · vůči směru jízdy po úsecích"
                   >
-                    💨 Vítr při jízdě: {w.dirTxt} ~{Math.round(w.mean)} km/h · nárazy do{' '}
-                    {Math.round(w.maxGust)} · {WIND_CLASS_ICON[w.cls]} převážně {WIND_CLASS_TEXT[w.cls]}
+                    💨 Vítr při jízdě: <WindArrow windFrom={w.dirDeg} /> {w.dirTxt} ~
+                    {Math.round(w.mean)} km/h · nárazy do {Math.round(w.maxGust)} ·{' '}
+                    {WIND_CLASS_ICON[w.cls]} převážně {WIND_CLASS_TEXT[w.cls]}
                   </div>
                 ) : null;
               })()}

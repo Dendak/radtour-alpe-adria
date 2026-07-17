@@ -2,7 +2,26 @@ import { SectionTitle } from './SectionTitle';
 import { wmoEmoji, wmoText, type DayNum } from '@/data/trip';
 import type { WeatherEntry } from '@/hooks/useWeather';
 import type { DayEnsemble } from '@/hooks/useEnsemble';
-import { classifyWind, WIND_CLASS_TEXT, WIND_CLASS_ICON, windDirText } from '@/lib/wind';
+import {
+  classifyWind,
+  WIND_CLASS_TEXT,
+  WIND_CLASS_ICON,
+  windDirText,
+  windArrowRotation,
+} from '@/lib/wind';
+
+/** Šipka „kam vítr fouká" — mapově (sever nahoru, jih dolů). */
+export function WindArrow({ windFrom }: { windFrom: number }) {
+  return (
+    <span
+      className="inline-block font-bold"
+      style={{ transform: `rotate(${windArrowRotation(windFrom)}deg)` }}
+      aria-hidden="true"
+    >
+      ↑
+    </span>
+  );
+}
 
 export type WeatherDayMeta = {
   day: DayNum;
@@ -74,7 +93,8 @@ export function WeatherDays({ days, byDay, ensemble, onRefresh, updatedAt }: Pro
                       className="text-xs text-slate-500 mt-0.5"
                       title="Vítr: odkud fouká · max rychlost (nárazy) · vůči směru jízdy"
                     >
-                      💨 {windDirText(w.data.windDir)} {Math.round(w.data.windMax)}
+                      💨 <WindArrow windFrom={w.data.windDir} /> {windDirText(w.data.windDir)}{' '}
+                      {Math.round(w.data.windMax)}
                       {w.data.gustMax != null ? ` (${Math.round(w.data.gustMax)})` : ''} km/h
                       {d.bearing != null && (
                         <>
