@@ -64,7 +64,7 @@ export const DAY_CAPTIONS: Record<DayNum, string> = {
   4: 'Gemona → Grado · furlanskou nížinou k moři',
 };
 
-// Kumulativní km podle GPX v2 (trasa přes rezervované hotely; konce etap: 108 / 205 / 306 / 394); za běhu se snapují na trasu
+// Kumulativní km podle GPX v2 (trasa přes rezervované hotely; konce etap: 108 / 206 / 306 / 395); za běhu se snapují na trasu
 export const WAYPOINTS: Waypoint[] = [
   // Den 1 — Salzburg → Bad Gastein
   { day: 1, dist: 0,   lat: 47.8009, lon: 13.0450, name: 'Salzburg', time: '2026-07-21T09:00', tag: 'Start' },
@@ -82,10 +82,10 @@ export const WAYPOINTS: Waypoint[] = [
   { day: 2, dist: 123, lat: 46.9897, lon: 13.1689, name: 'Mallnitz', time: '2026-07-22T10:15', tag: 'Zajímavost' },
   { day: 2, dist: 132, lat: 46.9381, lon: 13.2017, name: 'Obervellach', time: '2026-07-22T11:15', tag: 'Přestávka' },
   { day: 2, dist: 166, lat: 46.7950, lon: 13.4969, name: 'Spittal an der Drau', time: '2026-07-22T13:30', tag: 'Oběd' },
-  { day: 2, dist: 205, lat: 46.6177, lon: 13.8497, name: 'Villach', time: '2026-07-22T17:00', tag: 'Nocleh 2' },
+  { day: 2, dist: 206, lat: 46.6153, lon: 13.8500, name: 'Villach', time: '2026-07-22T17:00', tag: 'Nocleh 2' },
 
   // Den 3 — Villach → Gemona
-  { day: 3, dist: 205, lat: 46.6177, lon: 13.8497, name: 'Villach', time: '2026-07-23T09:00', tag: 'Start' },
+  { day: 3, dist: 206, lat: 46.6153, lon: 13.8500, name: 'Villach', time: '2026-07-23T09:00', tag: 'Start' },
   { day: 3, dist: 223, lat: 46.5489, lon: 13.7100, name: 'Arnoldstein', time: '2026-07-23T09:45', tag: 'Přestávka' },
   { day: 3, dist: 237, lat: 46.5050, lon: 13.5800, name: 'Tarvisio', time: '2026-07-23T11:00', tag: 'Hranice' },
   { day: 3, dist: 260, lat: 46.5050, lon: 13.3060, name: 'Pontebba', time: '2026-07-23T12:30', tag: 'Oběd' },

@@ -10,7 +10,7 @@ vše v češtině.
 | Den | Datum | Etapa | ~km | Nocleh |
 |-----|-------|-------|-----|--------|
 | 1 | Út 21. 7. | Salzburg → Bad Gastein (Thermenhotel Krone) | 108 | Bad Gastein |
-| 2 | St 22. 7. | Bad Gastein → Villach *(Tauernschleuse)* (Hotel City) | 97 | Villach |
+| 2 | St 22. 7. | Bad Gastein → Villach *(Tauernschleuse)* (voco Villach) | 98 | Villach |
 | 3 | Čt 23. 7. | Villach → Gemona (B&B Rio Rai) | 101 | Gemona |
 | 4 | Pá 24. 7. | Gemona → Grado | 88 | Grado (1 noc) |
 
