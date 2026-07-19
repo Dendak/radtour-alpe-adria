@@ -331,7 +331,7 @@ export type Stay = {
   website?: string;
   name?: string;
   /** fotky ubytování — hotlink z webu objektu (zdroj uveden na kartě) */
-  photos?: { src: string; alt: string }[];
+  photos?: { src: string; alt: string; eager?: boolean }[];
 };
 
 export const STAYS: Stay[] = [
@@ -359,22 +359,25 @@ export const STAYS: Stay[] = [
   },
   {
     night: 'Nocleh 2 · St 22. 7.', town: 'Villach', nights: 1, tentative: false,
-    name: 'Hotel City',
-    mapsQuery: 'Hotel City Villach Bahnhofplatz',
-    website: 'https://hotelcity.at',
+    name: 'voco Villach',
+    mapsQuery: 'voco Villach Europaplatz',
+    website: 'https://villach.vocohotels.com',
     description:
-      'Rezervováno se snídaní: 350 € / 5 osob (70 €/os.). Jednolůžkový (Kevin) + 2× dvoulůžkový ' +
-      '(Petra+Dáša, Karolína+Denis). Čerstvě renovovaný hotel přímo v centru na Bahnhofplatz — ' +
-      'večeře na náměstí pěšky, čtvrteční etapa startuje ode dveří.',
-    amenities: ['Snídaně', '4★ v centru', '1+2+2 lůžka'],
+      'Změna: Hotel City měl systémovou chybu rezervace (zapsali rok 2027) a je vyprodaný — ' +
+      'náhradou máme UPGRADE: voco Villach (4★, IHG) přímo u Drávy, 4 minuty od City. ' +
+      'Jednolůžkový (Kevin) + 2× dvoulůžkový (Petra+Dáša, Karolína+Denis), se snídaní, ' +
+      'za cenu původní rezervace (350 € / 5 osob). Vyřídila Rosi.',
+    amenities: ['Snídaně', '4★ u Drávy', '1+2+2 lůžka', 'Upgrade ⤴'],
     photos: [
       {
-        src: 'https://hotelcity.at/wp-content/uploads/2025/07/HotelCity-3-compressed-1280x853.jpg',
-        alt: 'Hotel City Villach — salonek',
+        src: 'https://villach.vocohotels.com/img/800/600/90/data/Bilder%20Startseite/web_voco_villach_front7(c)michaelstabentheiner.jpg',
+        alt: 'voco Villach — vstup hotelu',
+        eager: true,
       },
       {
-        src: 'https://hotelcity.at/wp-content/uploads/2024/10/superior-bett.jpg',
-        alt: 'Hotel City Villach — pokoj Superior',
+        src: 'https://villach.vocohotels.com/img/800/600/90/data/MARKETING%20VOCO%20NEU/FOTOS/Voco%20Villach%20Cycling-056.jpg',
+        alt: 'voco Villach — cyklisté na hotelovém baru',
+        eager: true,
       },
     ],
   },

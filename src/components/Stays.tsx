@@ -20,7 +20,7 @@ export function Stays() {
                     key={p.src}
                     src={p.src}
                     alt={p.alt}
-                    loading="lazy"
+                    loading={p.eager ? 'eager' : 'lazy'}
                     className="h-32 md:h-36 w-full object-cover bg-slate-100"
                     onError={(e) => {
                       (e.currentTarget.parentElement as HTMLElement).style.display = 'none';
