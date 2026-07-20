@@ -352,8 +352,16 @@ export const STAYS: Stay[] = [
         alt: 'Letecký pohled — Felsentherme a Thermenhotel Krone přes ulici',
       },
       {
-        src: 'https://www.thermenhotel-krone.at/assets/images/zimmer/graukogel/doppelzimmer.jpg',
-        alt: 'Thermenhotel Krone — dvoulůžkový pokoj',
+        src: 'https://www.thermenhotel-krone.at/assets/images/heads/neue-zimmer.jpg',
+        alt: 'Thermenhotel Krone — renovovaný pokoj (2025)',
+      },
+      {
+        src: 'https://www.thermenhotel-krone.at/assets/images/krone-keller/restaurant-bad-gastein.jpg',
+        alt: 'Krone-Keller — restaurace (polopenzní večeře)',
+      },
+      {
+        src: 'https://www.thermenhotel-krone.at/assets/images/therme/felsentherme-innen-palme.jpg',
+        alt: 'Felsentherme — vnitřní bazén ve skále (v ceně)',
       },
     ],
   },
@@ -375,8 +383,18 @@ export const STAYS: Stay[] = [
         eager: true,
       },
       {
+        src: 'https://villach.vocohotels.com/img/800/600/90/data/MARKETING%20VOCO%20NEU/FOTOS/web_voco_villach_room_view(c)simoneattisani.jpg',
+        alt: 'voco Villach — pokoj s výhledem na město',
+        eager: true,
+      },
+      {
         src: 'https://villach.vocohotels.com/img/800/600/90/data/MARKETING%20VOCO%20NEU/FOTOS/Voco%20Villach%20Cycling-056.jpg',
         alt: 'voco Villach — cyklisté na hotelovém baru',
+        eager: true,
+      },
+      {
+        src: 'https://villach.vocohotels.com/img/800/600/90/data/Lagana%202022/Voco-Lagana-2022%20(91%20von%20202).jpg',
+        alt: 'voco Villach — bar a lounge Lagana',
         eager: true,
       },
     ],
@@ -399,6 +417,14 @@ export const STAYS: Stay[] = [
       {
         src: 'https://static.wixstatic.com/media/c34cf9_1ead3344fd284c1393c152a2f0318f0c~mv2.jpg/v1/fill/w_800,h_520,al_c,q_85/riorai-pokoj.jpg',
         alt: 'B&B Rio Rai — pokoj',
+      },
+      {
+        src: 'https://static.wixstatic.com/media/c34cf9_f0b1d99acd3446e8a9db541f08316c0c~mv2.jpg/v1/fill/w_800,h_520,al_c,q_85/riorai-pokoj2.jpg',
+        alt: 'B&B Rio Rai — žlutý pokoj',
+      },
+      {
+        src: 'https://static.wixstatic.com/media/c34cf9_4c4883f3dbd34da89f1e2934b5eb5e49~mv2.jpg/v1/fill/w_800,h_520,al_c,q_85/riorai-snidane.jpg',
+        alt: 'B&B Rio Rai — domácí snídaně',
       },
     ],
   },

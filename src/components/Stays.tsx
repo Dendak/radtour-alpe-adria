@@ -15,7 +15,7 @@ export function Stays() {
           <article key={s.night} className="card overflow-hidden lift flex flex-col">
             {s.photos && s.photos.length > 0 && (
               <div className={'grid gap-px ' + (s.photos.length > 1 ? 'grid-cols-2' : '')}>
-                {s.photos.slice(0, 2).map((p) => (
+                {s.photos.slice(0, 4).map((p) => (
                   <img
                     key={p.src}
                     src={p.src}
