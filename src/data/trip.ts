@@ -50,6 +50,14 @@ export const DAY_NAMES: Record<DayNum, string> = {
   4: 'Den 4 — Pá 24. 7.',
 };
 
+/** Trasy etap na Stravě (pořadí dle dnů). */
+export const DAY_STRAVA: Record<DayNum, string> = {
+  1: 'https://www.strava.com/routes/3514274064602833326',
+  2: 'https://www.strava.com/routes/3514264057261949198',
+  3: 'https://www.strava.com/routes/3514267658097798794',
+  4: 'https://www.strava.com/routes/3514265952552764686',
+};
+
 export const DAY_DATES: Record<DayNum, string> = {
   1: '2026-07-21',
   2: '2026-07-22',
