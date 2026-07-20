@@ -1,0 +1,1 @@
+import{A as e,O as t}from"./useGpxTrack-JZ431Lnb.js";var n=e(t(),1),r=null,i=new Set;function a(e){r=e,i.forEach(e=>e())}function o(e){return i.add(e),()=>i.delete(e)}function s(){return r}function c(){return(0,n.useSyncExternalStore)(o,s,s)}export{c as n,a as t};
